@@ -27,6 +27,20 @@
 </div>
 
 
+> # :construction: WIP :construction:
+>
+> ## Working on getting things back in sync with the library, [term-image](https://github.com/AnonymouX47/term-image)
+>
+> In the mean time, install with
+> ```shell
+> pip install "term-image==0.5.*"
+> ```
+>
+> Also, working on the docs... [this](https://term-image.readthedocs.io/en/v0.5.0/viewer/index.html) should suffice in the mean time.
+>
+> **NOTE:** Any other link on this README may be broken at the moment.
+
+
 ## Contents
 - [Installation](#installation)
 - [Features](#features)
