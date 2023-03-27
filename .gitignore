@@ -1,0 +1,21 @@
+# NOTE:
+# Only entries directly pertaining to the project should be added here.
+# Anything specific to your development process, environemnt or IDE should be ignored locally
+# i.e from "$GIT_DIR/info/exclude", "~/.config/git/ignore" or "$XDG_CONFIG_HOME/git/ignore", etc.
+# It helps to keep things simple, thanks.
+
+# Python module cache
+__pycache__/
+
+# Distribution/Packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+MANIFEST
