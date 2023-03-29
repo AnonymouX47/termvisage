@@ -20,6 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Pre-0.1
 See [term-image] up to [term-image v0.5.0].
 
-[Unreleased]: https://github.com/AnonymouX47/term-image-viewer/commits/main
+[Unreleased]: https://github.com/AnonymouX47/termvisage/commits/main
 [term-image v0.5.0]: https://github.com/AnonymouX47/term-image/blob/main/CHANGELOG.md#
 [term-image]: https://github.com/AnonymouX47/term-image

@@ -636,7 +636,7 @@ def _process_start_wrapper(self, *args, **kwargs):
                     "Hence, if any subprocess will be writing/reading to/from the "
                     "active terminal, it may be unsafe to use any features requiring"
                     "terminal queries.\n"
-                    "See https://term-image.readthedocs.io/en/stable/library/reference"
+                    "See https://termvisage.readthedocs.io/en/stable/library/reference"
                     "/utils.html#terminal-queries\n"
                     "If any related issues occur, it's advisable to set "
                     "`term_image.utils.DISABLE_QUERIES = True`.\n"
@@ -707,7 +707,7 @@ if OS_IS_UNIX:
             warnings.warn(
                 "It seems this process is not running within a terminal. "
                 "Hence, some features will behave differently or be disabled.\n"
-                "See https://term-image.readthedocs.io/en/stable/library/reference"
+                "See https://termvisage.readthedocs.io/en/stable/library/reference"
                 "/utils.html#terminal-queries\n"
                 "You can set an 'ignore' filter for this warning before loading "
                 "`term_image`, if not using any of the features affected.",

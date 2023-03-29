@@ -23,11 +23,11 @@ with open("README.md", "r") as fp:
     long_description = fp.read()
 
 setup(
-    name="term-image-viewer",
+    name="termvisage",
     version="0.1.0-dev",
     author="Toluwaleke Ogundipe",
     author_email="anonymoux47@gmail.com",
-    url="https://github.com/AnonymouX47/term-image-viewer",
+    url="https://github.com/AnonymouX47/termvisage",
     description="Display and browse images in the terminal",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -36,16 +36,16 @@ setup(
     python_requires=">=3.7",
     install_requires=["term-image>=0.5,<0.6", "urwid>=2.1,<3.0"],
     entry_points={
-        "console_scripts": ["term-image=term_image_viewer.__main__:main"],
+        "console_scripts": ["termvisage=termvisage.__main__:main"],
     },
     project_urls={
         "Changelog": (
-            "https://github.com/AnonymouX47/term-image-viewer/blob/main/CHANGELOG.md"
+            "https://github.com/AnonymouX47/termvisage/blob/main/CHANGELOG.md"
         ),
-        "Documentation": "https://term-image-viewer.readthedocs.io/",
-        "Funding": "https://github.com/AnonymouX47/term-image-viewer#donate",
-        "Source": "https://github.com/AnonymouX47/term-image-viewer",
-        "Tracker": "https://github.com/AnonymouX47/term-image-viewer/issues",
+        "Documentation": "https://termvisage.readthedocs.io/",
+        "Funding": "https://github.com/AnonymouX47/termvisage#donate",
+        "Source": "https://github.com/AnonymouX47/termvisage",
+        "Tracker": "https://github.com/AnonymouX47/termvisage/issues",
     },
     keywords=[
         "image",

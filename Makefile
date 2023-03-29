@@ -24,7 +24,7 @@ install-req-docs: pip
 	python -m pip install --upgrade -r docs/requirements.txt
 
 uninstall:
-	pip uninstall -y term-image
+	pip uninstall -y termvisage
 
 
 # Pre-commit Checks and Corrections

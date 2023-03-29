@@ -13,7 +13,7 @@ Image viewer
    tui
    config
 
-The image viewer is started from the command line using the ``term-image`` command.
+The image viewer is started from the command line using the ``termvisage`` command.
 
 
 Image sources
@@ -54,7 +54,7 @@ The viewer can be used in two modes:
 Usage
 -----
 
-| Run ``term-image`` with the ``--help`` option to see the usage info and help text.
+| Run ``termvisage`` with the ``--help`` option to see the usage info and help text.
 | All command-line arguments and options are described there.
 
 Note that some options are only applicable to a specific mode. If used with the other mode, they're simply ignored.
@@ -94,19 +94,19 @@ the terminal.
 | The command-line options are mutually exclusive and override the config option.
 
 | By default (i.e without changing the config option value or specifying either
-  command-line option), ``term-image`` tries to determine the value from the
+  command-line option), ``termvisage`` tries to determine the value from the
   :term:`active terminal` which works on most mordern terminal emulators (currently
   supported on UNIX-like platforms only).
 | This is probably the best choice, except the terminal emulator or platform doesn't support this feature.
 
-| If ``term-image`` is unable to determine this value automatically, it falls back to
+| If ``termvisage`` is unable to determine this value automatically, it falls back to
   ``0.5``, which is a reasonable value in most cases.
 | In case *auto* cell ratio is not supported and the fallback value does not give expected
   results, a different value can be specified using the config or command-line option.
 
 .. attention::
    If using *auto* cell ratio and the :term:`active terminal` is not the controlling
-   terminal of the ``term-image`` process (e.g output is redirected to another terminal),
+   terminal of the ``termvisage`` process (e.g output is redirected to another terminal),
    ensure no process that might read input (e.g a shell) is currently running in the
    active terminal, as such a process might interfere with determining the cell ratio on
    some terminal emulators (e.g VTE-based ones).
@@ -132,7 +132,7 @@ Logging
 
 Logs are more detailed event reports meant for troubleshooting and debugging purporses.
 
-Logs are written to a file on a local filesystem. The default log file is ``~/.term_image/term_image.log`` but a different file can be specified:
+Logs are written to a file on a local filesystem. The default log file is ``~/.termvisage/termvisage.log`` but a different file can be specified:
 
 * for all sessions, using the :ref:`log file <log-file>` config option
 * per session, using the ``--log-file`` command-line option
@@ -171,7 +171,7 @@ A log entry has the following format:
 
 Exit Codes
 ----------
-``term-image`` returns the following exit codes with the specified meanings:
+``termvisage`` returns the following exit codes with the specified meanings:
 
 * ``0`` (SUCESS): Exited normally and successfully.
 * ``1`` (FAILURE): Exited due to an unhandled exception or a non-specific error.

@@ -1,4 +1,4 @@
-"""Term-Image's CLI Implementation"""
+"""TermVisage's CLI Implementation"""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-# Contributing to Term-Image
+# Contributing to TermVisage
 
 First off, thanks for taking the time to contribute! :heart:
 
@@ -37,19 +37,19 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [term-image-viewer Code of Conduct](/CODE_OF_CONDUCT.md).
+This project and everyone participating in it is governed by the [termvisage Code of Conduct](/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior to <anonymoux47@gmail.com>.
 
 
 ## I Have a Question
 
-> If you want to ask a question, we assume that you have read the available [documentation](https://term-image-viewer.readthedocs.io).
+> If you want to ask a question, we assume that you have read the available [documentation](https://termvisage.readthedocs.io).
 
-Before you ask a question, it is best to search for existing [discussions](https://github.com/AnonymouX47/term-image-viewer/discussions) and [issues](https://github.com/AnonymouX47/term-image-viewer/issues) that might help you. In case you have found a suitable discussion or issue and still need clarification, you can write your question in this discussion or issue. It is also advisable to search the internet for answers first.
+Before you ask a question, it is best to search for existing [discussions](https://github.com/AnonymouX47/termvisage/discussions) and [issues](https://github.com/AnonymouX47/termvisage/issues) that might help you. In case you have found a suitable discussion or issue and still need clarification, you can write your question in this discussion or issue. It is also advisable to search the internet for answers first.
 
 If you then still feel the need to ask a question and need clarification, we recommend the following:
 
-- Open a [discussion](https://github.com/AnonymouX47/term-image-viewer/discussions/new).
+- Open a [discussion](https://github.com/AnonymouX47/termvisage/discussions/new).
 - Provide as much context as you can about your question.
 - Provide project and platform versions, depending on what seems relevant.
 
@@ -60,7 +60,7 @@ We will then answer the question as soon as possible.
 
 ### Legal Notice
 
-When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the [term-image-viewer license](/LICENSE).
+When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the [termvisage license](/LICENSE).
 
 If by any means, any content which you didn't author is included, this should be clearly and duely noted along with any neccesary attribution and license/copyright notices.
 **NOTE:** We can not guarantee that such contributions will be accepted.
@@ -74,9 +74,9 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 
 - Make sure that you are using the latest version.
 - Determine if your bug is really a bug and not an error on your side e.g. using incompatible environment components/versions.
-  - Make sure you have read the [documentation](https://term-image-viewer.readthedocs.io).
+  - Make sure you have read the [documentation](https://termvisage.readthedocs.io).
   - If you are looking for support, you might want to check [this section](#i-have-a-question).
-- To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a report existing for your bug or error in the [bug tracker](https://github.com/AnonymouX47/term-image-viewer/issues?q=label%3Abug).
+- To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a report existing for your bug or error in the [bug tracker](https://github.com/AnonymouX47/termvisage/issues?q=label%3Abug).
 - Also make sure to search the internet to see if users outside of the GitHub community have discussed the issue.
 - Collect information about the bug:
     - Stack trace (Traceback), if applicable.
@@ -89,9 +89,9 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 
 > You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by email to <anonymoux47@gmail.com>.
 
-We use [GitHub issues](https://github.com/AnonymouX47/term-image-viewer/issues) to track bugs and errors. If you run into an issue with the project:
+We use [GitHub issues](https://github.com/AnonymouX47/termvisage/issues) to track bugs and errors. If you run into an issue with the project:
 
-- Open an [issue](https://github.com/AnonymouX47/term-image-viewer/issues/new/choose) (before you label it as a bug, please be sure it is).
+- Open an [issue](https://github.com/AnonymouX47/termvisage/issues/new/choose) (before you label it as a bug, please be sure it is).
 - Explain the behavior you would expect and the actual behavior.
 - Please provide as much context as possible and describe the *reproduction steps* that someone else can follow to recreate the issue on their own. This usually includes your code. For good bug reports you should isolate the problem and create a reduced test case.
 - Provide the information you collected in the previous section.
@@ -110,19 +110,19 @@ This section guides you through submitting an enhancement suggestion, **includin
 #### Before Submitting an Enhancement
 
 - Make sure that you are using the latest version.
-- Read the [documentation](https://term-image-viewer.readthedocs.io) carefully and find out if the functionality is already covered, maybe by an individual configuration.
-- Perform a [search](https://github.com/AnonymouX47/term-image-viewer/issues) to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
+- Read the [documentation](https://termvisage.readthedocs.io) carefully and find out if the functionality is already covered, maybe by an individual configuration.
+- Perform a [search](https://github.com/AnonymouX47/termvisage/issues) to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
 - Find out whether your idea fits with the scope and aims of the project. It's up to you to make a strong case to convince the project's developers of the merits of this feature. Keep in mind that we want features that will be useful to the majority of our users and not just a small subset.
 
 #### How Do I Submit a Good Enhancement Suggestion?
 
-Enhancement suggestions are tracked as [GitHub issues](https://github.com/AnonymouX47/term-image-viewer/issues).
+Enhancement suggestions are tracked as [GitHub issues](https://github.com/AnonymouX47/termvisage/issues).
 
 - Use a **clear and descriptive (not long) title** for the issue to identify the suggestion.
 - Provide a **step-by-step description of the suggested enhancement** in as many details as possible.
 - **Describe the current behavior** and **explain which behavior you expected to see instead** and why. At this point you can also tell which alternatives do not work for you.
 - You may want to **include screenshots and/or brief screencasts** which help you demonstrate the steps or point out the part which the suggestion is related to.
-- **Explain why this enhancement would be useful** to most **term-image-viewer** users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
+- **Explain why this enhancement would be useful** to most **termvisage** users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
 
 
 ### Improving the Documentation
@@ -131,7 +131,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/Anonym
 - Go through and follow the [style guides](#style-guides).
 - Before commiting changes, run the neccesary [checks](#documentation-checks), make any neccesary [correction](#documentation-corrections) and ensure they pass.
 - Before opening a pull request, ensure the documentation [builds](#building-the-documentation) successfully.
-- Open a [pull request](https://github.com/AnonymouX47/term-image-viewer/compare) from **a branch (of your fork) other than the default (`main`)** into the **upstream `main` branch** (except stated otherwise). Any pull request **from** the **default branch** will not be merged.
+- Open a [pull request](https://github.com/AnonymouX47/termvisage/compare) from **a branch (of your fork) other than the default (`main`)** into the **upstream `main` branch** (except stated otherwise). Any pull request **from** the **default branch** will not be merged.
 - If the pull request is **incomplete**, convert the pull request into a **draft**.
 
 
@@ -144,7 +144,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/Anonym
 - Before opening a pull request:
   - Ensure everything you've implemented up to the latest commit works as expected.
   - Note that the sub-steps above might not confer compatibility across multiple Python versions or platforms, final checks will be done automatically when you push the changes or open a pull request.
-- Open a [pull request](https://github.com/AnonymouX47/term-image-viewer/compare) from **a branch (of your fork) other than the default (`main`)** into the **upstream `main` branch** (except stated otherwise). Any pull request **from** the **default branch** will not be merged.
+- Open a [pull request](https://github.com/AnonymouX47/termvisage/compare) from **a branch (of your fork) other than the default (`main`)** into the **upstream `main` branch** (except stated otherwise). Any pull request **from** the **default branch** will not be merged.
 - If implementation is **incomplete**, convert the pull request into a **draft**.
 
 
@@ -205,7 +205,7 @@ For a more detailed explanation with examples see the guide at https://cbea.ms/g
 
 ### Steps
 
-**0.** Fork [this repository](https://github.com/AnonymouX47/term-image-viewer) and clone your fork.
+**0.** Fork [this repository](https://github.com/AnonymouX47/termvisage) and clone your fork.
 
 **1.** Install/upgrade the required dependencies for core development:
 

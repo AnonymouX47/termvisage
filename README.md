@@ -1,25 +1,25 @@
 <div align="center">
-<h1><b>Term-Image-Viewer</b></h1>
+<h1><b>TermVisage</b></h1>
 <b>Browse and view images in the terminal</b>
 <br>
-<img src="https://raw.githubusercontent.com/AnonymouX47/term-image-viewer/main/docs/source/resources/tui.png">
+<img src="https://raw.githubusercontent.com/AnonymouX47/termvisage/main/docs/source/resources/tui.png">
 
 <p align="center">
-   <a href='https://pypi.org/project/term-image-viewer/'>
-      <img src='https://img.shields.io/pypi/v/term-image-viewer.svg'>
+   <a href='https://pypi.org/project/termvisage/'>
+      <img src='https://img.shields.io/pypi/v/termvisage.svg'>
    </a>
-   <img src="https://static.pepy.tech/badge/term-image-viewer">
-   <a href='https://pypi.org/project/term-image-viewer/'>
-      <img src='https://img.shields.io/pypi/pyversions/term-image-viewer.svg'>
+   <img src="https://static.pepy.tech/badge/termvisage">
+   <a href='https://pypi.org/project/termvisage/'>
+      <img src='https://img.shields.io/pypi/pyversions/termvisage.svg'>
    </a>
    <a href='https://github.com/psf/black'>
       <img src='https://img.shields.io/badge/code%20style-black-000000.svg'>
    </a>
-   <a href='https://term-image-viewer.readthedocs.io/en/latest/?badge=latest'>
-      <img src='https://readthedocs.org/projects/term-image-viewer/badge/?version=latest' alt='Documentation Status' />
+   <a href='https://termvisage.readthedocs.io/en/latest/?badge=latest'>
+      <img src='https://readthedocs.org/projects/termvisage/badge/?version=latest' alt='Documentation Status' />
    </a>
-   <img src="https://img.shields.io/github/last-commit/AnonymouX47/term-image-viewer">
-   <a href="https://twitter.com/intent/tweet?text=Display%20and%20browse%20images%20in%20the%20the%20terminal&url=https://github.com/AnonymouX47/term-image-viewer&hashtags=developers,images,terminal,python">
+   <img src="https://img.shields.io/github/last-commit/AnonymouX47/termvisage">
+   <a href="https://twitter.com/intent/tweet?text=Display%20and%20browse%20images%20in%20the%20the%20terminal&url=https://github.com/AnonymouX47/termvisage&hashtags=developers,images,terminal,python">
       <img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social">
    </a>
 </p>
@@ -29,7 +29,7 @@
 
 > # :construction: WIP :construction:
 >
-> ## Working on getting things back in sync with the library, [term-image](https://github.com/AnonymouX47/term-image)
+> ## Working on getting things back in sync with the library, [term-image]
 >
 > In the mean time, install with
 > ```shell
@@ -58,7 +58,7 @@
 ## Installation
 
 ### Requirements
-- Operating System: Unix / Linux / Mac OS X / Windows (limited support, see the [FAQs](https://term-image-viewer.readthedocs.io/en/latest/faqs.html))
+- Operating System: Unix / Linux / Mac OS X / Windows (limited support, see the [FAQs](https://termvisage.readthedocs.io/en/latest/faqs.html))
 - [Python](https://www.python.org/) >= 3.7
 - A terminal emulator with **any** of the following:
   
@@ -69,10 +69,10 @@
   **Plans to support a wider variety of terminal emulators are in motion** (see [Planned Features](#planned-features)).
 
 ### Steps
-The latest **stable** version can be installed from [PyPI](https://pypi.python.org/pypi/term-image-viewer) using `pip`:
+The latest **stable** version can be installed from [PyPI](https://pypi.python.org/pypi/termvisage) using `pip`:
 
 ```shell
-pip install term-image-viewer
+pip install termvisage
 ```
 
 The **development** version can be installed thus:
@@ -81,12 +81,12 @@ The **development** version can be installed thus:
 
 Clone this repository from within a terminal
 ```shell
-git clone https://github.com/AnonymouX47/term-image-viewer.git
+git clone https://github.com/AnonymouX47/termvisage.git
 ```
 
 then navigate into the local repository
 ```shell
-cd term-image-viewer
+cd termvisage
 ```
 
 and run
@@ -110,7 +110,7 @@ pip install .
 
 ## Demo
 
-Check out the [gallery](https://term-image-viewer.readthedocs.io/en/latest/gallery.html).
+Check out the [gallery](https://termvisage.readthedocs.io/en/latest/gallery.html).
 
 [TUI Demo Video](https://user-images.githubusercontent.com/61663146/163809903-e8fb254b-a0aa-4d0d-9fc9-dd676c10b735.mp4)
 
@@ -121,17 +121,17 @@ _\*The video was recorded at normal speed and not sped up._
 
 With a local image file
 ```shell
-term-image path/to/image.png
+termvisage path/to/image.png
 ```
 
 With an image URL
 ```shell
-term-image https://www.example.com/image.png
+termvisage https://www.example.com/image.png
 ```
 
 With a directory, recursively (not currently supported on Windows)
 ```shell
-term-image -r path/to/dir/
+termvisage -r path/to/dir/
 ```
 
 If a single source is given and it's animated (GIF, APNG, Animated WebP), the animation is infinitely looped by **default** and can be stopped with `Ctrl-C` (`SIGINT`).
@@ -146,44 +146,44 @@ By **default**, if multiple sources or at least one directory source is given, t
 </b></p>
 
 ### CLI (Command-Line Interface)
-Run `term-image --help` to see the full usage info and list of options.
+Run `termvisage --help` to see the full usage info and list of options.
 
 ### TUI (Terminal User Interface)
 The controls are **context-based** and always displayed at the bottom of the screen.
 Pressing the `F1` key (in most contexts) brings up a **help** menu describing the available controls (called *actions*) in that context.
 
-The TUI can be configured using a config file. See the [Configuration](https://term-image-viewer.readthedocs.io/en/latest/config.html) section of the docs.
+The TUI can be configured using a config file. See the [Configuration](https://termvisage.readthedocs.io/en/latest/config.html) section of the docs.
 
-[Here](https://github.com/AnonymouX47/term-image-viewer/blob/main/vim-style_config.json) is a config file with Vim-style key-bindings (majorly navigation).
+[Here](https://github.com/AnonymouX47/termvisage/blob/main/vim-style_config.json) is a config file with Vim-style key-bindings (majorly navigation).
 
 
 ## Contribution
 
-If you've found any bug or want to suggest a new feature, please open a new [issue](https://github.com/AnonymouX47/term-image-viewer/issues) with proper description, after browsing/searching through the existing issues and making sure you won't create a duplicate.
+If you've found any bug or want to suggest a new feature, please open a new [issue](https://github.com/AnonymouX47/termvisage/issues) with proper description, after browsing/searching through the existing issues and making sure you won't create a duplicate.
 
-For code contributions, please read through the [guidelines](https://github.com/AnonymouX47/term-image-viewer/blob/main/CONTRIBUTING.md).
+For code contributions, please read through the [guidelines](https://github.com/AnonymouX47/termvisage/blob/main/CONTRIBUTING.md).
 
 Also, check out the [Planned Features](#planned-features) section below.
-If you wish to work on any of the listed tasks, please click on the linked issue or go through the [issues](https://github.com/AnonymouX47/term-image-viewer/issues) tab and join in on an ongoing discussion about the task or create a new issue if one hasn't been created yet, so that the implementation can be discussed.
+If you wish to work on any of the listed tasks, please click on the linked issue or go through the [issues](https://github.com/AnonymouX47/termvisage/issues) tab and join in on an ongoing discussion about the task or create a new issue if one hasn't been created yet, so that the implementation can be discussed.
 
 Hint: You can filter issues by *label* or simply *search* using the task's name or description.
 
-For anything other than the above (such as questions or anything that would fit under the term "discussion"), please open a new [discussion](https://github.com/AnonymouX47/term-image-viewer/discussions) instead.
+For anything other than the above (such as questions or anything that would fit under the term "discussion"), please open a new [discussion](https://github.com/AnonymouX47/termvisage/discussions) instead.
 
 Thanks! :heart:
 
 
 ## Planned Features
 
-See [here](https://term-image-viewer.readthedocs.io/en/latest/planned.html).
+See [here](https://termvisage.readthedocs.io/en/latest/planned.html).
 
 ## Known Issues
 
-See [here](https://term-image-viewer.readthedocs.io/en/latest/issues.html).
+See [here](https://termvisage.readthedocs.io/en/latest/issues.html).
 
 ## FAQs
 
-See the [FAQs](https://term-image-viewer.readthedocs.io/en/latest/faqs.html) section of the docs.
+See the [FAQs](https://termvisage.readthedocs.io/en/latest/faqs.html) section of the docs.
 
 ## Credits
 
@@ -191,6 +191,8 @@ The following projects have been (and are still) crucial to the development of t
 
 - [term-image]
 - [Urwid](https://urwid.org)
+
+Thanks to [**@digitallyserviced**](https://github.com/digitallyserviced) for the project name. (Yeah, I totally suck at naming things 🥲)
 
 ## Donate
 

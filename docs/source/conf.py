@@ -13,7 +13,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "term-image-viewer"
+project = "TermVisage"
 copyright = "2022, AnonymouX47"
 author = "AnonymouX47"
 

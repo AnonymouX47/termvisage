@@ -17,7 +17,7 @@ Why are images out of scale?
    - If :ref:`auto-cell-ratio` is supported and enabled,
 
      - Use the `swap win size` :ref:`config option <swap-win-size-config>` or the ``--swap-win-size`` command-line option.
-     - If the above doesn't work, then open a new issue `here <https://github.com/AnonymouX47/term-image-viewer/issues/new/choose>`_ with adequate details.
+     - If the above doesn't work, then open a new issue `here <https://github.com/AnonymouX47/termvisage/issues/new/choose>`_ with adequate details.
 
    - Otherwise,
 

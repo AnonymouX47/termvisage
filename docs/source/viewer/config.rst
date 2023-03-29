@@ -9,8 +9,8 @@ The configuration is divided into the following categories:
 A configuration file is written in JSON format, using a *partial config* style i.e only
 the fields to be modified need to be present in the config file.
 
-By default, ``term-image`` searches the following locations, in the specified order,
-for ``$DIR/term_image/config.json`` (a file named ``config.json`` within a ``term-image``
+By default, ``termvisage`` searches the following locations, in the specified order,
+for ``$DIR/termvisage/config.json`` (a file named ``config.json`` within a ``termvisage``
 directory).
 
 * All valid directories specified in the ``XDG_CONFIG_DIRS`` enviroment variable,
@@ -29,11 +29,11 @@ To use the default configuration and not load any config file, use the ``--no-co
 command-line option.
 
 .. hint::
-   ``term-image`` performs [quite] thorough validation on the values specified in a config
+   ``termvisage`` performs [quite] thorough validation on the values specified in a config
    file and reports any errors. To see information about how the errors are resolved
    (if resolvable), use the ``-v/--verbose`` command-line option.
 
-`This <https://raw.githubusercontent.com/AnonymouX47/term-image-viewer/main/default_config.json>`_
+`This <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/default_config.json>`_
 is a sample config file with all options and keybindings at their defaults. Note that **this is only for reference**, using any field within it as-is has no effect.
 
 Config Options
@@ -106,7 +106,7 @@ They are as follows:
 
    * Type: string
    * Valid values: An absolute path to a writable file.
-   * Default: ``"~/.term_image/term_image.log"``
+   * Default: ``"~/.termvisage/termvisage.log"``
 
    | If the file doesn't exist, at least one of the parents must be a directory and be
      writable, so the file can created.
@@ -240,7 +240,7 @@ The format of the ``"keys"`` mapping is thus::
       from that config file are considered invalid and any changes already made are
       reverted.
 
-| `Here <https://raw.githubusercontent.com/AnonymouX47/term-image-viewer/main/vim-style_config.json>`_
+| `Here <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/vim-style_config.json>`_
   is a config with Vim-style (majorly navigation) keybindings.
 | Remember to rename the file to ``config.json`` if placing it in any of the XDG Base Directories.
 

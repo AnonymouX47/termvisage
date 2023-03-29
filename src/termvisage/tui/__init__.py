@@ -1,4 +1,4 @@
-"""Term-Image's Terminal User Interface"""
+"""TermVisage's Terminal User Interface"""
 
 from __future__ import annotations
 

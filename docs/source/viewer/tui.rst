@@ -133,4 +133,4 @@ Actions
 .. note::
 
    All contexts and their actions (with default properties) can be found `here
-   <https://github.com/AnonymouX47/term-image/blob/main/default_config.json>`_.
+   <https://github.com/AnonymouX47/termvisage/blob/main/default_config.json>`_.

@@ -1,4 +1,4 @@
-"""Support for command-line execution using `python -m term-image`"""
+"""Support for command-line execution using `python -m termvisage`"""
 
 from __future__ import annotations
 
@@ -40,15 +40,13 @@ def main() -> int:
     # 2. Unifies things across multiple platforms.
     multiprocessing.set_start_method("spawn")
 
-    # Can't use "term_image", since the logger's level is changed.
-    # Otherwise, it would affect children of "term_image".
-    logger = _logging.getLogger("term-image")
+    logger = _logging.getLogger("termvisage")
     logger.setLevel(_logging.INFO)
 
     cli.interrupted = Event()
     try:
         write_tty(b"\033[22;2t")  # Save window title
-        write_tty(b"\033]2;Term-Image\033\\")  # Set window title
+        write_tty(b"\033]2;TermVisage\033\\")  # Set window title
         exit_code = cli.main()
     except KeyboardInterrupt:
         cli.interrupted.set()  # Signal interruption to subprocesses and other threads.

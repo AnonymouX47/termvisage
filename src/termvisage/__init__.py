@@ -1,5 +1,5 @@
 """
-term-image-viewer
+termvisage
 
 Display and browse images in the terminal
 

@@ -8,14 +8,14 @@ from .config import config_options
 from .image import ITerm2Image, Size
 
 parser = argparse.ArgumentParser(
-    prog="term-image",
+    prog="termvisage",
     formatter_class=argparse.RawDescriptionHelpFormatter,
     description="Display/Browse images in a terminal",
     epilog=""" \
 
 '--' should be used to separate positional arguments that begin with an '-' \
 from options/flags, to avoid ambiguity.
-For example, `$ term-image [options] -- -image.jpg --image.png`
+For example, `$ termvisage [options] -- -image.jpg --image.png`
 
 Render Styles:
   auto: The best style is automatically determined based on the detected terminal

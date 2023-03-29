@@ -18,27 +18,27 @@ Requirements
 Steps
 -----
 
-The latest **stable** version can be installed from `PyPI <https://pypi.python.org/pypi/term-image-viewer>`_ using ``pip``:
+The latest **stable** version can be installed from `PyPI <https://pypi.python.org/pypi/termvisage>`_ using ``pip``:
 
 .. code-block:: shell
 
-   pip install term-image-viewer
+   pip install termvisage
 
 The **development** version can be installed thus:
 
 **NOTE:** it's recommended to install in an isolated virtual environment, can be created by any means.
 
-Clone the `repository <https://github.com/AnonymouX47/term-image-viewer>`_,
+Clone the `repository <https://github.com/AnonymouX47/termvisage>`_,
 
 .. code-block:: shell
 
-   git clone https://github.com/AnonymouX47/term-image-viewer.git
+   git clone https://github.com/AnonymouX47/termvisage.git
 
 then navigate into the local repository
 
 .. code-block:: shell
 
-   cd term-image-viewer
+   cd termvisage
 
 and run
 
@@ -68,7 +68,7 @@ Some terminals emulators that have been tested to meet the requirements for at l
 - Termux (on Android)
 
 For style-specific support, see the **Render Styles** section towards the bottom of the
-command-line help text (i.e the output of ``term-image --help``).
+command-line help text (i.e the output of ``termvisage --help``).
 
 .. note::
    Some terminal emulators support truecolor escape sequences but have a

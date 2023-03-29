@@ -1,4 +1,4 @@
-"""Term-Image's Configuration"""
+"""TermVisage's Configuration"""
 
 from __future__ import annotations
 
@@ -213,7 +213,7 @@ def load_config(config_file: str) -> None:
 def load_xdg_config() -> None:
     """Loads user config files according to the XDG Base Directories spec."""
     for config_dir in reversed(os.environ.get("XDG_CONFIG_DIRS", "/etc").split(":")):
-        config_file = path.join(config_dir, "term_image", "config.json")
+        config_file = path.join(config_dir, "termvisage", "config.json")
         if (
             # The XDG Base Dirs spec states that relative paths should be ignored
             path.abspath(config_dir) == config_dir
@@ -498,7 +498,7 @@ warn: Callable[[str], None] = None
 user_config_file = None
 xdg_config_file = path.join(
     os.environ.get("XDG_CONFIG_HOME", path.join(path.expanduser("~"), ".config")),
-    "term_image",
+    "termvisage",
     "config.json",
 )
 
@@ -578,7 +578,7 @@ config_options = {
         "must be a non-negative integer",
     ),
     "log file": Option(
-        path.join("~", ".term_image", "term_image.log"),
+        path.join("~", ".termvisage", "termvisage.log"),
         lambda x: isinstance(x, str) and is_writable(x),
         "must be a string containing a writable/creatable file path",
     ),
@@ -633,7 +633,7 @@ _context_keys = {
     "global": {
         "Config": ["C", "\u21e7C", "Open configuration menu"],
         "Help": ["f1", "F1", "Show this help menu"],
-        "Quit": ["q", "q", "Exit term-image"],
+        "Quit": ["q", "q", "Exit TermVisage"],
         "Key Bar": [".", ".", "Expand/Collapse key bar"],
     },
     "menu": {
