@@ -1,6 +1,6 @@
 # Contributing to TermVisage
 
-First off, thanks for taking the time to contribute! :heart:
+First off, thanks for taking the time to contribute! 💓
 
 All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions. 
 
@@ -179,7 +179,7 @@ For a more detailed explanation with examples see the guide at https://cbea.ms/g
 - All functions (including methods) should be adequately annotated.
   - **Note:** Currently, annotations are only for documentation purposes and better/quicker comprehension of the defined interfaces by the users and developers.
 - Try to keep things (definitions, names, dictionary keys, etc...) **lexicographically sorted** wherever reasonably possible.
-  - Makes finding things quicker and easier :smiley:.
+  - Makes finding things quicker and easier 😃.
 - For any matter of style not directly/indirectly addressed here, please try as much as possible to follow formats or styles already established in the project.
 - See also: [Documentation Style](#documentation-style).
 

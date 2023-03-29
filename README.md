@@ -27,7 +27,7 @@
 </div>
 
 
-> # :construction: WIP :construction:
+> # 🚧 WIP 🚧
 >
 > ## Working on getting things back in sync with the library, [term-image]
 >
@@ -105,7 +105,7 @@ pip install .
 - Context-based controls
 - Customizable controls and configuration options
 - Smooth and performant experience
-- and more... :grin:
+- and more... 😁
 
 
 ## Demo
@@ -142,7 +142,7 @@ By **default**, if multiple sources or at least one directory source is given, t
 ## Usage
 
 <p align="center"><b>
-   :construction: Under Construction - There might be incompatible changes between minor versions of <a href='https://semver.org/spec/v2.0.0.html#spec-item-4'>version zero</a>!
+   🚧 Under Construction - There might be incompatible changes between minor versions of <a href='https://semver.org/spec/v2.0.0.html#spec-item-4'>version zero</a>!
 </b></p>
 
 ### CLI (Command-Line Interface)
@@ -170,7 +170,7 @@ Hint: You can filter issues by *label* or simply *search* using the task's name 
 
 For anything other than the above (such as questions or anything that would fit under the term "discussion"), please open a new [discussion](https://github.com/AnonymouX47/termvisage/discussions) instead.
 
-Thanks! :heart:
+Thanks! 💓
 
 
 ## Planned Features
@@ -206,7 +206,7 @@ I'm sincerly sorry for any inconviences that may result from the means of donati
 
 Please bare with me, as usual means of accepting donations are not available in the region of the world where I reside.
 
-Thank you! :heart:
+Thank you! 💓
 
 
 [term-image]: https://github.com/AnonymouX47/term-image
