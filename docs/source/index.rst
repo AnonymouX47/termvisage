@@ -16,6 +16,7 @@ Welcome to TermVisage's documentation!
    installation
    gallery
    viewer/index
+   concepts
    planned
    issues
    faqs
