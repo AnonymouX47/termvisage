@@ -10,14 +10,15 @@ Welcome to TermVisage's documentation!
    `version zero <https://semver.org/spec/v2.0.0.html#spec-item-4>`_!
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    :caption: Contents:
 
    installation
    gallery
-   viewer/index
    concepts
    cli
+   tui
+   config
    planned
    issues
    faqs
