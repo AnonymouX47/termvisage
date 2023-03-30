@@ -17,6 +17,7 @@ Welcome to TermVisage's documentation!
    gallery
    viewer/index
    concepts
+   cli
    planned
    issues
    faqs
