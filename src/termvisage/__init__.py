@@ -9,7 +9,7 @@ Provides:
        or from URLS.
 
 AUTHOR: Toluwaleke Ogundipe <anonymoux47@gmail.com>
-Copyright (c) 2022
+Copyright (c) 2023
 """
 
 __author__ = "Toluwaleke Ogundipe"

@@ -14,8 +14,8 @@
 # -- Project information -----------------------------------------------------
 
 project = "TermVisage"
-copyright = "2022, AnonymouX47"
-author = "AnonymouX47"
+copyright = "2023, Toluwaleke Ogundipe"
+author = "Toluwaleke Ogundipe"
 
 
 # -- General configuration ---------------------------------------------------
