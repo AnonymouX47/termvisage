@@ -99,7 +99,7 @@ They are as follows:
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
 
-.. _log-file:
+.. _log-file-config:
 
 **log file**
    The file to which logs are written. [\*]
@@ -157,7 +157,7 @@ They are as follows:
    If ``false``, the ``checkers`` and ``grid renderers`` options have no effect.
 
 **query timeout**
-   Timeout (in seconds) for all :ref:`terminal-queries`. [\*]
+   Timeout (in seconds) for all terminal queries. [\*]
 
    * Type: float
    * Valid values: x > ``0.0``
@@ -166,7 +166,7 @@ They are as follows:
 .. _style-config:
 
 **style**
-   Image render style. See :ref:`render-styles-viewer`. [\*]
+   Image :term:`render style`. [\*]
 
    * Type: string
    * Valid values: ``"auto"``, ``"block"``, ``"iterm2"``, ``"kitty"``
@@ -186,7 +186,7 @@ They are as follows:
    * Default: ``false``
 
    | If ``true``, the dimensions reported by the terminal emulator are swapped.
-   | This setting affects auto :ref:`cell-ratio-viewer` computation.
+   | This setting affects *auto* :term:`cell ratio` computation.
 
 
 Keybindings

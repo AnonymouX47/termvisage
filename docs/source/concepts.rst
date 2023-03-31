@@ -3,6 +3,7 @@ General Concepts
 
 The image viewer is started from the command line using the ``termvisage`` command.
 
+.. _image-sources:
 
 Image Sources
 -------------
@@ -39,12 +40,12 @@ The viewer can be used in two modes:
    * the ``--tui`` option is specified
 
 
-.. _render-styles-viewer:
+.. _render-styles:
 
 Render Styles
 -------------
 
-See :ref:`render-styles`.
+See :term:`render style`.
 
 By default, the best style supported by the :term:`active terminal` is automatically detected.
 A particular render style can be specified using the ``style`` :ref:`config option <style-config>`
@@ -56,7 +57,7 @@ or the ``-S | --style`` command-line option.
 The ``--force-style`` command-line option can be used to bypass style support checks and force the usage of any style whether it's supported or not.
 
 
-.. _cell-ratio-viewer:
+.. _cell-ratio:
 
 Cell Ratio
 ----------
@@ -110,7 +111,7 @@ Logs are more detailed event reports meant for troubleshooting and debugging pur
 
 Logs are written to a file on a local filesystem. The default log file is ``~/.termvisage/termvisage.log`` but a different file can be specified:
 
-* for all sessions, using the :ref:`log file <log-file>` config option
+* for all sessions, using the ``log file`` :ref:`config option <log-file-config>`
 * per session, using the ``--log-file`` command-line option
 
 A log entry has the following format:
