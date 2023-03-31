@@ -5,7 +5,9 @@ What about Windows support?
    - Firstly, only the new `Windows Terminal <https://github.com/microsoft/terminal>`_ seems to have proper truecolor support and mordern terminal emulator features.
    - The CLI mode currently works (with a few quirks), i.e using ``cmd`` or ``powershell``, if the other requirements are satisfied but can't guarantee it'll always be so.
 
-     - Drawing images and animations doesn't work completely well in ``cmd`` and ``powershell``. See :ref:`library-issues`.
+     - Drawing images and animations doesn't work completely well in ``cmd`` and ``powershell``.
+       See the `library <https://github.com/AnonymouX47/term-image>`_\'s
+       :external+term_image:doc:`issues` for details.
 
    - The TUI doesn't work due to the lack of `fcntl <https://docs.python.org/3/library/fcntl.html>`_ on Windows, which is used by `urwid <https://urwid.org>`_.
    - If stuck on Windows and want to use all features, you could use WSL + Windows Terminal.

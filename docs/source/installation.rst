@@ -12,7 +12,9 @@ Requirements
   * support for the `iTerm2 inline image protocol <https://iterm2.com/documentation-images.html>`_.
   * full Unicode support and truecolor support
 
-  **Plans to support a wider variety of terminal emulators are in motion** (see :ref:`library-planned`).
+  **Plans to support a wider variety of terminal emulators are in motion**
+  (see the `library <https://github.com/AnonymouX47/term-image>`_\'s
+  :external+term_image:doc:`planned`).
 
 
 Steps

@@ -29,5 +29,6 @@ In no particular order:
 
 * Theme customization
 * Configuration menu
-* Also check the library's :ref:`library-planned` since the viewer is based on it.
+* Also check the `library <https://github.com/AnonymouX47/term-image>`_\'s
+  :external+term_image:doc:`planned` since this viewer is based on it.
 * etc...
