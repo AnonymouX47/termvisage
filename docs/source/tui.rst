@@ -13,7 +13,7 @@ UI Components
 The following are the key components that make up the UI. 
 
 * **Banner**:
-  
+
   * At the top of the UI.
   * Fixed height of 4 lines.
   * Contains the project title with a surrounding color fill and a line-box decoration.
@@ -23,6 +23,7 @@ The following are the key components that make up the UI.
 
   * Immediately below the title banner.
   * Consists of two sub-components (described below) arranged horizontally:
+
     * Menu
     * View
 
@@ -38,8 +39,10 @@ The following are the key components that make up the UI.
   * Sub-component of the *viewer* to the right.
   * Images are displayed in here.
   * The content can be one of these two, depending on the type of item currently selected in the *menu*:
+
     * An image: When the item selected in the menu is an image.
     * An image grid: When the item selected in the menu is a directory.
+
   * The *view* component can also be used to scroll through images.
 
 .. _notif-bar:
@@ -80,7 +83,7 @@ A context is simply a set of :ref:`actions <actions>`.
 
 The active context might change due to one of these:
 
-* Triggering certain :ref:`actions <actions>`.
+* Triggering certain actions.
 * Change of *viewer* sub-component (i.e *menu* or *view*) in focus.
 * Type of menu entry selected.
 * An overlay is shown.
@@ -111,8 +114,9 @@ The following are the contexts available:
 Actions
 -------
 
-| An action is a single entry in a :ref:`context <contexts>`, it represents a functionality available in that context.
-| An action has the following defining properties:
+An action is a single entry in a :ref:`context <contexts>`, it represents a functionality available in that context.
+
+An action has the following defining properties:
 
 * **name**: The name of the action.
 * **key**: The key/combination used to trigger the action.
@@ -120,10 +124,10 @@ Actions
 * **description**: A brief description of what the action does.
 * **visibility**: Determines if the action is displayed in the *action/key bar* or not.
 * **state**: Determines if the action is enabled or not.
+
   * If an action is disabled, pressing its *key* will trigger the terminal bell.
 
+.. tip::
 
-.. note::
-
-   All contexts and their actions (with default properties) can be found `here
-   <https://github.com/AnonymouX47/termvisage/blob/main/default_config.json>`_.
+   All contexts and their actions (excluding navigation actions) with default properties
+   can be found `here <https://github.com/AnonymouX47/termvisage/blob/main/default_config.json>`_.
