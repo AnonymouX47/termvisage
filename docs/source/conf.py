@@ -4,6 +4,10 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+from docutils.parsers.rst import directives
+from docutils.statemachine import StringList
+from sphinx_toolbox import confval
+
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -23,7 +27,10 @@ author = "Toluwaleke Ogundipe"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.intersphinx"]
+extensions = [
+    "sphinx.ext.intersphinx",
+    "sphinx_toolbox.confval",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []
@@ -57,3 +64,39 @@ intersphinx_disabled_reftypes = ["*"]
 
 # -- Others options ----------------------------------------------------------
 toc_object_entries = False
+
+
+# -- Extras -----------------------------------------------------------------
+
+# # -- Custom `confval` ------------------------------------------------------
+
+
+class ConfigValueSibling(confval.ConfigurationValue.__base__):
+    def run(self):
+        content = list(self.content)
+
+        # First 5 items for a raw latex directive, next 2 for the synopsis, ...
+        content[5:5] = (self.options["synopsis"], "")
+        if "valid" in self.options:
+            # "default" is always inserted last
+            index = (
+                7
+                + len(self.options.keys() - {"synopsis", "valid"})
+                - ("default" in self.options)  # insert before "default" if present
+            )
+            content[index:index] = (f"| **Valid values:** {self.options['valid']}",)
+
+        self.content = StringList(content)
+
+        return super().run()
+
+
+class ConfigValue(confval.ConfigurationValue, ConfigValueSibling):
+    option_spec = {
+        "synopsis": directives.unchanged_required,
+        "valid": directives.unchanged_required,
+        **confval.ConfigurationValue.option_spec,
+    }
+
+
+confval.ConfigurationValue = ConfigValue
