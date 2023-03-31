@@ -1,38 +1,50 @@
 Glossary
 ========
 
-Below are definitions of terms used across the library's public interface, exception messages, CLI help text and the documentation.
+Below are definitions of terms used in the CLI help text, info/warning/error messages and the documentation.
 
 .. note::
 
-   For contributors, these terms are also used in the source code, as variable names, in comments, docstrings, etc.
+   For contributors, some of these terms are also used in the source code, as variable names, in comments, docstrings, etc.
 
 .. glossary::
    :sorted:
 
    active terminal
-      The first terminal device discovered upon loading the package. See :ref:`here <active-terminal>`.
+      The terminal emulator connected to the first TTY device discovered at startup.
+
+      At times, this may also be used to refer to the TTY device itself.
 
    alignment
-      The position to place a rendered image within its padding.
+      The position of a primary :term:`render` output within its :term:`padding`.
 
    horizontal alignment
-      The position to place a rendered image within its :term:`padding width`.
+      The horizontal position of a primary :term:`render` output within its :term:`padding width`.
+
+      .. seealso:: ``--h-align``
 
    vertical alignment
-      The position to place a rendered image within its :term:`padding height`.
+      The vertical position of a primary :term:`render` output within its :term:`padding height`.
+
+      .. seealso:: ``--v-align``
 
    allowance
-      The amount of space to be left un-used in a given maximum size.
+      The amount of space to be left unused on the terminal screen.
 
    horizontal allowance
-      The amount of **columns** to be left un-used in a given maximum amount of columns.
+      The amount of **columns** to be left unused on the terminal screen.
+
+      .. seealso:: ``--h-allow``
 
    vertical allowance
-      The amount of **lines** to be left un-used in a given maximum amount of lines.
+      The amount of **lines** to be left unused on the terminal screen.
+
+      .. seealso:: ``--v-allow``
 
    alpha threshold
       Alpha ratio/value above which a pixel is taken as **opaque** (applies only to text-based render styles).
+
+      .. seealso:: ``--alpha``
 
    animated
       Having multiple frames.
@@ -40,7 +52,7 @@ Below are definitions of terms used across the library's public interface, excep
       The frames of an animated image are generally meant to be displayed in rapid succession, to give the effect of animation.
 
    available size
-      The remainder after :term:`allowances <allowance>` are subtracted from the maximum size.
+      The remainder after :term:`allowances <allowance>` are subtracted from the maximum frame size.
 
    available width
       The remainder after horizontal allowance is subtracted from the maximum amount of columns.
@@ -49,64 +61,59 @@ Below are definitions of terms used across the library's public interface, excep
       The remainder after vertical allowance is subtracted from the maximum amount of lines.
 
    cell ratio
-      The **aspect ratio** (i.e the ratio of **width to height**) of a **character cell** in the terminal emulator.
+      The **aspect ratio** (i.e the ratio of **width to height**) of a **character cell** on a terminal screen.
 
-      See also: :py:func:`get_cell_ratio() <term_image.get_cell_ratio>` and :py:func:`set_cell_ratio() <term_image.set_cell_ratio>`.
+      .. seealso:: :ref:`cell-ratio`
 
    render
    rendered
    rendering
-      To convert image pixel data into a **string** (optionally including escape sequences to produce colour and transparency).
+      The process of encoding pixel data into a byte/character **string** (possibly including escape sequences to reproduce colour and transparency).
+
+      This string is also called the **primary** render output and **excludes** :term:`padding`.
 
    rendered size
-      The amount of space (columns and lines) that'll be occupied by a rendered image **when drawn onto a terminal screen**.
-
-      This is determined by the size and :term:`scale` of an image.
+      The amount of space (columns and lines) that'll be occupied by a primary :term:`render` output **when drawn (written) onto a terminal screen**.
 
    rendered width
-      The amount of **columns** that'll be occupied by a rendered image **when drawn onto a terminal screen**.
+      The amount of **columns** that'll be occupied by a primary :term:`render` output **when drawn (written) onto a terminal screen**.
 
    rendered height
-      The amount of **lines** that'll be occupied by a rendered image **when drawn onto a terminal screen**.
+      The amount of **lines** that'll be occupied by a primary :term:`render` output **when drawn (written) onto a terminal screen**.
 
    padding
+      Amount of lines and columns within which to fit a primary :term:`render` output.
+
    padding width
-      Amount of columns within which to fit an image. Excess columns on either or both sides of the image (depending on the :term:`horizontal alignment`) will be filled with spaces.
+      Amount of **columns** within which to fit a primary :term:`render` output.
+
+      Excess columns on either or both sides of the render output (depending on the :term:`horizontal alignment`) will be filled with spaces.
+
+      .. seealso:: ``--pad-width``
 
    padding height
-      Amount of columns within which to fit an image. Excess columns on either or both sides of the image (depending on the :term:`vertical alignment`) will be filled with spaces.
+      Amount of **lines** within which to fit a primary :term:`render` output.
 
-   pixel ratio
-      
-      It is equvalent to the :term:`cell ratio` multiplied by 2, since there are two pixels (arranged vertically) in one character cell.
+      Excess lines on either or both sides of the render output (depending on the :term:`vertical alignment`) will be filled with spaces.
+
+      .. seealso:: ``--pad-height``
+
+   render style
+   render styles
+   style
+   styles
+      A specific technique for rendering or displaying pixel data (including images)
+      in a terminal emulator. 
+
+      .. seealso:: :ref:`render-styles`
 
    scale
-      The fraction of an image's size that'll actually be used to :term:`render` it.
+      The fraction/ratio of an image's size that'll actually be used to :term:`render` it.
       
-      See also: :ref:`image-scale`.
-
-   automatic size
-   automatic sizing
-      The form of sizing wherein the image size is computed based on the :term:`available size` or the image's original size.
-
-      See also: :py:class:`~term_image.image.Size`.
-
-   dynamic size
-   dynamic sizing
-      The form of sizing wherein the image size is automatically computed at render-time.
-
-      See also: :py:attr:`~term_image.image.BaseImage.size`.
-
-   fixed size
-   fixed sizing
-      The form of sizing wherein the image size is set to a specific value which won't change until it is re-set.
-
-      See also: :py:meth:`~term_image.image.BaseImage.set_size`,
-      :py:attr:`~term_image.image.BaseImage.width` and
-      :py:attr:`~term_image.image.BaseImage.height`.
-
    source
-      The resource from which an image is derived.
+      The resource from which an image instance is initialized.
+
+      .. seealso:: :ref:`image-sources`
 
    terminal size
       The amount of columns and lines on a terminal screen at a time i.e without scrolling.
