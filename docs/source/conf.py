@@ -23,7 +23,7 @@ author = "Toluwaleke Ogundipe"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = []
+extensions = ["sphinx.ext.intersphinx"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []
@@ -44,6 +44,16 @@ html_theme = "furo"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
+
+
+# -- Options for extensions ----------------------------------------------
+
+# # -- sphinx-intersphinx ----------------------------------------------
+intersphinx_mapping = {
+    "term_image": ("https://term-image.readthedocs.io/en/v0.6.0/", None),
+}
+intersphinx_disabled_reftypes = ["*"]
+
 
 # -- Others options ----------------------------------------------------------
 toc_object_entries = False
