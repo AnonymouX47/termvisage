@@ -14,7 +14,8 @@ The viewer accepts the following kinds of :term:`sources <source>`:
 * A path to a directory on a local filesystem.
 * An Image URL.
 
-Any thing else given as a source is reported as invalid.
+Any thing else given as a source is reported as invalid. If no valid source is given,
+the process exits with code ``NO_VALID_SOURCE`` (see :ref:`exit-codes`).
 
 
 Modes
@@ -51,10 +52,15 @@ By default, the best style supported by the :term:`active terminal` is automatic
 A particular render style can be specified using :confval:`style` or the ``-S | --style``
 command-line option.
 
-| If the specified render style is graphics-based and not supported, an error notification is emitted and the process exits with code ``1`` (FAILURE, see the description below).
-| If the specified render style is text-based and not [fully] supported, a warning notification is emitted but execution still proceeds with the style.
+If the specified render style is:
 
-The ``--force-style`` command-line option can be used to bypass style support checks and force the usage of any style whether it's supported or not.
+* **graphics-based** and not supported, an error notification is emitted and the process
+  exits with code ``FAILURE`` (see :ref:`exit-codes`).
+* **text-based** and not [fully] supported, a warning notification is emitted but
+  execution still proceeds with the style.
+
+The ``--force-style`` command-line option can be used to bypass style support checks and
+force the usage of any render style whether it's supported or not.
 
 
 .. _cell-ratio:
@@ -66,20 +72,22 @@ The :term:`cell ratio` is taken into consideration when setting image sizes for
 **text-based** render styles, in order to preserve the aspect ratio of images drawn to
 the terminal.
 
-| This value is determined by :confval:`cell ratio` OR either of the command-line options
-  ``-C | --cell-ratio`` or ``--auto-cell-ratio``.
-| The command-line options are mutually exclusive and override the config option.
+This value is determined by :confval:`cell ratio` OR either of the command-line options
+``-C | --cell-ratio`` or ``--auto-cell-ratio``.
+The command-line options are mutually exclusive and override the config option.
 
-| By default (i.e without changing the config option value or specifying either
-  command-line option), ``termvisage`` tries to determine the value from the
-  :term:`active terminal` which works on most mordern terminal emulators (currently
-  supported on UNIX-like platforms only).
-| This is probably the best choice, except the terminal emulator or platform doesn't support this feature.
+By default (i.e without changing the config option value or specifying either
+command-line option), ``termvisage`` tries to determine the value from the
+:term:`active terminal` which works on most mordern terminal emulators (currently
+supported on UNIX-like platforms only).
+This is probably the best choice, except the terminal emulator or platform doesn't
+support this feature.
 
-| If ``termvisage`` is unable to determine this value automatically, it falls back to
-  ``0.5``, which is a reasonable value in most cases.
-| In case *auto* cell ratio is not supported and the fallback value does not give expected
-  results, a different value can be specified using the config or command-line option.
+If ``termvisage`` is unable to determine this value automatically, it falls back to
+``0.5``, which is a reasonable value in most cases.
+
+In case *auto* cell ratio is not supported and the fallback value does not give expected
+results, a different value can be specified using the config or command-line option.
 
 .. attention::
    If using *auto* cell ratio and the :term:`active terminal` is not the controlling
@@ -94,13 +102,14 @@ the terminal.
 Notifications
 -------------
 
-| Notifications are event reports meant to be brought to the immediate knowledge of the user.
-| Notifications have two possible destinations:
+Notifications are event reports meant to be brought to the immediate knowledge of the user.
+
+Notifications have two possible destinations:
 
 * Standard output/error stream: This is used while the TUI is **not** launched.
 * TUI :ref:`notification bar <notif-bar>`: This is used while the TUI is launched.
 
-Notifications sent to the TUI's :ref:`notification bar <notif-bar>` automatically disappear after 5 seconds.
+  * Notifications sent here automatically disappear after 5 seconds.
 
 .. _logging:
 
@@ -146,11 +155,13 @@ A log entry has the following format:
    * The Process ID of the each session preceeds its log entries, so this can be used to distinguish between logs from different sessions running simultaneously while using the same log file.
 
 
+.. _exit-codes:
+
 Exit Codes
 ----------
 ``termvisage`` returns the following exit codes with the specified meanings:
 
-* ``0`` (SUCESS): Exited normally and successfully.
+* ``0`` (SUCCESS): Exited normally and successfully.
 * ``1`` (FAILURE): Exited due to an unhandled exception or a non-specific error.
 * ``2`` (INVALID_ARG): Exited due to an invalid command-line argument value or option combination.
 * ``3`` (INTERRUPTED): The program recieved an interrupt signal i.e ``SIGINT``.
