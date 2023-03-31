@@ -45,68 +45,62 @@ Config Options
 
 They are as follows:
 
-**anim cache**
-   The maximum frame count of an image for which frames will be cached during animation. [\*]
-
-   * Type: integer
-   * Valid values: x > ``0``
-   * Default: ``100``
+.. confval:: anim cache
+   :synopsis: The maximum frame count of an image for which frames will be cached during
+     animation [\*]
+   :type: integer
+   :valid: x > ``0``
+   :default: ``100``
 
 .. _cell-ratio-config:
 
-**cell ratio**
-   The :term:`cell ratio`. [\*]
-
-   * Type: null or float
-   * Valid values: ``null`` or x > ``0.0``
-   * Default: ``null``
+.. confval:: cell ratio
+   :synopsis: The :term:`cell ratio` [\*]
+   :type: null or float
+   :valid: ``null`` or x > ``0.0``
+   :default: ``null``
 
    If ``null``, the ratio is determined from the :term:`active terminal` such that the
    aspect ratio of any image is always preserved. If this is not supported in the
    :term:`active terminal` or on the platform, ``0.5`` is used instead.
 
-**cell width**
-   The initial width of (no of columns for) grid cells, in the TUI.
+.. confval:: cell width
+   :synopsis: The initial width of (no of columns for) grid cells, in the TUI.
+   :type: integer
+   :valid: ``30`` <= x <= ``50`` and x is even
+   :default: ``30``
 
-   * Type: integer
-   * Valid values: ``30`` <= x <= ``50`` and x is even
-   * Default: ``30``
-
-**checkers**
-   Maximum number of subprocesses for checking directory sources. [\*]
-
-   * Type: null or integer
-   * Valid values: ``null`` or x >= ``0``
-   * Default: ``null``
+.. confval:: checkers
+   :synopsis: Maximum number of subprocesses for checking directory sources. [\*]
+   :type: null or integer
+   :valid: ``null`` or x >= ``0``
+   :default: ``null``
 
    | If ``null``, the number of subprocesses is automatically determined based on the amount of
      logical processors available. CPU affinity is also taken into account on supported platforms.
    | If less than ``2``, directory sources are checked within the main process.
 
-**getters**
-   Number of threads for downloading images from URL sources. [\*]
+.. confval:: getters
+   :synopsis: Number of threads for downloading images from URL sources. [\*]
+   :type: integer
+   :valid: x > ``0``
+   :default: ``4``
 
-   * Type: integer
-   * Valid values: x > ``0``
-   * Default: ``4``
-
-**grid renderers**
-   Number of subprocesses for rendering grid cells. [\*]
-
-   * Type: integer
-   * Valid values: x >= ``0``
-   * Default: ``1``
+.. confval:: grid renderers
+   :synopsis: Number of subprocesses for rendering grid cells. [\*]
+   :type: integer
+   :valid: x >= ``0``
+   :default: ``1``
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
 
 .. _log-file-config:
 
-**log file**
-   The file to which logs are written. [\*]
-
-   * Type: string
-   * Valid values: An absolute path to a writable file.
-   * Default: ``"~/.termvisage/termvisage.log"``
+.. confval:: log file
+   :synopsis: The file to which logs are written. [\*]
+   :type: string
+   :valid: An absolute path to a writable file.
+   :default: ``"~/.termvisage/termvisage.log"``
 
    | If the file doesn't exist, at least one of the parents must be a directory and be
      writable, so the file can created.
@@ -120,21 +114,19 @@ They are as follows:
       created) relative to the **current working directory** every time the process
       is started.
 
-**max notifications**
-   The maximum number of TUI notifications that can be shown at a time.
-
-   * Type: integer
-   * Valid values: x >= ``0``
-   * Default: ``2``
+.. confval:: max notifications
+   :synopsis: The maximum number of TUI notifications that can be shown at a time.
+   :type: integer
+   :valid: x >= ``0``
+   :default: ``2``
 
    | Adjusts the height of the :ref:`notification bar <notif-bar>`.
 
-**max pixels**
-   The maximum amount of pixels in images to be displayed in the TUI. [\*]
-
-   * Type: integer
-   * Valid values: x > ``0``
-   * Default: ``4194304`` (2 ** 22)
+.. confval:: max pixels
+   :synopsis: The maximum amount of pixels in images to be displayed in the TUI. [\*]
+   :type: integer
+   :valid: x > ``0``
+   :default: ``4194304`` (2 ** 22)
 
    Any image having more pixels than the specified value will be:
 
@@ -147,43 +139,39 @@ They are as follows:
    to render it. Thus, a large image might delay the rendering of other images to be
    rendered immediately after it.
 
-**multi**
-   Enable or disable multiprocessing. [\*]
-
-   * Type: boolean
-   * Valid values: ``true``, ``false``
-   * Default: ``true``
+.. confval:: multi
+   :synopsis: Enable or disable multiprocessing. [\*]
+   :type: boolean
+   :valid: ``true``, ``false``
+   :default: ``true``
 
    If ``false``, the ``checkers`` and ``grid renderers`` options have no effect.
 
-**query timeout**
-   Timeout (in seconds) for all terminal queries. [\*]
-
-   * Type: float
-   * Valid values: x > ``0.0``
-   * Default: ``0.1``
+.. confval:: query timeout
+   :synopsis: Timeout (in seconds) for all terminal queries. [\*]
+   :type: float
+   :valid: x > ``0.0``
+   :default: ``0.1``
 
 .. _style-config:
 
-**style**
-   Image :term:`render style`. [\*]
-
-   * Type: string
-   * Valid values: ``"auto"``, ``"block"``, ``"iterm2"``, ``"kitty"``
-   * Default: ``"auto"``
+.. confval:: style
+   :synopsis: Image :term:`render style`. [\*]
+   :type: string
+   :valid: ``"auto"``, ``"block"``, ``"iterm2"``, ``"kitty"``
+   :default: ``"auto"``
 
    If set to any value other than ``"auto"`` and is not overriden by the ``-S | --style``
    command-line option, the style is used regardless of whether it's supported or not.
 
 .. _swap-win-size-config:
 
-**swap win size**
-   A workaround for some terminal emulators (e.g older VTE-based ones) that wrongly
-   report window dimensions swapped. [\*]
-
-   * Type: boolean
-   * Valid values: ``true``, ``false``
-   * Default: ``false``
+.. confval:: swap win size
+   :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that wrongly
+     report window dimensions swapped. [\*]
+   :type: boolean
+   :valid: ``true``, ``false``
+   :default: ``false``
 
    | If ``true``, the dimensions reported by the terminal emulator are swapped.
    | This setting affects *auto* :term:`cell ratio` computation.
