@@ -6,16 +6,16 @@ The configuration is divided into the following categories:
 * Options
 * Keybindings
 
-A configuration file is written in JSON format, using a *partial config* style i.e only
-the fields to be modified need to be present in the config file.
+The configuration file is written in **JSON** format, using a *partial config* style
+i.e only the fields to be modified need to be present in the config file.
 
-By default, ``termvisage`` searches the following locations, in the specified order,
+By default, ``termvisage`` searches the following locations, **in the specified order**,
 for ``$DIR/termvisage/config.json`` (a file named ``config.json`` within a ``termvisage``
-directory).
+directory):
 
 * All valid directories specified in the ``XDG_CONFIG_DIRS`` enviroment variable,
   **in reverse order** or ``/etc/xdg`` if not set.
-* The directory specified in the ``XDG_CONFIG_HOME`` enviroment variable or ``~/.config``
+* The directory specified by the ``XDG_CONFIG_HOME`` enviroment variable or ``~/.config``
   if not set (where ``~`` is the current user's home directory).
 
 If multiple config files are found (i.e in different locations), they're applied on top of
@@ -34,30 +34,32 @@ command-line option.
    (if resolvable), use the ``-v/--verbose`` command-line option.
 
 `This <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/default_config.json>`_
-is a sample config file with all options and keybindings at their defaults. Note that **this is only for reference**, using any field within it as-is has no effect.
+is a sample config file with all options and keybindings at their defaults.
+Note that **this is only for reference**, using any field within it as-is has no effect.
 
-Config Options
---------------
+Options
+-------
 
-| These are fields whose values control various behaviours of the viewer.
-| Any option with a "[\*]" after its description will be used only when a corresponding
-  command-line option is either not specified or has an invalid value.
+These are top-level fields whose values control various settings of the viewer.
 
-They are as follows:
+.. hint::
+
+   Any option with a *[\*]* after its description will be overidden by a corresponding
+   command-line option with a valid value.
 
 .. confval:: anim cache
    :synopsis: The maximum frame count of an image for which frames will be cached during
-     animation [\*]
+     animation. [\*]
    :type: integer
-   :valid: x > ``0``
+   :valid: *x* > ``0``
    :default: ``100``
 
 .. _cell-ratio-config:
 
 .. confval:: cell ratio
-   :synopsis: The :term:`cell ratio` [\*]
+   :synopsis: The :term:`cell ratio`. [\*]
    :type: null or float
-   :valid: ``null`` or x > ``0.0``
+   :valid: ``null`` or *x* > ``0.0``
    :default: ``null``
 
    If ``null``, the ratio is determined from the :term:`active terminal` such that the
@@ -67,29 +69,30 @@ They are as follows:
 .. confval:: cell width
    :synopsis: The initial width of (no of columns for) grid cells, in the TUI.
    :type: integer
-   :valid: ``30`` <= x <= ``50`` and x is even
+   :valid: ``30`` <= *x* <= ``50`` and *x* is even
    :default: ``30``
 
 .. confval:: checkers
    :synopsis: Maximum number of subprocesses for checking directory sources. [\*]
    :type: null or integer
-   :valid: ``null`` or x >= ``0``
+   :valid: ``null`` or *x* >= ``0``
    :default: ``null``
 
-   | If ``null``, the number of subprocesses is automatically determined based on the amount of
-     logical processors available. CPU affinity is also taken into account on supported platforms.
-   | If less than ``2``, directory sources are checked within the main process.
+   If ``null``, the number of subprocesses is automatically determined based on the amount of
+   logical processors available. CPU affinity is also taken into account on supported platforms.
+
+   If less than ``2``, directory sources are checked within the main process.
 
 .. confval:: getters
    :synopsis: Number of threads for downloading images from URL sources. [\*]
    :type: integer
-   :valid: x > ``0``
+   :valid: *x* > ``0``
    :default: ``4``
 
 .. confval:: grid renderers
    :synopsis: Number of subprocesses for rendering grid cells. [\*]
    :type: integer
-   :valid: x >= ``0``
+   :valid: *x* >= ``0``
    :default: ``1``
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
@@ -99,33 +102,37 @@ They are as follows:
 .. confval:: log file
    :synopsis: The file to which logs are written. [\*]
    :type: string
-   :valid: An absolute path to a writable file.
+   :valid: An absolute path to a writable file
    :default: ``"~/.termvisage/termvisage.log"``
 
-   | If the file doesn't exist, at least one of the parents must be a directory and be
-     writable, so the file can created.
-   | If the file exists, it is appended to, not overwritten.
-   | Supports tilde expansion i.e a leading ``~`` (tilde) character is expanded to the
-     current user's home directory.
-   | See :ref:`logging`.
+   If the file:
+
+   * doesn't exist, at least one of the parents must be a directory and be writable,
+     so the file can be created.
+   * exists, it is appended to, not overwritten.
+
+   Supports tilde expansion i.e a leading ``~`` (tilde) character is expanded to the
+   current user's home directory.
 
    .. warning::
       Relative paths are allowed but this will cause the log file to be written (or
       created) relative to the **current working directory** every time the process
       is started.
 
+   .. seealso:: :ref:`logging`
+
 .. confval:: max notifications
    :synopsis: The maximum number of TUI notifications that can be shown at a time.
    :type: integer
-   :valid: x >= ``0``
+   :valid: *x* >= ``0``
    :default: ``2``
 
-   | Adjusts the height of the :ref:`notification bar <notif-bar>`.
+   Adjusts the height of the :ref:`notification bar <notif-bar>`.
 
 .. confval:: max pixels
    :synopsis: The maximum amount of pixels in images to be displayed in the TUI. [\*]
    :type: integer
-   :valid: x > ``0``
+   :valid: *x* > ``0``
    :default: ``4194304`` (2 ** 22)
 
    Any image having more pixels than the specified value will be:
@@ -150,7 +157,7 @@ They are as follows:
 .. confval:: query timeout
    :synopsis: Timeout (in seconds) for all terminal queries. [\*]
    :type: float
-   :valid: x > ``0.0``
+   :valid: *x* > ``0.0``
    :default: ``0.1``
 
 .. _style-config:
@@ -167,14 +174,15 @@ They are as follows:
 .. _swap-win-size-config:
 
 .. confval:: swap win size
-   :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that wrongly
-     report window dimensions swapped. [\*]
+   :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that
+     wrongly report window dimensions swapped. [\*]
    :type: boolean
    :valid: ``true``, ``false``
    :default: ``false``
 
-   | If ``true``, the dimensions reported by the terminal emulator are swapped.
-   | This setting affects *auto* :term:`cell ratio` computation.
+   If ``true``, the window dimensions reported by the terminal emulator are swapped.
+   
+   .. note:: This setting affects *auto* :term:`cell ratio` computation.
 
 
 Keybindings
@@ -182,55 +190,61 @@ Keybindings
 
 The key assigned to every :ref:`action <actions>` can be modified in the config file.
 
-The ``"keys"`` field in the config holds a mapping containing fields each mapping a
-:ref:`context <contexts>` to a mapping of :ref:`actions <actions>` to their properties.
+Keybindings are set by the ``keys`` top-level field, the value of which is a mapping
+containing fields each mapping a :ref:`context <contexts>` to a mapping of
+:ref:`actions <actions>` and their respective properties.
 
-The format of the ``"keys"`` mapping is thus::
+The format of the ``keys`` field is thus::
 
-   {
+   "keys": {
       "<context>": {
-         "<action>": [
-            "<key>",
-            "<symbol>"
-         ],
-
+         "<action>": [ "<key>", "<symbol>" ],
          ...
       },
-
       ...
    }
 
-*'...' means continuous repetition of the format **may** occur.*
+- *context* is the name of a :ref:`context <contexts>` or ``navigation``.
+- *action* is the name of an :ref:`action <actions>`.
+- Both *key* and *symbol* may contain Unicode characters and Python unicode escape sequences
+  (``\uXXXX`` and ``\UXXXXXXXX``).
+- *'...' means continuous repetition of the format may occur.*
 
-| *action* is the name of an action.
-| Both *key* and *symbol* must be valid Python strings, hence Unicode characters and
-  escape sequences (``\uXXXX`` and ``\UXXXXXXXX``) are supported.
+.. tip::
 
-.. hint::
-
-   If using a Unicode character that occupies multiple columns in *symbol*, then add spaces
-   after it as required to cover-up for the extra columns.
+   If using a Unicode character that occupies multiple columns in *symbol*, you **might**
+   have to add after it as many spaces as are required to cover-up for the extra columns.
 
 .. note::
 
-   The ``navigation`` field is not actually a *context*, instead it's the universal
-   navigation controls configuration from which navigation *actions* in actual *contexts*
-   are updated.
+   The ``navigation`` field is not actually a :ref:`context <contexts>`. Instead, it's
+   the universal navigation configuration from which navigation actions in actual
+   contexts are derived.
+
+   The base navigation actions are:
+
+   * ``Left``
+   * ``Up``
+   * ``Right``
+   * ``Down``
+   * ``Page Up``
+   * ``Page Down``
+   * ``Home``
+   * ``End``
 
 .. attention::
 
-   1. Keys used in ``global`` context cannot be used in any other context (including ``navigation``).
-   1. Keys used in ``navigation`` context cannot be used in any other context.
-   2. All keys in a context must be unique.
-
-   3. If a key is invalid or already used, the former and default keys for that action are
+   #. Keys used in the ``global`` context cannot be used in any other context
+      (including ``navigation``).
+   #. Keys used in the ``navigation`` "context" cannot be used in any other context.
+   #. All keys in a context must be unique.
+   #. If a key is invalid or already used, the former and default keys for that action are
       tried as a fallback but if that fails (because they're already used), all keybindings
       from that config file are considered invalid and any changes already made are
       reverted.
 
-| `Here <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/vim-style_config.json>`_
-  is a config with Vim-style (majorly navigation) keybindings.
-| Remember to rename the file to ``config.json`` if placing it in any of the XDG Base Directories.
+`Here <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/vim-style_config.json>`_
+is a sample config file with Vim-style (majorly navigation) keybindings.
 
 Below is a list of all **valid** values for *key*::
 
