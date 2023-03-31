@@ -54,8 +54,6 @@ These are top-level fields whose values control various settings of the viewer.
    :valid: *x* > ``0``
    :default: ``100``
 
-.. _cell-ratio-config:
-
 .. confval:: cell ratio
    :synopsis: The :term:`cell ratio`. [\*]
    :type: null or float
@@ -96,8 +94,6 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``1``
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
-
-.. _log-file-config:
 
 .. confval:: log file
    :synopsis: The file to which logs are written. [\*]
@@ -160,8 +156,6 @@ These are top-level fields whose values control various settings of the viewer.
    :valid: *x* > ``0.0``
    :default: ``0.1``
 
-.. _style-config:
-
 .. confval:: style
    :synopsis: Image :term:`render style`. [\*]
    :type: string
@@ -170,8 +164,6 @@ These are top-level fields whose values control various settings of the viewer.
 
    If set to any value other than ``"auto"`` and is not overriden by the ``-S | --style``
    command-line option, the style is used regardless of whether it's supported or not.
-
-.. _swap-win-size-config:
 
 .. confval:: swap win size
    :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that

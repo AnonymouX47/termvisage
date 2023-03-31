@@ -18,12 +18,12 @@ Why are colours not properly reproduced?
 Why are images out of scale?
    - If *auto* :term:`cell ratio` is supported and enabled,
 
-     - Use the ``swap win size`` :ref:`config option <swap-win-size-config>` or the ``--swap-win-size`` command-line option.
+     - Use :confval:`swap win size` or the ``--swap-win-size`` command-line option.
      - If the above doesn't work, then open a new issue `here <https://github.com/AnonymouX47/termvisage/issues/new/choose>`_ with adequate details.
 
    - Otherwise,
 
-     - Adjust the :term:`cell ratio` using the :ref:`config option <cell-ratio-config>` or the ``-C | --cell-ratio`` command-line option.
+     - Adjust the :term:`cell ratio` using :confval:`cell ratio` or the ``-C | --cell-ratio`` command-line option.
 
 Why is the TUI unresponsive or slow in drawing images?
    - Drawing (not rendering) speed is **entirely** dependent on the terminal emulator itself.

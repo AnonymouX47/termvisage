@@ -48,8 +48,8 @@ Render Styles
 See :term:`render style`.
 
 By default, the best style supported by the :term:`active terminal` is automatically detected.
-A particular render style can be specified using the ``style`` :ref:`config option <style-config>`
-or the ``-S | --style`` command-line option.
+A particular render style can be specified using :confval:`style` or the ``-S | --style``
+command-line option.
 
 | If the specified render style is graphics-based and not supported, an error notification is emitted and the process exits with code ``1`` (FAILURE, see the description below).
 | If the specified render style is text-based and not [fully] supported, a warning notification is emitted but execution still proceeds with the style.
@@ -66,8 +66,8 @@ The :term:`cell ratio` is taken into consideration when setting image sizes for
 **text-based** render styles, in order to preserve the aspect ratio of images drawn to
 the terminal.
 
-| This value is determined by the :ref:`config option <cell-ratio-config>` ``cell ratio``
-  OR either of the command-line options ``-C | --cell-ratio`` or ``--auto-cell-ratio``.
+| This value is determined by :confval:`cell ratio` OR either of the command-line options
+  ``-C | --cell-ratio`` or ``--auto-cell-ratio``.
 | The command-line options are mutually exclusive and override the config option.
 
 | By default (i.e without changing the config option value or specifying either
@@ -111,7 +111,7 @@ Logs are more detailed event reports meant for troubleshooting and debugging pur
 
 Logs are written to a file on a local filesystem. The default log file is ``~/.termvisage/termvisage.log`` but a different file can be specified:
 
-* for all sessions, using the ``log file`` :ref:`config option <log-file-config>`
+* for all sessions, using :confval:`log file`
 * per session, using the ``--log-file`` command-line option
 
 A log entry has the following format:
