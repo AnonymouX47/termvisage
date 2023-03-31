@@ -34,7 +34,7 @@ setup(
     license="MIT",
     classifiers=classifiers,
     python_requires=">=3.7",
-    install_requires=["term-image>=0.5,<0.6", "urwid>=2.1,<3.0"],
+    install_requires=["term-image>=0.6,<0.7", "urwid>=2.1,<3.0"],
     entry_points={
         "console_scripts": ["termvisage=termvisage.__main__:main"],
     },
