@@ -3,9 +3,10 @@
 import argparse
 import sys
 
+from term_image.image import ITerm2Image, Size
+
 from . import __version__
 from .config import config_options
-from .image import ITerm2Image, Size
 
 parser = argparse.ArgumentParser(
     prog="termvisage",

@@ -10,10 +10,10 @@ from types import FunctionType
 from typing import Tuple
 
 import urwid
+from term_image.utils import get_terminal_size
 
 from .. import __version__, logging
 from ..config import context_keys, expand_key
-from ..utils import get_terminal_size
 from . import main
 from .widgets import (
     ImageCanvas,

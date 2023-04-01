@@ -19,24 +19,23 @@ from urllib.parse import urlparse
 
 import PIL
 import requests
+from term_image import AutoCellRatio, set_cell_ratio, set_query_timeout
+from term_image.exceptions import (
+    StyleError,
+    TermImageError,
+    TermImageWarning,
+    URLNotFoundError,
+)
+from term_image.image import BlockImage, ITerm2Image, KittyImage, Size, auto_image_class
+from term_image.utils import get_terminal_name_version, get_terminal_size, write_tty
 
-from . import AutoCellRatio, logging, notify, set_cell_ratio, tui, utils
+from . import logging, notify, tui, utils
 from .config import config_options, init_config
-from .exceptions import StyleError, TermImageError, TermImageWarning, URLNotFoundError
 from .exit_codes import FAILURE, INVALID_ARG, NO_VALID_SOURCE, SUCCESS
-from .image import BlockImage, ITerm2Image, KittyImage, Size, auto_style
 from .logging import Thread, init_log, log, log_exception
 from .logging_multi import Process
 from .tui.widgets import Image
-from .utils import (
-    CSI,
-    OS_IS_UNIX,
-    clear_queue,
-    get_terminal_name_version,
-    get_terminal_size,
-    set_query_timeout,
-    write_tty,
-)
+from .utils import CSI, clear_queue
 
 
 def check_dir(

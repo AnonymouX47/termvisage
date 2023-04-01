@@ -9,8 +9,9 @@ from queue import Empty, Queue
 from threading import Event
 from typing import Optional, Union
 
+from term_image.image import Size
+
 from .. import logging, notify
-from ..image import Size
 from ..logging_multi import Process
 from ..utils import clear_queue
 
@@ -348,7 +349,7 @@ def render_frames(
 
     Intended to be executed in a subprocess or thread.
     """
-    from ..image import ImageIterator
+    from term_image.image import ImageIterator
 
     image = animator = None  # Silence flake8's F821
     block = True

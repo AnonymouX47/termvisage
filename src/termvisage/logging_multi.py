@@ -7,7 +7,9 @@ import os
 from multiprocessing import JoinableQueue, Process
 from traceback import format_exception
 
-from . import AutoCellRatio, cli, logging, notify, set_cell_ratio, tui, utils
+from term_image import AutoCellRatio, set_cell_ratio
+
+from . import cli, logging, notify, tui, utils
 
 
 def process_multi_logs() -> None:

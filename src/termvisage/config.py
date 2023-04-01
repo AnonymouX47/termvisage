@@ -12,9 +12,9 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 import urwid
+from term_image import DEFAULT_QUERY_TIMEOUT
 
 from . import logging, notify
-from .utils import DEFAULT_QUERY_TIMEOUT
 
 
 class ConfigOptions(dict):
@@ -231,7 +231,6 @@ def reconfigure_tui(
     """Updates aspects of the TUI to use the current config option values and
     keybindings.
     """
-    from . import logging
     from .tui.keys import change_key
     from .tui.widgets import expand, image_grid, notif_bar, pile
 

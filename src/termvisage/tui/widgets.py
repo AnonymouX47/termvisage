@@ -9,11 +9,11 @@ from os.path import basename
 from typing import List, Optional, Tuple
 
 import urwid
+from term_image.image import BaseImage, Size
+from term_image.utils import get_terminal_name_version, get_terminal_size
 
 from .. import logging
 from ..config import config_options, expand_key, navi
-from ..image import BaseImage, Size
-from ..utils import get_terminal_name_version, get_terminal_size
 from . import keys, main as tui_main
 from .render import anim_render_queue, grid_render_queue, image_render_queue
 

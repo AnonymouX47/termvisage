@@ -7,8 +7,9 @@ import multiprocessing
 import sys
 from threading import Event
 
+from term_image.utils import write_tty
+
 from .exit_codes import FAILURE, INTERRUPTED, codes
-from .utils import write_tty
 
 
 def main() -> int:

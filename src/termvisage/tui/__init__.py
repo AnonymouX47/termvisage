@@ -9,9 +9,10 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Tuple, Union
 
 import urwid
+from term_image.utils import get_terminal_name_version, lock_tty, write_tty
 
 from .. import logging
-from ..utils import CSI, get_terminal_name_version, lock_tty, write_tty
+from ..utils import CSI
 from . import main, render
 from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
 from .widgets import Image, ImageCanvas, info_bar, main as main_widget
