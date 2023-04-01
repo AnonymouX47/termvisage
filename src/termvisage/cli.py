@@ -37,6 +37,13 @@ from .logging_multi import Process
 from .tui.widgets import Image
 from .utils import CSI, clear_queue
 
+try:
+    import fcntl  # noqa: F401
+except ImportError:
+    OS_HAS_FCNTL = False
+else:
+    OS_HAS_FCNTL = True
+
 
 def check_dir(
     dir: str, prev_dir: str = "..", *, _links: List[Tuple[str]] = None
@@ -774,7 +781,7 @@ def main() -> None:
     )
     opener_started = False
 
-    if OS_IS_UNIX and not args.cli:
+    if OS_HAS_FCNTL and not args.cli:
         if args.checkers is None:
             args.checkers = max(
                 (
@@ -815,7 +822,7 @@ def main() -> None:
             if args.cli:
                 log(f"Skipping directory {source!r}", logger, verbose=True)
                 continue
-            if not OS_IS_UNIX:
+            if not OS_HAS_FCNTL:
                 dir_images = True
                 continue
             if not checkers_started:
@@ -859,7 +866,7 @@ def main() -> None:
     while notify.is_loading():
         pass
 
-    if not OS_IS_UNIX and dir_images:
+    if not OS_HAS_FCNTL and dir_images:
         log(
             "Directory sources skipped, not supported on Windows!",
             logger,
@@ -980,7 +987,7 @@ def main() -> None:
                 with suppress(BrokenPipeError):
                     sys.stdout.close()
                 break
-    elif OS_IS_UNIX:
+    elif OS_HAS_FCNTL:
         notify.end_loading()
         tui.init(args, style_args, images, contents, ImageClass)
     else:
