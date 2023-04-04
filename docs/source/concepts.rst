@@ -18,6 +18,8 @@ Any thing else given as a source is reported as invalid. If no valid source is g
 the process exits with code ``NO_VALID_SOURCE`` (see :ref:`exit-codes`).
 
 
+.. _modes:
+
 Modes
 -----
 

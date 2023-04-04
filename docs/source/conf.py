@@ -30,6 +30,7 @@ author = "Toluwaleke Ogundipe"
 extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_toolbox.confval",
+    "sphinxcontrib.autoprogram",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

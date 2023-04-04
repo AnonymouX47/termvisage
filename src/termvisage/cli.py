@@ -542,7 +542,11 @@ def open_files(
 
 def main() -> None:
     """CLI execution sub-entry-point"""
-    from . import config  # Importing a module-level will result in a circular import
+    # Importing these (in isort order) at module-level results in circular imports
+    # # Prevents circular import for program execution
+    from . import config
+
+    # # Prevents circular import for docs `autoprogram` (isort order or not)
     from .parsers import parser, style_parsers
 
     global args, url_images, MAX_DEPTH, RECURSIVE, SHOW_HIDDEN

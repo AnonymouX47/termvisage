@@ -5,6 +5,7 @@ import sys
 
 from term_image.image import ITerm2Image, Size
 
+from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
 from .config import config_options
 
