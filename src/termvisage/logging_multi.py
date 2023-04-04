@@ -7,9 +7,14 @@ import os
 from multiprocessing import JoinableQueue, Process
 from traceback import format_exception
 
-from term_image import AutoCellRatio, set_cell_ratio
+from term_image import (
+    AutoCellRatio,
+    enable_win_size_swap,
+    set_cell_ratio,
+    set_query_timeout,
+)
 
-from . import cli, logging, notify, tui, utils
+from . import cli, logging, notify, tui
 
 
 def process_multi_logs() -> None:
@@ -62,7 +67,7 @@ class Process(Process):
         if self._ImageClass:  # if the TUI is initialized
             self._cell_ratio = cli.args.cell_ratio
             self._query_timeout = cli.args.query_timeout
-            self._swap_win_size = utils.SWAP_WIN_SIZE
+            self._swap_win_size = cli.args.swap_win_size
             self._style_attrs = [
                 (attr, getattr(self._ImageClass, attr))
                 for attr in exported_style_attrs.get(self._ImageClass.style, ())
@@ -77,12 +82,13 @@ class Process(Process):
             if self._ImageClass:  # if the TUI is initialized
                 # The unpickled class object is in the originally defined state
                 # Eliminates queries for style support checks
-                self._ImageClass.enable_forced_support()
+                self._ImageClass.forced_support = True
                 for item in self._style_attrs:
                     setattr(self._ImageClass, *item)
 
-                utils.set_query_timeout(self._query_timeout)
-                utils.SWAP_WIN_SIZE = self._swap_win_size
+                set_query_timeout(self._query_timeout)
+                if self._swap_win_size:
+                    enable_win_size_swap()
 
                 if not self._cell_ratio:
                     # Avoid an error in case the terminal wouldn`t respond on time

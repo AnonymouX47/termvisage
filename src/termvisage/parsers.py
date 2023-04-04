@@ -619,15 +619,15 @@ iterm2_options.add_argument(
     help="Use iTerm2's native animation; Animations will not be skipped [CLI-only]",
 )
 iterm2_options.add_argument(
-    "--itnm",
-    "--iterm2-native-maxsize",
+    "--itnmb",
+    "--iterm2-native-max-bytes",
     metavar="N",
-    dest="native_maxsize",
-    default=ITerm2Image.NATIVE_ANIM_MAXSIZE,
+    dest="native_max_bytes",
+    default=ITerm2Image.native_anim_max_bytes,
     type=int,
     help=(
         "Maximum size (in bytes) of image data for native animation [CLI-only] "
-        f"(default: {ITerm2Image.NATIVE_ANIM_MAXSIZE})"
+        f"(default: {ITerm2Image.native_anim_max_bytes})"
     ),
 )
 iterm2_options.add_argument(
@@ -647,11 +647,11 @@ iterm2_options.add_argument(
     "--iterm2-jpeg-quality",
     metavar="N",
     dest="jpeg_quality",
-    default=ITerm2Image.JPEG_QUALITY,
+    default=ITerm2Image.jpeg_quality,
     type=int,
     help=(
         "JPEG compression status and quality; `< 0` -> disabled, `0 to 95` -> "
-        f"quality (default: {ITerm2Image.JPEG_QUALITY}) [6]"
+        f"quality (default: {ITerm2Image.jpeg_quality}) [6]"
     ),
 )
 iterm2_options.add_argument(

@@ -19,7 +19,12 @@ from urllib.parse import urlparse
 
 import PIL
 import requests
-from term_image import AutoCellRatio, set_cell_ratio, set_query_timeout
+from term_image import (
+    AutoCellRatio,
+    enable_win_size_swap,
+    set_cell_ratio,
+    set_query_timeout,
+)
 from term_image.exceptions import (
     StyleError,
     TermImageError,
@@ -29,7 +34,7 @@ from term_image.exceptions import (
 from term_image.image import BlockImage, ITerm2Image, KittyImage, Size, auto_image_class
 from term_image.utils import get_terminal_name_version, get_terminal_size, write_tty
 
-from . import logging, notify, tui, utils
+from . import logging, notify, tui
 from .config import config_options, init_config
 from .exit_codes import FAILURE, INVALID_ARG, NO_VALID_SOURCE, SUCCESS
 from .logging import Thread, init_log, log, log_exception
@@ -671,7 +676,8 @@ def main() -> None:
             setattr(args, var_name, option.value)
 
     set_query_timeout(args.query_timeout)
-    utils.SWAP_WIN_SIZE = args.swap_win_size
+    if args.swap_win_size:
+        enable_win_size_swap()
 
     if args.auto_cell_ratio:
         args.cell_ratio = None
@@ -692,11 +698,11 @@ def main() -> None:
         "block": BlockImage,
     }[args.style]
     if not ImageClass:
-        ImageClass = auto_style()
+        ImageClass = auto_image_class()
 
     if args.force_style or args.style is config_options.style != "auto":
         ImageClass.is_supported()  # Some classes need to set some attributes
-        ImageClass.enable_forced_support()
+        ImageClass.forced_support = True
     else:
         try:
             ImageClass(None)
@@ -728,9 +734,9 @@ def main() -> None:
     style_args = vars(style_parser.parse_known_args()[0]) if style_parser else {}
 
     if ImageClass.style == "iterm2":
-        ITerm2Image.JPEG_QUALITY = style_args.pop("jpeg_quality")
-        ITerm2Image.NATIVE_ANIM_MAXSIZE = style_args.pop("native_maxsize")
-        ITerm2Image.READ_FROM_FILE = style_args.pop("read_from_file")
+        ITerm2Image.jpeg_quality = style_args.pop("jpeg_quality")
+        ITerm2Image.native_anim_max_bytes = style_args.pop("native_max_bytes")
+        ITerm2Image.read_from_file = style_args.pop("read_from_file")
 
     if ImageClass.style in {"kitty", "iterm2"} and not 0 <= style_args["compress"] <= 9:
         notify.notify(
