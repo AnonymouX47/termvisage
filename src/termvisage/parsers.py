@@ -21,6 +21,7 @@ class ReSTHelpArgumentParser(argparse.ArgumentParser):
         help_text = re.sub(r":(\w+):`(.+?)( <.+>)?`", r"\2", help_text)
         help_text = re.sub(r"\*\*(.+)\*\*", r"\1", help_text)
         help_text = re.sub(r"\*(.+)\*", r"\1", help_text)
+        help_text = re.sub(r" \[.+\]_", "", help_text)
 
         return help_text
 
@@ -63,49 +64,12 @@ Render Styles:
   allowed by default. To force a style that is normally unsupported, add the
   ``--force-style`` flag.
 
-FOOTNOTES:
-  1. Width and height are in units of columns and lines repectively.
-     By default (i.e if none of the sizing options is specified), the equivalent of
-     ``--original-size`` is used if not larger than the :term:`available size`, else
-     ``--fit``.
-  2. The size is multiplied by the scale on respective axes when an image is rendered.
-     A scale value must be such that 0.0 < value <= 1.0.
-  3. In CLI mode, only image sources are used, directory sources are skipped.
-     Animated images are displayed only when animation is disabled (with ``--no-anim``),
-     when there's only one image source or when using native animation of some render
-     styles.
-  4. Any image having more pixels than the specified maximum will be:
+Supports all image formats supported by ``PIL.Image.open()``.
+See https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html for \
+details.
 
-     - skipped, in CLI mode, if ``--max-pixels-cli`` is specified.
-     - replaced, in TUI mode, with a placeholder when displayed but can still be
-       explicitly made to display.
-
-     Note that increasing this should not have any effect on general performance
-     (i.e navigation, etc) but the larger an image is, the more the time and memory
-     it'll take to render it. Thus, a large image might delay the rendering of other
-     images to be rendered immediately after it.
-  5. Frames will not be cached for any animation with more frames than this value.
-     Memory usage depends on the frame count **per image**, not this maximum count.
-  6. 0 -> worst quality; smallest data size, 95 -> best quality; largest data size.
-     Reduces render time & image data size and increases drawing speed on the terminal's
-     end but at the cost of image quality and color reproduction. Useful for animations
-     with high pixel density / color sparseness.
-     This option only applies when an image is re-encoded and not read directly from
-     file (see ``--iterm2-no-read-from-file``). By default (i.e when disabled), PNG
-     format is used for re-encoding images, which has less compression with better
-     quality.
-     JPEG format can only be used for non-transparent images but the transparency status
-     of some images can not be correctly determined in an efficient way at render time.
-     Thus, to ensure the JPEG format is always used for re-encoded images, disable
-     transparency (``--no-alpha``) or set a background color (``-b | --alpha-bg``).
-  7. By default, image data is used directly from file when no image manipulation is
-     required. Otherwise, it's re-encoded in PNG (or JPEG, if enabled) format.
-     Significantly reduces render time when applicable. This option does not apply to
-     animations, native or not.
-  8. Any event with a level lower than the specified one is not reported.
-  9. Supports all image formats supported by ``PIL.Image.open()``.
-     See https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html for
-     details.
+See https://termvisage.readthedocs.io/en/stable/cli.html for the complete CLI \
+description.
 """,
     add_help=False,  # `-h` is used for HEIGHT
 )
@@ -194,7 +158,7 @@ mode_options.add_argument(
     action="store_true",
     help=(
         "Do not launch the TUI. Instead, draw all image sources "
-        "to the terminal directly [3]"
+        "to the terminal directly [#]_"
     ),
 )
 mode_options.add_argument(
@@ -234,7 +198,7 @@ anim_cache_options.add_argument(
     metavar="N",
     help=(
         "Maximum frame count for animation frames to be cached (Better performance "
-        f"at the cost of memory) (default: {config_options.anim_cache}) [5]"
+        f"at the cost of memory) (default: {config_options.anim_cache}) [#]_"
     ),
 )
 anim_cache_options.add_argument(
@@ -341,7 +305,7 @@ cli_options.add_argument(
     "--scale",
     type=float,
     metavar="N",
-    help="Image scale (overrides ``-x`` and ``-y``) [2]",
+    help="Image scale (overrides ``-x`` and ``-y``) [#]_",
 )
 cli_options.add_argument(
     "-x",
@@ -349,7 +313,7 @@ cli_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image x-axis scale (default: 1.0) [2]",
+    help="Image x-axis scale (default: 1.0) [3]_",
 )
 cli_options.add_argument(
     "-y",
@@ -357,7 +321,7 @@ cli_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image y-axis scale (default: 1.0) [2]",
+    help="Image y-axis scale (default: 1.0) [3]_",
 )
 cli_options.add_argument(
     "--max-pixels-cli",
@@ -368,7 +332,7 @@ cli_options.add_argument(
 # Sizing
 _size_options = parser.add_argument_group(
     "Sizing Options (CLI-only)",
-    "These apply to all images and are mutually exclusive [1]",
+    "These apply to all images and are mutually exclusive [#]_",
 )
 size_options = _size_options.add_mutually_exclusive_group()
 size_options.add_argument(
@@ -493,7 +457,7 @@ perf_options.add_argument(
     metavar="N",
     help=(
         "Maximum amount of pixels in images to be displayed "
-        f"(default: {config_options.max_pixels}) [4]"
+        f"(default: {config_options.max_pixels}) [#]_"
     ),
 )
 
@@ -574,7 +538,7 @@ log_options.add_argument(
     "--log-level",
     choices=("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
     default="WARNING",
-    help="Logging level for the session (default: WARNING) [8]",
+    help="Logging level for the session (default: WARNING) [#]_",
 )
 log_options.add_argument(
     "-q",
@@ -689,7 +653,7 @@ iterm2_options.add_argument(
     type=int,
     help=(
         "JPEG compression status and quality; ``< 0`` -> disabled, ``0 <= x <= 95`` -> "
-        f"quality (default: {ITerm2Image.jpeg_quality}) [6]"
+        f"quality (default: {ITerm2Image.jpeg_quality}) [#]_"
     ),
 )
 iterm2_options.add_argument(
@@ -697,7 +661,7 @@ iterm2_options.add_argument(
     "--iterm2-no-read-from-file",
     action="store_false",
     dest="read_from_file",
-    help="Never use image data directly from file; always re-encode images [7]",
+    help="Never use image data directly from file; always re-encode images [#]_",
 )
 
 style_parsers = {"kitty": kitty_parser, "iterm2": iterm2_parser}
