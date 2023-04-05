@@ -1,6 +1,7 @@
 """CLI argument parsers"""
 
 import argparse
+import re
 import sys
 
 from term_image.image import ITerm2Image, Size
@@ -9,77 +10,104 @@ from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
 from .config import config_options
 
-parser = argparse.ArgumentParser(
+
+class ReSTHelpArgumentParser(argparse.ArgumentParser):
+    """Description, argument help and epilog may use reStructuredText.
+    reST markup is strip from the help text after it has been formatted.
+    """
+
+    def format_help(self) -> str:
+        help_text = super().format_help().replace("``", "`")
+        help_text = re.sub(r":(\w+):`(.+?)( <.+>)?`", r"\2", help_text)
+        help_text = re.sub(r"\*\*(.+)\*\*", r"\1", help_text)
+        help_text = re.sub(r"\*(.+)\*", r"\1", help_text)
+
+        return help_text
+
+
+parser = ReSTHelpArgumentParser(
     prog="termvisage",
     formatter_class=argparse.RawDescriptionHelpFormatter,
     description="Display/Browse images in a terminal",
     epilog=""" \
 
-'--' should be used to separate positional arguments that begin with an '-' \
+``--`` should be used to separate positional arguments that begin with an ``-`` \
 from options/flags, to avoid ambiguity.
-For example, `$ termvisage [options] -- -image.jpg --image.png`
+For example, ``$ termvisage [options] -- -image.jpg --image.png``.
 
 Render Styles:
-  auto: The best style is automatically determined based on the detected terminal
-      support.
-  kitty: Uses the kitty graphics protocol. Currently supported terminal emulators
-      include (but might not be limited to):
-      - Kitty >= 0.20.0
-      - Konsole >= 22.04.0
-  iterm2: Uses the iTerm2 inline image protocol. Currently supported terminal
-      emulators include (but might not be limited to):
-      - iTerm2
-      - Konsole >= 22.04.0
-      - WezTerm
-  block: Uses unicode half blocks with 24-bit color escape codes to represent images
-      with a density of two pixels per character cell.
+  auto
+    The best style is automatically determined based on the detected terminal
+    support.
 
-  Using a terminal graphics-based style not supported by the active terminal is not
+  kitty
+    Uses the kitty graphics protocol. Currently supported terminal emulators
+    include (but might not be limited to):
+
+    - Kitty >= 0.20.0
+    - Konsole >= 22.04.0
+
+  iterm2
+    Uses the iTerm2 inline image protocol. Currently supported terminal
+    emulators include (but might not be limited to):
+
+    - iTerm2
+    - Konsole >= 22.04.0
+    - WezTerm
+
+  block
+    Uses unicode half blocks with truecolor color escape codes to represent images
+    with a density of two pixels per character cell.
+
+  Using a **graphics-based** style not supported by the active terminal is not
   allowed by default. To force a style that is normally unsupported, add the
-  '--force-style' flag.
+  ``--force-style`` flag.
 
 FOOTNOTES:
   1. Width and height are in units of columns and lines repectively.
-     The "available terminal size" is the current terminal size minus allowances.
      By default (i.e if none of the sizing options is specified), the equivalent of
-     `--original-size` is used if not larger than the available size, else `--fit`.
+     ``--original-size`` is used if not larger than the :term:`available size`, else
+     ``--fit``.
   2. The size is multiplied by the scale on respective axes when an image is rendered.
      A scale value must be such that 0.0 < value <= 1.0.
   3. In CLI mode, only image sources are used, directory sources are skipped.
-     Animated images are displayed only when animation is disabled (with `--no-anim`),
+     Animated images are displayed only when animation is disabled (with ``--no-anim``),
      when there's only one image source or when using native animation of some render
      styles.
   4. Any image having more pixels than the specified maximum will be:
-     - skipped, in CLI mode, if '--max-pixels-cli' is specified.
-     - replaced, in TUI mode, with a placeholder when displayed but can still be forced
-     to display or viewed externally.
+
+     - skipped, in CLI mode, if ``--max-pixels-cli`` is specified.
+     - replaced, in TUI mode, with a placeholder when displayed but can still be
+       explicitly made to display.
+
      Note that increasing this should not have any effect on general performance
      (i.e navigation, etc) but the larger an image is, the more the time and memory
      it'll take to render it. Thus, a large image might delay the rendering of other
      images to be rendered immediately after it.
   5. Frames will not be cached for any animation with more frames than this value.
-     Memory usage depends on the frame count per image, not this maximum count.
+     Memory usage depends on the frame count **per image**, not this maximum count.
   6. 0 -> worst quality; smallest data size, 95 -> best quality; largest data size.
      Reduces render time & image data size and increases drawing speed on the terminal's
      end but at the cost of image quality and color reproduction. Useful for animations
      with high pixel density / color sparseness.
      This option only applies when an image is re-encoded and not read directly from
-     file (see `--iterm2-no-read-from-file`). By default (i.e when disabled), PNG format
-     is used for re-encoding images, which has less compression with better quality.
+     file (see ``--iterm2-no-read-from-file``). By default (i.e when disabled), PNG
+     format is used for re-encoding images, which has less compression with better
+     quality.
      JPEG format can only be used for non-transparent images but the transparency status
      of some images can not be correctly determined in an efficient way at render time.
      Thus, to ensure the JPEG format is always used for re-encoded images, disable
-     transparency (`--no-alpha`) or set a background color (`-b/--alpha-bg`).
+     transparency (``--no-alpha``) or set a background color (``-b | --alpha-bg``).
   7. By default, image data is used directly from file when no image manipulation is
      required. Otherwise, it's re-encoded in PNG (or JPEG, if enabled) format.
      Significantly reduces render time when applicable. This option does not apply to
      animations, native or not.
   8. Any event with a level lower than the specified one is not reported.
-  9. Supports all image formats supported by `PIL.Image.open()`.
+  9. Supports all image formats supported by ``PIL.Image.open()``.
      See https://pillow.readthedocs.io/en/latest/handbook/image-file-formats.html for
      details.
 """,
-    add_help=False,  # '-h' is used for HEIGHT
+    add_help=False,  # `-h` is used for HEIGHT
 )
 
 # General
@@ -118,7 +146,7 @@ general.add_argument(
     action="store_true",
     help=(
         "Use the specified render style even if it's reported as unsupported by "
-        "the active terminal"
+        "the :term:`active terminal`"
     ),
 )
 
@@ -129,14 +157,17 @@ cell_ratio_options.add_argument(
     type=float,
     metavar="N",
     help=(
-        "The width-to-height ratio of a character cell in the terminal, to "
-        "preserve image aspect ratio (default: auto)"
+        "The :term:`cell ratio` (width-to-height ratio of a character cell) in the "
+        "terminal; to preserve image aspect ratio (default: auto)"
     ),
 )
 cell_ratio_options.add_argument(
     "--auto-cell-ratio",
     action="store_true",
-    help="Determine the cell ratio from the terminal, if possible (default)",
+    help=(
+        "Determine the :term:`cell ratio` from the terminal emulator, if possible "
+        "(default)"
+    ),
 )
 
 win_size_options = general.add_mutually_exclusive_group()
@@ -145,8 +176,8 @@ win_size_options.add_argument(
     action="store_true",
     default=None,
     help=(
-        "A workaround for 'auto cell ratio' on some terminal emulators (e.g older "
-        "VTE-based ones) that wrongly report window dimensions swapped"
+        "A workaround for *auto* :term:`cell ratio` on some terminal emulators "
+        "(e.g older VTE-based ones) that wrongly report window dimensions swapped"
     ),
 )
 win_size_options.add_argument(
@@ -154,7 +185,7 @@ win_size_options.add_argument(
     action="store_false",
     default=None,
     dest="swap_win_size",
-    help="Unlike '--swap-win-size', use the reported window size as-is (default)",
+    help="Unlike ``--swap-win-size``, use the reported window size as-is (default)",
 )
 
 mode_options = general.add_mutually_exclusive_group()
@@ -162,7 +193,7 @@ mode_options.add_argument(
     "--cli",
     action="store_true",
     help=(
-        "Do not the launch the TUI, instead draw all image sources "
+        "Do not launch the TUI. Instead, draw all image sources "
         "to the terminal directly [3]"
     ),
 )
@@ -210,8 +241,8 @@ anim_cache_options.add_argument(
     "--cache-all-anim",
     action="store_true",
     help=(
-        "Cache frames for all animations (Beware, uses up a lot of memory for "
-        "animated images with very high frame count)"
+        "Cache frames for all animations (**beware**, the higher the frame count "
+        "**per image**, the higher the memory usage)"
     ),
 )
 anim_cache_options.add_argument(
@@ -232,7 +263,7 @@ anim_options.add_argument(
 # # Transparency
 _alpha_options = parser.add_argument_group(
     "Transparency Options (General)",
-    "NOTE: These are mutually exclusive",
+    "**NOTE:** These are mutually exclusive",
 )
 alpha_options = _alpha_options.add_mutually_exclusive_group()
 alpha_options.add_argument(
@@ -258,15 +289,15 @@ alpha_options.add_argument(
     const="",
     metavar="COLOR",
     help=(
-        "Hex color (without '#') to replace transparent backgrounds with "
-        "(omit `COLOR` to use the terminal's default BG color)"
+        "Hex color (without ``#``) to replace transparent backgrounds with "
+        "(omit *COLOR* to use the terminal's default BG color)"
     ),
 )
 
 # CLI-only
 cli_options = parser.add_argument_group(
     "CLI-only Options",
-    "These options apply only when there is only one valid image source or `--cli` "
+    "These options apply only when there is only one valid image source or ``--cli`` "
     "is specified",
 )
 cli_options.add_argument(
@@ -293,7 +324,7 @@ cli_options.add_argument(
     action="store_true",
     help=(
         "Allow an image's height to be greater than the terminal height. "
-        "Not needed when `--fit-to-width` is specified."
+        "Not needed when ``--fit-to-width`` is specified."
     ),
 )
 cli_options.add_argument(
@@ -302,7 +333,7 @@ cli_options.add_argument(
     action="store_true",
     help=(
         "Allow an image's size to be greater than the terminal size "
-        "(To be used with `-w`, `-h` or `--original-size`)"
+        "(To be used with ``-w``, ``-h`` or ``--original-size``)"
     ),
 )
 cli_options.add_argument(
@@ -310,7 +341,7 @@ cli_options.add_argument(
     "--scale",
     type=float,
     metavar="N",
-    help="Image scale (overrides `-x` and `-y`) [2]",
+    help="Image scale (overrides ``-x`` and ``-y``) [2]",
 )
 cli_options.add_argument(
     "-x",
@@ -331,7 +362,7 @@ cli_options.add_argument(
 cli_options.add_argument(
     "--max-pixels-cli",
     action="store_true",
-    help=("Apply '--max-pixels' in CLI mode"),
+    help=("Apply ``--max-pixels`` in CLI mode"),
 )
 
 # Sizing
@@ -359,7 +390,10 @@ size_options.add_argument(
     action="store_const",
     const=Size.FIT,
     dest="auto_size",
-    help="Fit each image optimally within the available terminal size",
+    help=(
+        "Fit each image optimally within the :term:`available <available size>` "
+        ":term:`terminal size`"
+    ),
 )
 size_options.add_argument(
     "--fit-to-width",
@@ -368,7 +402,7 @@ size_options.add_argument(
     dest="auto_size",
     help=(
         "Fit each image to the available terminal width, "
-        "`--v-allow` has no effect i.e vertical allowance is ignored"
+        "``--v-allow`` has no effect i.e vertical allowance is ignored"
     ),
 )
 size_options.add_argument(
@@ -377,8 +411,8 @@ size_options.add_argument(
     const=Size.ORIGINAL,
     dest="auto_size",
     help=(
-        "Render each image using its original size (See `--oversize`, "
-        "USE WITH CAUTION!)"
+        "Render each image using its original size (See ``--oversize``, "
+        "**USE WITH CAUTION!**)"
     ),
 )
 
@@ -427,7 +461,7 @@ align_options.add_argument(
 tui_options = parser.add_argument_group(
     "TUI-only Options",
     "These options apply only when there is at least one valid directory source, "
-    "multiple valid sources or `--tui` is specified",
+    "multiple valid sources or ``--tui`` is specified",
 )
 
 tui_options.add_argument(
@@ -508,7 +542,7 @@ multi_options.add_argument(
 # Config
 config_options__ = parser.add_argument_group(
     "Config Options",
-    "NOTE: These are mutually exclusive",
+    "**NOTE:** These are mutually exclusive",
 )
 config_options_ = config_options__.add_mutually_exclusive_group()
 
@@ -526,7 +560,7 @@ config_options_.add_argument(
 # Logging
 log_options_ = parser.add_argument_group(
     "Logging Options",
-    "NOTE: All these, except '-l/--log-file', are mutually exclusive",
+    "**NOTE:** All these, except ``-l | --log-file``, are mutually exclusive",
 )
 log_options = log_options_.add_mutually_exclusive_group()
 
@@ -540,7 +574,7 @@ log_options.add_argument(
     "--log-level",
     choices=("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
     default="WARNING",
-    help="Logging level for the session (default: WARNING) [6]",
+    help="Logging level for the session (default: WARNING) [8]",
 )
 log_options.add_argument(
     "-q",
@@ -557,12 +591,12 @@ log_options.add_argument(
 log_options.add_argument(
     "--verbose-log",
     action="store_true",
-    help="Like --verbose but only applies to the log file",
+    help="Like ``--verbose`` but only applies to the log file",
 )
 log_options.add_argument(
     "--debug",
     action="store_true",
-    help="Implies --log-level=DEBUG with verbosity",
+    help="Implies ``--log-level=DEBUG`` with verbosity",
 )
 
 # Positional
@@ -579,7 +613,7 @@ parser.add_argument(
 kitty_parser = argparse.ArgumentParser(add_help=False)
 kitty_options = kitty_parser.add_argument_group(
     "Kitty Style Options",
-    "These options apply only when the 'kitty' render style is used",
+    "These options apply only when the *kitty* render style is used",
 )
 kitty_options.add_argument(
     "--kz",
@@ -589,8 +623,8 @@ kitty_options.add_argument(
     default=0,
     type=int,
     help=(
-        "Image stacking order [CLI-only]; `>= 0` -> above text, `< 0` -> below "
-        "text, `< -(2**31)/2` -> below cells with non-default background "
+        "Image stacking order [CLI-only]; ``>= 0`` -> above text, ``< 0`` -> below "
+        "text, ``< -(2**31)/2`` -> below cells with non-default background "
         "(default: 0)"
     ),
 )
@@ -610,14 +644,17 @@ kitty_options.add_argument(
 iterm2_parser = argparse.ArgumentParser(add_help=False)
 iterm2_options = iterm2_parser.add_argument_group(
     "iTerm2 Style Options",
-    "These options apply only when the 'iterm2' render style is used",
+    "These options apply only when the *iterm2* render style is used",
 )
 iterm2_options.add_argument(
     "--itn",
     "--iterm2-native",
     action="store_true",
     dest="native",
-    help="Use iTerm2's native animation; Animations will not be skipped [CLI-only]",
+    help=(
+        "Use the protocol's animation support; animations will not be skipped "
+        "[CLI-only]"
+    ),
 )
 iterm2_options.add_argument(
     "--itnmb",
@@ -651,7 +688,7 @@ iterm2_options.add_argument(
     default=ITerm2Image.jpeg_quality,
     type=int,
     help=(
-        "JPEG compression status and quality; `< 0` -> disabled, `0 to 95` -> "
+        "JPEG compression status and quality; ``< 0`` -> disabled, ``0 <= x <= 95`` -> "
         f"quality (default: {ITerm2Image.jpeg_quality}) [6]"
     ),
 )
