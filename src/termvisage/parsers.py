@@ -36,34 +36,6 @@ parser = ReSTHelpArgumentParser(
 from options/flags, to avoid ambiguity.
 For example, ``$ termvisage [options] -- -image.jpg --image.png``.
 
-Render Styles:
-  auto
-    The best style is automatically determined based on the detected terminal
-    support.
-
-  kitty
-    Uses the kitty graphics protocol. Currently supported terminal emulators
-    include (but might not be limited to):
-
-    - Kitty >= 0.20.0
-    - Konsole >= 22.04.0
-
-  iterm2
-    Uses the iTerm2 inline image protocol. Currently supported terminal
-    emulators include (but might not be limited to):
-
-    - iTerm2
-    - Konsole >= 22.04.0
-    - WezTerm
-
-  block
-    Uses unicode half blocks with truecolor color escape codes to represent images
-    with a density of two pixels per character cell.
-
-  Using a **graphics-based** style not supported by the active terminal is not
-  allowed by default. To force a style that is normally unsupported, add the
-  ``--force-style`` flag.
-
 Supports all image formats supported by ``PIL.Image.open()``.
 See https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html for \
 details.
@@ -100,10 +72,7 @@ general.add_argument(
     "-S",
     "--style",
     choices=("auto", "block", "iterm2", "kitty"),
-    help=(
-        f"Image render style (default: {config_options.style}). "
-        'See "Render Styles" below'
-    ),
+    help=f"Image render style (default: {config_options.style}) [#]_",
 )
 general.add_argument(
     "--force-style",
@@ -313,7 +282,7 @@ cli_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image x-axis scale (default: 1.0) [3]_",
+    help="Image x-axis scale (default: 1.0) [4]_",
 )
 cli_options.add_argument(
     "-y",
@@ -321,7 +290,7 @@ cli_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image y-axis scale (default: 1.0) [3]_",
+    help="Image y-axis scale (default: 1.0) [4]_",
 )
 cli_options.add_argument(
     "--max-pixels-cli",

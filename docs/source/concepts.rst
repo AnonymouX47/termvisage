@@ -61,8 +61,33 @@ If the specified render style is:
 * **text-based** and not [fully] supported, a warning notification is emitted but
   execution still proceeds with the style.
 
-The ``--force-style`` command-line option can be used to bypass style support checks and
-force the usage of any render style whether it's supported or not.
+The available render styles are:
+
+**auto**
+   Selects the best style is based on the detected terminal support.
+
+**kitty**
+   Uses the kitty graphics protocol. Currently supported terminal emulators include
+   (but might not be limited to):
+
+   - Kitty >= 0.20.0
+   - Konsole >= 22.04.0
+
+**iterm2**
+   Uses the iTerm2 inline image protocol. Currently supported terminal emulators include
+   (but might not be limited to):
+
+   - iTerm2
+   - Konsole >= 22.04.0
+   - WezTerm
+
+**block**
+   Uses unicode half blocks with truecolor color escape codes to represent images
+   with a density of two pixels per character cell.
+
+Using a render style not supported by the :term:`active terminal` is not allowed by
+default. To force the usage of a style that is normally unsupported, add the
+``--force-style`` flag.
 
 
 .. _cell-ratio:

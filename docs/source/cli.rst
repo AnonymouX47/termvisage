@@ -26,6 +26,8 @@ Options and Arguments
 
 .. rubric:: Footnotes
 
+.. [#] See :ref:`render-styles`.
+
 .. [#] In CLI mode, only image sources are used, directory sources are skipped.
    Animated images are displayed only when animation is disabled (with ``--no-anim``),
    when there's only one image source or when using native animation of some render
