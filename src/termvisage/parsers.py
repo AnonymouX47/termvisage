@@ -72,14 +72,14 @@ general.add_argument(
     "-S",
     "--style",
     choices=("auto", "block", "iterm2", "kitty"),
-    help=f"Image render style (default: {config_options.style}) [#]_",
+    help=f"Image :term:`render style` (default: {config_options.style}) [#]_",
 )
 general.add_argument(
     "--force-style",
     action="store_true",
     help=(
-        "Use the specified render style even if it's reported as unsupported by "
-        "the :term:`active terminal`"
+        "Use the specified :term:`render style` even if it's reported as unsupported "
+        "by the :term:`active terminal`"
     ),
 )
 
@@ -144,7 +144,7 @@ anim_options.add_argument(
     type=float,
     metavar="N",
     help=(
-        "The time (in seconds) between frames for all animated images "
+        "The time (in seconds) between frames for all :term:`animated` images "
         "(default: determined per image from the metadata OR 0.1)"
     ),
 )
@@ -155,8 +155,8 @@ anim_options.add_argument(
     default=-1,
     metavar="N",
     help=(
-        "Number of times to repeat all frames of an animated image; A negative "
-        "count implies an infinite loop (default: -1)"
+        "Number of times to repeat all frames of an :term:`animated` image; "
+        "A negative count implies an infinite loop (default: -1)"
     ),
 )
 
@@ -212,7 +212,7 @@ alpha_options.add_argument(
     default=40 / 255,
     help=(
         "Alpha ratio above which pixels are taken as opaque (0 <= x < 1), "
-        f"for text-based render styles (default: {40 / 255:f})"
+        f"for text-based :term:`render styles` (default: {40 / 255:f})"
     ),
 )
 alpha_options.add_argument(
@@ -223,7 +223,7 @@ alpha_options.add_argument(
     metavar="COLOR",
     help=(
         "Hex color (without ``#``) to replace transparent backgrounds with "
-        "(omit *COLOR* to use the terminal's default BG color)"
+        "(omit *COLOR* to use the :term:`active terminal`\\'s default BG color)"
     ),
 )
 
@@ -239,7 +239,7 @@ cli_options.add_argument(
     default=0,
     metavar="N",
     help=(
-        "Horizontal allowance i.e minimum number of columns to leave unused "
+        ":term:`Horizontal allowance` i.e minimum number of columns to leave unused "
         "(default: 0)"
     ),
 )
@@ -249,14 +249,15 @@ cli_options.add_argument(
     default=2,
     metavar="N",
     help=(
-        "Vertical allowance i.e minimum number of lines to leave unused " "(default: 2)"
+        ":term:`Vertical allowance` i.e minimum number of lines to leave unused "
+        "(default: 2)"
     ),
 )
 cli_options.add_argument(
     "--scroll",
     action="store_true",
     help=(
-        "Allow an image's height to be greater than the terminal height. "
+        "Allow an image's height to be greater than the :term:`terminal height`. "
         "Not needed when ``--fit-to-width`` is specified."
     ),
 )
@@ -265,7 +266,7 @@ cli_options.add_argument(
     "--oversize",
     action="store_true",
     help=(
-        "Allow an image's size to be greater than the terminal size "
+        "Allow an image's size to be greater than the :term:`terminal size` "
         "(To be used with ``-w``, ``-h`` or ``--original-size``)"
     ),
 )
@@ -274,7 +275,7 @@ cli_options.add_argument(
     "--scale",
     type=float,
     metavar="N",
-    help="Image scale (overrides ``-x`` and ``-y``) [#]_",
+    help="Image :term:`scale` (overrides ``-x`` and ``-y``) [#]_",
 )
 cli_options.add_argument(
     "-x",
@@ -282,7 +283,7 @@ cli_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image x-axis scale (default: 1.0) [4]_",
+    help="Image x-axis :term:`scale` (default: 1.0) [4]_",
 )
 cli_options.add_argument(
     "-y",
@@ -290,7 +291,7 @@ cli_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image y-axis scale (default: 1.0) [4]_",
+    help="Image y-axis :term:`scale` (default: 1.0) [4]_",
 )
 cli_options.add_argument(
     "--max-pixels-cli",
@@ -334,8 +335,8 @@ size_options.add_argument(
     const=Size.FIT_TO_WIDTH,
     dest="auto_size",
     help=(
-        "Fit each image to the available terminal width, "
-        "``--v-allow`` has no effect i.e vertical allowance is ignored"
+        "Fit each image to the :term:`available <available size>` :term:`terminal "
+        "width`, ``--v-allow`` has no effect i.e :term:`vertical allowance` is ignored"
     ),
 )
 size_options.add_argument(
@@ -358,15 +359,15 @@ align_options.add_argument(
     "--no-align",
     action="store_true",
     help=(
-        "Output image without alignment or padding. "
-        "Overrides all other alignment options"
+        "Output image without :term:`alignment` or :term:`padding`. "
+        "Overrides all other alignment options."
     ),
 )
 align_options.add_argument(
     "-H",
     "--h-align",
     choices=("left", "center", "right"),
-    help="Horizontal alignment (default: center)",
+    help=":term:`Horizontal alignment` (default: center)",
 )
 align_options.add_argument(
     "--pad-width",
@@ -374,14 +375,14 @@ align_options.add_argument(
     type=int,
     help=(
         "Number of columns within which to align each image "
-        "(default: terminal width, minus horizontal allowance)"
+        "(default: :term:`terminal width`, minus :term:`horizontal allowance`)"
     ),
 )
 align_options.add_argument(
     "-V",
     "--v-align",
     choices=("top", "middle", "bottom"),
-    help="Vertical alignment (default: middle)",
+    help=":term:`Vertical alignment` (default: middle)",
 )
 align_options.add_argument(
     "--pad-height",
@@ -546,7 +547,7 @@ parser.add_argument(
 kitty_parser = argparse.ArgumentParser(add_help=False)
 kitty_options = kitty_parser.add_argument_group(
     "Kitty Style Options",
-    "These options apply only when the *kitty* render style is used",
+    "These options apply only when the *kitty* :term:`render style` is used",
 )
 kitty_options.add_argument(
     "--kz",
@@ -577,7 +578,7 @@ kitty_options.add_argument(
 iterm2_parser = argparse.ArgumentParser(add_help=False)
 iterm2_options = iterm2_parser.add_argument_group(
     "iTerm2 Style Options",
-    "These options apply only when the *iterm2* render style is used",
+    "These options apply only when the *iterm2* :term:`render style` is used",
 )
 iterm2_options.add_argument(
     "--itn",
