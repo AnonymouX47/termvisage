@@ -52,7 +52,7 @@ The following are the key components that make up the UI.
   * Immediately above the *Action/Key Bar*.
   * Notifications about various events are displayed here.
   * Hidden in full image views.
-  * Hidden in all views, in QUIET mode (``--quiet``).
+  * Hidden in all views, in QUIET mode (:option:`-q | --quiet <termvisage -q>`).
 
 * **Action/Key Bar**:
 
@@ -69,7 +69,7 @@ The following are the key components that make up the UI.
 
   * Used for debugging.
   * This is a 1-line bar immediately above the action/key bar.
-  * Only shows (in all views) when the ``--debug`` option is specified.
+  * Only shows (in all views) when :option:`--debug <termvisage --debug>` is specified.
 
 Full/Maximized image views consist of only the *view* and *action/key bar* components.
 

@@ -22,16 +22,16 @@ If multiple config files are found (i.e in different locations), they're applied
 one another **in the order in which they were found**. Hence, a field present in the
 latter, if valid, will override the same field also present in the former.
 
-An alternative config file can be specified per-session using the ``--config`` command-line
-option.
+An alternative config file can be specified per-session using
+:option:`--config <termvisage --config>`.
 
-To use the default configuration and not load any config file, use the ``--no-config``
-command-line option.
+To use the default configuration and not load any config file, use
+:option:`--no-config <termvisage --no-config>`.
 
 .. hint::
    ``termvisage`` performs [quite] thorough validation on the values specified in a config
    file and reports any errors. To see information about how the errors are resolved
-   (if resolvable), use the ``-v | --verbose`` command-line option.
+   (if resolvable), use :option:`-v | --verbose <termvisage -v>`.
 
 `This <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/default_config.json>`_
 is a sample config file with all options and keybindings at their defaults.
@@ -133,7 +133,8 @@ These are top-level fields whose values control various settings of the viewer.
 
    Any image having more pixels than the specified value will be:
 
-   * skipped, in CLI mode, if ``--max-pixels-cli`` is specified.
+   * skipped, in CLI mode, if :option:`--max-pixels-cli <termvisage --max-pixels-cli>`
+     is specified.
    * replaced, in TUI mode, with a placeholder when displayed but can still be forced
      to display or viewed externally.
 
@@ -162,8 +163,9 @@ These are top-level fields whose values control various settings of the viewer.
    :valid: ``"auto"``, ``"block"``, ``"iterm2"``, ``"kitty"``
    :default: ``"auto"``
 
-   If set to any value other than ``"auto"`` and is not overriden by the ``-S | --style``
-   command-line option, the style is used regardless of whether it's supported or not.
+   If set to any value other than ``"auto"`` and is not overriden by
+   :option:`-S | --style <termvisage -S>`, the style is used regardless of whether
+   it's supported or not.
 
 .. confval:: swap win size
    :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that
