@@ -1,8 +1,8 @@
 """CLI argument parsers"""
 
-import argparse
 import re
 import sys
+from argparse import Action, ArgumentParser, RawDescriptionHelpFormatter, _ArgumentGroup
 
 from term_image.image import ITerm2Image, Size
 
@@ -11,24 +11,27 @@ from . import __version__
 from .config import config_options
 
 
-class ReSTHelpArgumentParser(argparse.ArgumentParser):
-    """Description, argument help and epilog may use reStructuredText.
-    reST markup is strip from the help text after it has been formatted.
-    """
+def strip_markup(string: str) -> str:
+    """Strip selected reST markup from the *string*."""
+    if string:
+        string = string.replace("``", "`")
+        for pattern, repl in (
+            (r":(\w+):`(.+?)( <.+>)?`", r"\2"),
+            (r"\*\*(.+)\*\*", r"\1"),
+            (r"\*(.+)\*", r"\1"),
+            (r" \[.+\]_", ""),
+        ):
+            string = re.sub(pattern, repl, string)
 
-    def format_help(self) -> str:
-        help_text = super().format_help().replace("``", "`")
-        help_text = re.sub(r":(\w+):`(.+?)( <.+>)?`", r"\2", help_text)
-        help_text = re.sub(r"\*\*(.+)\*\*", r"\1", help_text)
-        help_text = re.sub(r"\*(.+)\*", r"\1", help_text)
-        help_text = re.sub(r" \[.+\]_", "", help_text)
-
-        return help_text
+    return string
 
 
-parser = ReSTHelpArgumentParser(
+# Parser epilog, group descriptions and argument help may use reStructuredText markup.
+# Ensure any markup used is stripped in `strip_markup()`.
+
+parser = ArgumentParser(
     prog="termvisage",
-    formatter_class=argparse.RawDescriptionHelpFormatter,
+    formatter_class=RawDescriptionHelpFormatter,
     description="Display/Browse images in a terminal",
     epilog=""" \
 
@@ -544,7 +547,7 @@ parser.add_argument(
     ),
 )
 
-kitty_parser = argparse.ArgumentParser(add_help=False)
+kitty_parser = ArgumentParser(add_help=False)
 kitty_options = kitty_parser.add_argument_group(
     "Kitty Style Options",
     "These options apply only when the *kitty* :term:`render style` is used",
@@ -575,7 +578,7 @@ kitty_options.add_argument(
     ),
 )
 
-iterm2_parser = argparse.ArgumentParser(add_help=False)
+iterm2_parser = ArgumentParser(add_help=False)
 iterm2_options = iterm2_parser.add_argument_group(
     "iTerm2 Style Options",
     "These options apply only when the *iterm2* :term:`render style` is used",
@@ -641,3 +644,11 @@ for style_parser in style_parsers.values():
     parser._option_string_actions.update(style_parser._option_string_actions)
     parser._action_groups.extend(style_parser._action_groups)
     parser._mutually_exclusive_groups.extend(style_parser._mutually_exclusive_groups)
+
+# Setup reST markup to be Striped from epilog, group descriptions and argument help.
+# Anything patched here must be unpatched in the docs config script.
+ArgumentParser.epilog = property(lambda self: strip_markup(vars(self)["epilog"]))
+Action.help = property(lambda self: strip_markup(vars(self)["help"]))
+_ArgumentGroup.description = property(
+    lambda self: strip_markup(vars(self)["description"])
+)

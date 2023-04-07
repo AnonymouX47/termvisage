@@ -4,9 +4,13 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import argparse
+
 from docutils.parsers.rst import directives
 from docutils.statemachine import StringList
 from sphinx_toolbox import confval
+
+from termvisage import parsers  # noqa: F401
 
 # -- Path setup --------------------------------------------------------------
 
@@ -101,3 +105,8 @@ class ConfigValue(confval.ConfigurationValue, ConfigValueSibling):
 
 
 confval.ConfigurationValue = ConfigValue
+
+# # -- CLI Parser (do not strip reST markup) -------------------------------------
+del argparse.ArgumentParser.epilog
+del argparse.Action.help
+del argparse._ArgumentGroup.description
