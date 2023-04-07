@@ -31,7 +31,7 @@ command-line option.
 .. hint::
    ``termvisage`` performs [quite] thorough validation on the values specified in a config
    file and reports any errors. To see information about how the errors are resolved
-   (if resolvable), use the ``-v/--verbose`` command-line option.
+   (if resolvable), use the ``-v | --verbose`` command-line option.
 
 `This <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/default_config.json>`_
 is a sample config file with all options and keybindings at their defaults.

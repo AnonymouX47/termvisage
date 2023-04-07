@@ -148,7 +148,7 @@ Logs are more detailed event reports meant for troubleshooting and debugging pur
 Logs are written to a file on a local filesystem. The default log file is ``~/.termvisage/termvisage.log`` but a different file can be specified:
 
 * for all sessions, using :confval:`log file`
-* per session, using the ``--log-file`` command-line option
+* per session, using the ``-l | --log-file`` command-line option
 
 A log entry has the following format:
 

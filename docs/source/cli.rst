@@ -67,7 +67,7 @@ Options and Arguments
      terminal's end but at the cost of image quality and color reproduction.
    - is useful for animations with high resolution and/or sparse color distribution.
    - only applies when an image is re-encoded and not read directly from file
-     (see ``--iterm2-no-read-from-file``).
+     (see ``--itnrff | --iterm2-no-read-from-file``).
    - can only be used for non-transparent images but the transparency status
      of some images can not be correctly determined in an efficient way at render time.
 
