@@ -65,6 +65,8 @@ class Process(Process):
         self._main_process_interrupted = cli.interrupted
         self._ImageClass = tui.main.ImageClass
         if self._ImageClass:  # if the TUI is initialized
+            self._supported = self._ImageClass._supported
+            self._forced_support = self._ImageClass.forced_support
             self._cell_ratio = cli.args.cell_ratio
             self._query_timeout = cli.args.query_timeout
             self._swap_win_size = cli.args.swap_win_size
@@ -81,8 +83,8 @@ class Process(Process):
         try:
             if self._ImageClass:  # if the TUI is initialized
                 # The unpickled class object is in the originally defined state
-                # Eliminates queries for style support checks
-                self._ImageClass.forced_support = True
+                self._ImageClass._supported = self._supported  # Avoid support check
+                self._ImageClass.forced_support = self._forced_support
                 for item in self._style_attrs:
                     setattr(self._ImageClass, *item)
 
@@ -160,7 +162,7 @@ LOG = 0
 NOTIF = 1
 child_processes = []
 exported_style_attrs = {
-    "iterm2": ("_TERM", "_TERM_VERSION"),
+    "iterm2": ("_TERM", "_TERM_VERSION", "jpeg_quality", "read_from_file"),
     "kitty": ("_TERM", "_TERM_VERSION", "_KITTY_VERSION"),
 }
 

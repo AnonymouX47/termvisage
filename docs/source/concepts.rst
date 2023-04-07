@@ -86,7 +86,7 @@ The available render styles are:
    with a density of two pixels per character cell.
 
 Using a render style not supported by the :term:`active terminal` is not allowed by
-default. To force the usage of a style that is normally unsupported, add
+default. To force the use of such a render style, add
 :option:`--force-style <termvisage --force-style>`.
 
 
