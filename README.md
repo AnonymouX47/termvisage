@@ -66,7 +66,7 @@
   - support for the [iTerm2 inline image protocol](https://iterm2.com/documentation-images.html).
   - full Unicode support and ANSI 24-bit color support
 
-  **Plans to support a wider variety of terminal emulators are in motion** (see [Planned Features](#planned-features)).
+  **Plans to support a wider variety of terminal emulators are in motion** (see the [library][term-image]'s planned features).
 
 ### Steps
 The latest **stable** version can be installed from [PyPI](https://pypi.python.org/pypi/termvisage) using `pip`:
