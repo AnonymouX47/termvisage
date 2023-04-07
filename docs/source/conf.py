@@ -11,6 +11,7 @@ from docutils.statemachine import StringList
 from sphinx_toolbox import confval
 
 from termvisage import parsers  # noqa: F401
+from termvisage import __version__
 
 # -- Path setup --------------------------------------------------------------
 
@@ -19,11 +20,13 @@ from termvisage import parsers  # noqa: F401
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath("../../src"))
 
+
 # -- Project information -----------------------------------------------------
 
 project = "TermVisage"
 copyright = "2023, Toluwaleke Ogundipe"
 author = "Toluwaleke Ogundipe"
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
