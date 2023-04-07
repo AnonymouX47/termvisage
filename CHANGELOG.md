@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
-- Uppercase letters in hex BG colors being flagged as invalid ([term-image@b4533d5])
+- Uppercase letters in hex BG colors being flagged as invalid ([term-image@b4533d5]).
 - Crash when `"log file"` or `--log-file` specifies a path with a non-stat-able directory ([term-image@8b0af4c]).
 - Render style support when multiprocessing is enabled ([1637a38]).
 
