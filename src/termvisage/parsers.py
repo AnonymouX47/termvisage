@@ -129,7 +129,7 @@ win_size_options.add_argument(
     default=None,
     dest="swap_win_size",
     help=(
-        "Unlike :option:`--swap-win-size <termvisage --swap-win-size>`, use the "
+        "Unlike :option:`--swap-win-size`, use the "
         "reported window size as-is (default)"
     ),
 )
@@ -244,7 +244,7 @@ alpha_options.add_argument(
 cli_options = parser.add_argument_group(
     "CLI-only Options",
     "These options apply only when there is only one valid image source or "
-    ":option:`--cli <termvisage --cli>` is specified",
+    ":option:`--cli` is specified",
 )
 cli_options.add_argument(
     "--h-allow",
@@ -271,7 +271,7 @@ cli_options.add_argument(
     action="store_true",
     help=(
         "Allow an image's height to be greater than the :term:`terminal height`. "
-        "Not needed when :option:`--fit-to-width <termvisage --fit-to-width>` is "
+        "Not needed when :option:`--fit-to-width` is "
         "specified."
     ),
 )
@@ -281,8 +281,8 @@ cli_options.add_argument(
     action="store_true",
     help=(
         "Allow an image's size to be greater than the :term:`terminal size` "
-        "(To be used with :option:`-w <termvisage -w>`, :option:`-h <termvisage -h>` "
-        "or :option:`--original-size <termvisage --original-size>`)"
+        "(To be used with :option:`-w` "
+        "or :option:`--original-size`)"
     ),
 )
 cli_options.add_argument(
@@ -291,8 +291,8 @@ cli_options.add_argument(
     type=float,
     metavar="N",
     help=(
-        "Image :term:`scale` (overrides :option:`-x <termvisage -x>` and "
-        ":option:`-y <termvisage -y>`) [#]_"
+        "Image :term:`scale` (overrides :option:`-x` and "
+        ":option:`-y`) [#]_"
     ),
 )
 cli_options.add_argument(
@@ -314,7 +314,7 @@ cli_options.add_argument(
 cli_options.add_argument(
     "--max-pixels-cli",
     action="store_true",
-    help=("Apply :option:`--max-pixels <termvisage --max-pixels>` in CLI mode"),
+    help=("Apply :option:`--max-pixels` in CLI mode"),
 )
 
 # Sizing
@@ -354,7 +354,7 @@ size_options.add_argument(
     dest="auto_size",
     help=(
         "Fit each image to the :term:`available <available size>` :term:`terminal "
-        "width`, :option:`--v-allow <termvisage --v-allow>` has no effect i.e "
+        "width`, :option:`--v-allow` has no effect i.e "
         ":term:`vertical allowance` is ignored"
     ),
 )
@@ -365,7 +365,7 @@ size_options.add_argument(
     dest="auto_size",
     help=(
         "Render each image using its original size "
-        "(See :option:`--oversize <termvisage --oversize>`, **USE WITH CAUTION!**)"
+        "(See :option:`-O`, **USE WITH CAUTION!**)"
     ),
 )
 
@@ -414,7 +414,7 @@ align_options.add_argument(
 tui_options = parser.add_argument_group(
     "TUI-only Options",
     "These options apply only when there is at least one valid directory source, "
-    "multiple valid sources or :option:`--tui <termvisage --tui>` is specified",
+    "multiple valid sources or :option:`--tui` is specified",
 )
 
 tui_options.add_argument(
@@ -513,7 +513,7 @@ config_options_.add_argument(
 # Logging
 log_options_ = parser.add_argument_group(
     "Logging Options",
-    "**NOTE:** All these, except :option:`-l | --log-file <termvisage -l>`, "
+    "**NOTE:** All these, except :option:`-l`, "
     "are mutually exclusive",
 )
 log_options = log_options_.add_mutually_exclusive_group()
@@ -546,14 +546,14 @@ log_options.add_argument(
     "--verbose-log",
     action="store_true",
     help=(
-        "Like :option:`--verbose <termvisage --verbose>` but only applies to the "
+        "Like :option:`-v` but only applies to the "
         "log file"
     ),
 )
 log_options.add_argument(
     "--debug",
     action="store_true",
-    help="Implies :option:`--log-level=DEBUG <termvisage --log-level>` with verbosity",
+    help="Implies :option:`--log-level=DEBUG` with verbosity",
 )
 
 # Positional

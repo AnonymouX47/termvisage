@@ -6,7 +6,7 @@ Known Issues
    (tested in Windows Terminal and MinTTY).
    See the `library`_\'s :external+term_image:doc:`issues` for details.
 
-   In CLI mode, use :option:`--h-allow <termvisage --h-allow>` to specify a horizontal allowance.
+   In CLI mode, use :option:`--h-allow` to specify a horizontal allowance.
 
 3. Some animations with the **kitty** render style within the **Kitty terminal emulator**
    might be glitchy at the moment.

@@ -29,9 +29,9 @@ The viewer can be used in two modes:
 
    In this mode, images are directly printed to standard output. It is used when
    
-   * output is not a terminal (even if :option:`--tui <termvisage --tui>` is specified)
+   * output is not a terminal (even if :option:`--tui` is specified)
    * there is only a single image source
-   * :option:`--cli <termvisage --cli>` is specified
+   * :option:`--cli` is specified
 
 2. **TUI mode**
 
@@ -40,7 +40,7 @@ The viewer can be used in two modes:
 
    * there is at least one non-empty directory source
    * there are multiple image sources
-   * :option:`--tui <termvisage --tui>` is specified
+   * :option:`--tui` is specified
 
 
 .. _render-styles:
@@ -52,7 +52,7 @@ See :term:`render style`.
 
 By default, the best style supported by the :term:`active terminal` is automatically detected.
 A particular render style can be specified using :confval:`style` or
-:option:`-S | --style <termvisage -S>`.
+:option:`-S`.
 
 If the specified render style is:
 
@@ -87,7 +87,7 @@ The available render styles are:
 
 Using a render style not supported by the :term:`active terminal` is not allowed by
 default. To force the use of such a render style, add
-:option:`--force-style <termvisage --force-style>`.
+:option:`--force-style`.
 
 
 .. _cell-ratio:
@@ -100,8 +100,8 @@ The :term:`cell ratio` is taken into consideration when setting image sizes for
 the terminal.
 
 This value is determined by :confval:`cell ratio` OR either of
-:option:`-C | --cell-ratio <termvisage -C>` or
-:option:`--auto-cell-ratio <termvisage --auto-cell-ratio>`.
+:option:`-C` or
+:option:`--auto-cell-ratio`.
 The command-line options are mutually exclusive and override the config option.
 
 By default (i.e without changing the config option value or specifying either
@@ -150,7 +150,7 @@ Logs are written to a file on a local filesystem. The default log file is
 ``~/.termvisage/termvisage.log`` but a different file can be specified:
 
 * for all sessions, using :confval:`log file`
-* per session, using :option:`-l | --log-file <termvisage -l>`
+* per session, using :option:`-l`
 
 A log entry has the following format:
 
@@ -163,16 +163,16 @@ A log entry has the following format:
 * *process* and *thread*: The names of the python process and thread that produced the log record.
 
   * Only present when the *logging level* is set to ``DEBUG`` (either by
-    :option:`--debug <termvisage --debug>` or
-    :option:`--log-level=DEBUG <termvisage --log-level>`).
+    :option:`--debug` or
+    :option:`--log-level=DEBUG`).
 
 * *level*: The level of the log entry, this indicates it's importance.
 * *module*: The package sub-module from which it originated.
 * *function*: The function from which it originated.
 
   * Only present when running on **Python 3.8+** and *logging level* is set to ``DEBUG``
-    (either by :option:`--debug <termvisage --debug>` or
-    :option:`--log-level=DEBUG <termvisage --log-level>`).
+    (either by :option:`--debug` or
+    :option:`--log-level=DEBUG`).
 
 * *message*: The actual report describing the event that occured.
 

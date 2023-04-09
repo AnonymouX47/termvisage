@@ -9,6 +9,7 @@ import argparse
 from docutils.parsers.rst import directives
 from docutils.statemachine import StringList
 from sphinx_toolbox import confval
+from sphinxcontrib import autoprogram
 
 from termvisage import parsers  # noqa: F401
 from termvisage import __version__
@@ -109,7 +110,21 @@ class ConfigValue(confval.ConfigurationValue, ConfigValueSibling):
 
 confval.ConfigurationValue = ConfigValue
 
-# # -- CLI Parser (do not strip reST markup) -------------------------------------
+# # -- CLI Parser -----------------------------------------------------------
+# Do not strip reST markup
 del argparse.ArgumentParser.epilog
 del argparse.Action.help
 del argparse._ArgumentGroup.description
+
+
+# Omit `program` directive for shorter references
+def render_rst(title, options, is_program, *args, **kwargs):
+    render = _render_rst(title, options, is_program, *args, **kwargs)
+    if is_program:
+        next(render)
+        next(render)
+    yield from render
+
+
+_render_rst = autoprogram.render_rst
+autoprogram.render_rst = render_rst

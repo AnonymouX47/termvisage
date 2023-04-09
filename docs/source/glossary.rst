@@ -21,12 +21,12 @@ Below are definitions of terms used in the CLI help text, info/warning/error mes
    horizontal alignment
       The horizontal position of a primary :term:`render` output within its :term:`padding width`.
 
-      .. seealso:: :option:`--h-align <termvisage --h-align>`
+      .. seealso:: :option:`--h-align`
 
    vertical alignment
       The vertical position of a primary :term:`render` output within its :term:`padding height`.
 
-      .. seealso:: :option:`--v-align <termvisage --v-align>`
+      .. seealso:: :option:`--v-align`
 
    allowance
       The amount of space to be left unused on the terminal screen.
@@ -34,17 +34,17 @@ Below are definitions of terms used in the CLI help text, info/warning/error mes
    horizontal allowance
       The amount of **columns** to be left unused on the terminal screen.
 
-      .. seealso:: :option:`--h-allow <termvisage --h-allow>`
+      .. seealso:: :option:`--h-allow`
 
    vertical allowance
       The amount of **lines** to be left unused on the terminal screen.
 
-      .. seealso:: :option:`--v-allow <termvisage --v-allow>`
+      .. seealso:: :option:`--v-allow`
 
    alpha threshold
       Alpha ratio/value above which a pixel is taken as **opaque** (applies only to text-based render styles).
 
-      .. seealso:: :option:`-A | --alpha <termvisage -A>`
+      .. seealso:: :option:`-A`
 
    animated
       Having multiple frames.
@@ -89,14 +89,14 @@ Below are definitions of terms used in the CLI help text, info/warning/error mes
 
       Excess columns on either or both sides of the render output (depending on the :term:`horizontal alignment`) will be filled with spaces.
 
-      .. seealso:: :option:`--pad-width <termvisage --pad-width>`
+      .. seealso:: :option:`--pad-width`
 
    padding height
       Amount of **lines** within which to fit a primary :term:`render` output.
 
       Excess lines on either or both sides of the render output (depending on the :term:`vertical alignment`) will be filled with spaces.
 
-      .. seealso:: :option:`--pad-height <termvisage --pad-height>`
+      .. seealso:: :option:`--pad-height`
 
    render style
    render styles

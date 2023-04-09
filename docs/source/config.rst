@@ -23,15 +23,15 @@ one another **in the order in which they were found**. Hence, a field present in
 latter, if valid, will override the same field also present in the former.
 
 An alternative config file can be specified per-session using
-:option:`--config <termvisage --config>`.
+:option:`--config`.
 
 To use the default configuration and not load any config file, use
-:option:`--no-config <termvisage --no-config>`.
+:option:`--no-config`.
 
 .. tip::
    ``termvisage`` performs [quite] thorough validation on the values specified in a config
    file and reports any errors. To see information about how the errors are resolved
-   (if resolvable), use :option:`-v | --verbose <termvisage -v>`.
+   (if resolvable), use :option:`-v`.
 
 `This <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/default_config.json>`_
 is a sample config file with all options and keybindings at their defaults.
@@ -133,7 +133,7 @@ These are top-level fields whose values control various settings of the viewer.
 
    Any image having more pixels than the specified value will be:
 
-   * skipped, in CLI mode, if :option:`--max-pixels-cli <termvisage --max-pixels-cli>`
+   * skipped, in CLI mode, if :option:`--max-pixels-cli`
      is specified.
    * replaced, in TUI mode, with a placeholder when displayed but can still be forced
      to display or viewed externally.
@@ -164,7 +164,7 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``"auto"``
 
    If set to any value other than ``"auto"`` and is not overriden by
-   :option:`-S | --style <termvisage -S>`, the style is used regardless of whether
+   :option:`-S`, the style is used regardless of whether
    it's supported or not.
 
 .. confval:: swap win size
