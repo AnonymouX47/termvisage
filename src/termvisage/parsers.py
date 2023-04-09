@@ -129,8 +129,7 @@ win_size_options.add_argument(
     default=None,
     dest="swap_win_size",
     help=(
-        "Unlike :option:`--swap-win-size`, use the "
-        "reported window size as-is (default)"
+        "Unlike :option:`--swap-win-size`, use the reported window size as-is (default)"
     ),
 )
 
@@ -271,8 +270,7 @@ cli_options.add_argument(
     action="store_true",
     help=(
         "Allow an image's height to be greater than the :term:`terminal height`. "
-        "Not needed when :option:`--fit-to-width` is "
-        "specified."
+        "Not needed when :option:`--fit-to-width` is specified."
     ),
 )
 cli_options.add_argument(
@@ -281,8 +279,7 @@ cli_options.add_argument(
     action="store_true",
     help=(
         "Allow an image's size to be greater than the :term:`terminal size` "
-        "(To be used with :option:`-w` "
-        "or :option:`--original-size`)"
+        "(To be used with :option:`-w` or :option:`--original-size`)"
     ),
 )
 cli_options.add_argument(
@@ -290,10 +287,7 @@ cli_options.add_argument(
     "--scale",
     type=float,
     metavar="N",
-    help=(
-        "Image :term:`scale` (overrides :option:`-x` and "
-        ":option:`-y`) [#]_"
-    ),
+    help="Image :term:`scale` (overrides :option:`-x` and :option:`-y`) [#]_",
 )
 cli_options.add_argument(
     "-x",
@@ -314,7 +308,7 @@ cli_options.add_argument(
 cli_options.add_argument(
     "--max-pixels-cli",
     action="store_true",
-    help=("Apply :option:`--max-pixels` in CLI mode"),
+    help="Apply :option:`--max-pixels` in CLI mode",
 )
 
 # Sizing
@@ -354,8 +348,8 @@ size_options.add_argument(
     dest="auto_size",
     help=(
         "Fit each image to the :term:`available <available size>` :term:`terminal "
-        "width`, :option:`--v-allow` has no effect i.e "
-        ":term:`vertical allowance` is ignored"
+        "width`, :option:`--v-allow` has no effect i.e :term:`vertical allowance` "
+        "is ignored"
     ),
 )
 size_options.add_argument(
@@ -513,8 +507,7 @@ config_options_.add_argument(
 # Logging
 log_options_ = parser.add_argument_group(
     "Logging Options",
-    "**NOTE:** All these, except :option:`-l`, "
-    "are mutually exclusive",
+    "**NOTE:** All these, except :option:`-l`, are mutually exclusive",
 )
 log_options = log_options_.add_mutually_exclusive_group()
 
@@ -545,10 +538,7 @@ log_options.add_argument(
 log_options.add_argument(
     "--verbose-log",
     action="store_true",
-    help=(
-        "Like :option:`-v` but only applies to the "
-        "log file"
-    ),
+    help="Like :option:`-v` but only applies to the log file",
 )
 log_options.add_argument(
     "--debug",

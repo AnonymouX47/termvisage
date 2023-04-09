@@ -22,8 +22,8 @@ Options and Arguments
 
 .. [#] In CLI mode, only image sources are used, directory sources are skipped.
    Animated images are displayed only when animation is disabled (with
-   :option:`--no-anim`), when there's only one image source
-   or when using native animation of some render styles.
+   :option:`--no-anim`), when there's only one image source or when using native
+   animation of some render styles.
 
 .. [#]  Frames will not be cached for any animation with more frames than this value.
    Memory usage depends on the frame count **per image**, not this maximum count.
@@ -34,13 +34,12 @@ Options and Arguments
 .. [#] Width and height are in units of columns and lines repectively.
 
    By default (i.e if none of the sizing options is specified), the equivalent of
-   :option:`--original-size` is used if not larger than
-   the :term:`available size`, else :option:`--fit`.
+   :option:`--original-size` is used if not larger than the :term:`available size`,
+   else :option:`--fit`.
 
 .. [#] Any image having more pixels than the specified maximum will be:
 
-   - skipped, in CLI mode, if :option:`--max-pixels-cli`
-     is specified.
+   - skipped, in CLI mode, if :option:`--max-pixels-cli` is specified.
    - replaced, in TUI mode, with a placeholder when displayed but can still be
      explicitly made to display.
 
@@ -65,8 +64,7 @@ Options and Arguments
      of some images can not be correctly determined in an efficient way at render time.
 
      Thus, to ensure the JPEG format is always used for re-encoded images, disable
-     transparency (:option:`--no-alpha`) or set a background
-     color (:option:`-b`).
+     transparency (:option:`--no-alpha`) or set a background color (:option:`-b`).
 
 .. [#] By default, image data is used directly from file when no image manipulation is
    required. Otherwise, it's re-encoded in PNG (or JPEG, if enabled) format.

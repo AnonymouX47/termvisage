@@ -22,11 +22,9 @@ If multiple config files are found (i.e in different locations), they're applied
 one another **in the order in which they were found**. Hence, a field present in the
 latter, if valid, will override the same field also present in the former.
 
-An alternative config file can be specified per-session using
-:option:`--config`.
+An alternative config file can be specified per-session using :option:`--config`.
 
-To use the default configuration and not load any config file, use
-:option:`--no-config`.
+To use the default configuration and not load any config file, use :option:`--no-config`.
 
 .. tip::
    ``termvisage`` performs [quite] thorough validation on the values specified in a config
@@ -133,8 +131,7 @@ These are top-level fields whose values control various settings of the viewer.
 
    Any image having more pixels than the specified value will be:
 
-   * skipped, in CLI mode, if :option:`--max-pixels-cli`
-     is specified.
+   * skipped, in CLI mode, if :option:`--max-pixels-cli` is specified.
    * replaced, in TUI mode, with a placeholder when displayed but can still be forced
      to display or viewed externally.
 
@@ -164,8 +161,7 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``"auto"``
 
    If set to any value other than ``"auto"`` and is not overriden by
-   :option:`-S`, the style is used regardless of whether
-   it's supported or not.
+   :option:`-S`, the style is used regardless of whether it's supported or not.
 
 .. confval:: swap win size
    :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that

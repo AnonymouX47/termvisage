@@ -23,8 +23,7 @@ Why are images out of scale?
 
    - Otherwise,
 
-     - Adjust the :term:`cell ratio` using :confval:`cell ratio` or
-       :option:`-C`.
+     - Adjust the :term:`cell ratio` using :confval:`cell ratio` or :option:`-C`.
 
 Why is the TUI unresponsive or slow in drawing images?
    - Drawing (not rendering) speed is **entirely** dependent on the terminal emulator itself.

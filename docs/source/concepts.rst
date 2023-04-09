@@ -51,8 +51,7 @@ Render Styles
 See :term:`render style`.
 
 By default, the best style supported by the :term:`active terminal` is automatically detected.
-A particular render style can be specified using :confval:`style` or
-:option:`-S`.
+A particular render style can be specified using :confval:`style` or :option:`-S`.
 
 If the specified render style is:
 
@@ -86,8 +85,7 @@ The available render styles are:
    with a density of two pixels per character cell.
 
 Using a render style not supported by the :term:`active terminal` is not allowed by
-default. To force the use of such a render style, add
-:option:`--force-style`.
+default. To force the use of such a render style, add :option:`--force-style`.
 
 
 .. _cell-ratio:
@@ -99,8 +97,7 @@ The :term:`cell ratio` is taken into consideration when setting image sizes for
 **text-based** render styles, in order to preserve the aspect ratio of images drawn to
 the terminal.
 
-This value is determined by :confval:`cell ratio` OR either of
-:option:`-C` or
+This value is determined by :confval:`cell ratio` OR either of :option:`-C` or
 :option:`--auto-cell-ratio`.
 The command-line options are mutually exclusive and override the config option.
 
@@ -163,16 +160,14 @@ A log entry has the following format:
 * *process* and *thread*: The names of the python process and thread that produced the log record.
 
   * Only present when the *logging level* is set to ``DEBUG`` (either by
-    :option:`--debug` or
-    :option:`--log-level=DEBUG`).
+    :option:`--debug` or :option:`--log-level=DEBUG`).
 
 * *level*: The level of the log entry, this indicates it's importance.
 * *module*: The package sub-module from which it originated.
 * *function*: The function from which it originated.
 
   * Only present when running on **Python 3.8+** and *logging level* is set to ``DEBUG``
-    (either by :option:`--debug` or
-    :option:`--log-level=DEBUG`).
+    (either by :option:`--debug` or :option:`--log-level=DEBUG`).
 
 * *message*: The actual report describing the event that occured.
 
