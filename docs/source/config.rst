@@ -3,8 +3,8 @@ Configuration
 
 The configuration is divided into the following categories:
 
-* Options
-* Keybindings
+* Options (applies to both the CLI and the TUI :ref:`modes`)
+* Keybindings (applies to only the TUI :ref:`mode <modes>`)
 
 The configuration file is written in **JSON** format, using a *partial config* style
 i.e only the fields to be modified need to be present in the config file.
@@ -28,7 +28,7 @@ An alternative config file can be specified per-session using
 To use the default configuration and not load any config file, use
 :option:`--no-config <termvisage --no-config>`.
 
-.. hint::
+.. tip::
    ``termvisage`` performs [quite] thorough validation on the values specified in a config
    file and reports any errors. To see information about how the errors are resolved
    (if resolvable), use :option:`-v | --verbose <termvisage -v>`.
@@ -37,13 +37,13 @@ To use the default configuration and not load any config file, use
 is a sample config file with all options and keybindings at their defaults.
 Note that **this is only for reference**, using any field within it as-is has no effect.
 
+
 Options
 -------
 
 These are top-level fields whose values control various settings of the viewer.
 
 .. hint::
-
    Any option with a *[\*]* after its description will be overidden by a corresponding
    command-line option with a valid value.
 
@@ -182,7 +182,7 @@ These are top-level fields whose values control various settings of the viewer.
 Keybindings
 -----------
 
-The key assigned to every :ref:`action <actions>` can be modified in the config file.
+The key assigned to every :ref:`action <actions>` in the TUI can be modified in the config file.
 
 Keybindings are set by the ``keys`` top-level field, the value of which is a mapping
 containing fields each mapping a :ref:`context <contexts>` to a mapping of
