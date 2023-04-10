@@ -41,19 +41,19 @@ Options
 
 These are top-level fields whose values control various settings of the viewer.
 
-.. hint::
-   Any option with a *[\*]* after its description will be overidden by a corresponding
-   command-line option with a valid value.
-
 .. confval:: anim cache
    :synopsis: The maximum frame count of an image for which frames will be cached during
-     animation. [\*]
+     animation.
    :type: integer
    :valid: *x* > ``0``
    :default: ``100``
 
+   .. note::
+      Overridden by :option:`--anim-cache`, :option:`--cache-all-anim`
+      and :option:`--cache-no-anim`.
+
 .. confval:: cell ratio
-   :synopsis: The :term:`cell ratio`. [\*]
+   :synopsis: The :term:`cell ratio`.
    :type: null or float
    :valid: ``null`` or *x* > ``0.0``
    :default: ``null``
@@ -62,6 +62,8 @@ These are top-level fields whose values control various settings of the viewer.
    aspect ratio of any image is always preserved. If this is not supported in the
    :term:`active terminal` or on the platform, ``0.5`` is used instead.
 
+   .. note:: Overridden by :option:`-C` and :option:`--auto-cell-ratio`.
+
 .. confval:: cell width
    :synopsis: The initial width of (no of columns for) grid cells, in the TUI.
    :type: integer
@@ -69,7 +71,7 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``30``
 
 .. confval:: checkers
-   :synopsis: Maximum number of subprocesses for checking directory sources. [\*]
+   :synopsis: Maximum number of subprocesses for checking directory sources.
    :type: null or integer
    :valid: ``null`` or *x* >= ``0``
    :default: ``null``
@@ -79,22 +81,28 @@ These are top-level fields whose values control various settings of the viewer.
 
    If less than ``2``, directory sources are checked within the main process.
 
+   .. note:: Overridden by :option:`--checkers`.
+
 .. confval:: getters
-   :synopsis: Number of threads for downloading images from URL sources. [\*]
+   :synopsis: Number of threads for downloading images from URL sources.
    :type: integer
    :valid: *x* > ``0``
    :default: ``4``
 
+   .. note:: Overridden by :option:`--getters`.
+
 .. confval:: grid renderers
-   :synopsis: Number of subprocesses for rendering grid cells. [\*]
+   :synopsis: Number of subprocesses for rendering grid cells.
    :type: integer
    :valid: *x* >= ``0``
    :default: ``1``
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
 
+   .. note:: Overridden by :option:`--grid-renderers`.
+
 .. confval:: log file
-   :synopsis: The file to which logs are written. [\*]
+   :synopsis: The file to which logs are written.
    :type: string
    :valid: An absolute path to a writable file
    :default: ``"~/.termvisage/termvisage.log"``
@@ -113,6 +121,8 @@ These are top-level fields whose values control various settings of the viewer.
       created) relative to the **current working directory** every time the process
       is started.
 
+   .. note:: Overridden by :option:`-l`.
+
    .. seealso:: :ref:`logging`
 
 .. confval:: max notifications
@@ -124,7 +134,7 @@ These are top-level fields whose values control various settings of the viewer.
    Adjusts the height of the :ref:`notification bar <notif-bar>`.
 
 .. confval:: max pixels
-   :synopsis: The maximum amount of pixels in images to be displayed in the TUI. [\*]
+   :synopsis: The maximum amount of pixels in images to be displayed in the TUI.
    :type: integer
    :valid: *x* > ``0``
    :default: ``4194304`` (2 ** 22)
@@ -140,22 +150,28 @@ These are top-level fields whose values control various settings of the viewer.
    to render it. Thus, a large image might delay the rendering of other images to be
    rendered immediately after it.
 
+   .. note:: Overridden by :option:`--max-pixels`.
+
 .. confval:: multi
-   :synopsis: Enable or disable multiprocessing. [\*]
+   :synopsis: Enable or disable multiprocessing.
    :type: boolean
    :valid: ``true``, ``false``
    :default: ``true``
 
    If ``false``, the ``checkers`` and ``grid renderers`` options have no effect.
 
+   .. note:: Overridden by :option:`--multi` and :option:`--no-multi`.
+
 .. confval:: query timeout
-   :synopsis: Timeout (in seconds) for all terminal queries. [\*]
+   :synopsis: Timeout (in seconds) for all terminal queries.
    :type: float
    :valid: *x* > ``0.0``
    :default: ``0.1``
 
+   .. note:: Overridden by :option:`--query-timeout`.
+
 .. confval:: style
-   :synopsis: Image :term:`render style`. [\*]
+   :synopsis: Image :term:`render style`.
    :type: string
    :valid: ``"auto"``, ``"block"``, ``"iterm2"``, ``"kitty"``
    :default: ``"auto"``
@@ -163,16 +179,20 @@ These are top-level fields whose values control various settings of the viewer.
    If set to any value other than ``"auto"`` and is not overriden by
    :option:`-S`, the style is used regardless of whether it's supported or not.
 
+   .. note:: Overridden by :option:`-S`.
+
 .. confval:: swap win size
    :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that
-     wrongly report window dimensions swapped. [\*]
+     wrongly report window dimensions swapped.
    :type: boolean
    :valid: ``true``, ``false``
    :default: ``false``
 
    If ``true``, the window dimensions reported by the terminal emulator are swapped.
-   
-   .. note:: This setting affects *auto* :term:`cell ratio` computation.
+
+   .. note::
+      * Overridden by :option:`--swap-win-size` and :option:`--no-swap-win-size`.
+      * Affects *auto* :term:`cell ratio` computation.
 
 
 Keybindings
