@@ -177,11 +177,32 @@ def display_context_help(context: str) -> None:
                 ),
             ),
             (
-                3,
+                "pack",
                 urwid.LineBox(
-                    urwid.Filler(
-                        urwid.Text(("default bold", f"Version {__version__}"), "center")
-                    )
+                    urwid.Text(
+                        [
+                            ("default bold", f"TermVisage v{__version__}\n"),
+                            "\n",
+                            ("default bold", "Homepage: "),
+                            "https://github.com/AnonymouX47/termvisage\n",
+                            ("default bold", "Docs: "),
+                            "https://termvisage.readthedocs.io\n",
+                            ("default bold", "Issue Tracker: "),
+                            "https://github.com/AnonymouX47/termvisage/issues\n",
+                            ("default bold", "Changelog: "),
+                            "https://github.com/AnonymouX47/termvisage/blob/main/"
+                            "CHANGELOG.md\n",
+                            ("default bold", "License: "),
+                            "https://github.com/AnonymouX47/termvisage/blob/main/"
+                            "LICENSE\n",
+                            "\n",
+                            ("default bold", "Copyright (c) 2023 Toluwaleke Ogundipe"),
+                        ],
+                        "center",
+                    ),
+                    "About",
+                    "center",
+                    "default bold",
                 ),
             ),
         ]
@@ -193,7 +214,7 @@ def display_context_help(context: str) -> None:
     main.set_context("overlay")
 
     # `Image` widgets don't support overlay.
-    # Always reset by or "overlay::Close"
+    # Always reset by "overlay::Close"
     _prev_view_widget = view.original_widget
     view.original_widget = urwid.LineBox(
         placeholder, _prev_view_widget.title_widget.text.strip(" "), "left"
