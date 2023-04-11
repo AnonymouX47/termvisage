@@ -537,7 +537,8 @@ notif_bar = urwid.Columns([(3, urwid.Filler(loading)), urwid.Filler(notification
 pile = urwid.Pile([(3, banner), viewer], 1)
 
 info_bar = urwid.Text("")
-key_bar = urwid.Filler(urwid.Text([[("mine", "cool"), " "]] * 19 + [("mine", "cool")]))
+
+key_bar = urwid.Filler(urwid.Text(""))
 expand = urwid.Filler(urwid.Text(f"\u25B2 [{expand_key[1]}]", align="right"), "middle")
 bottom_bar = urwid.Columns([key_bar, (len(expand.original_widget.text), expand)], 2)
 
@@ -589,5 +590,5 @@ overlay = urwid.Overlay(
     "middle",
     ("relative", 75),
     100,
-    5,
+    4,
 )
