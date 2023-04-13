@@ -485,6 +485,9 @@ class LineSquareMiddleColumns(urwid.Columns):
 class MenuEntry(urwid.Text):
     _selectable = True
 
+    def __init__(self, name: str) -> None:
+        super().__init__(name, "left", "ellipsis")
+
     def keypress(self, size: Tuple[int, int], key: str) -> str:
         return key
 

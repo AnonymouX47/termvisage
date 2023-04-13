@@ -533,11 +533,7 @@ def scan_dir_menu() -> None:
             if result == IMAGE:
                 items.append(item)
                 menu_body.append(
-                    urwid.AttrMap(
-                        MenuEntry(item[0], "left", "clip"),
-                        "default",
-                        "focused entry",
-                    )
+                    urwid.AttrMap(MenuEntry(item[0]), "default", "focused entry")
                 )
                 if page_not_complete:
                     if len(items) <= menu._ti_height:
@@ -547,11 +543,7 @@ def scan_dir_menu() -> None:
             elif result == DIR:
                 items.append(item)
                 menu_body.append(
-                    urwid.AttrMap(
-                        MenuEntry(item[0] + "/", "left", "clip"),
-                        "default",
-                        "focused entry",
-                    )
+                    urwid.AttrMap(MenuEntry(item[0] + "/"), "default", "focused entry")
                 )
                 if page_not_complete:
                     if len(items) <= menu._ti_height:
@@ -628,12 +620,11 @@ def update_menu(
         urwid.Text(("inactive", ".."))
         if top_level
         else urwid.AttrMap(MenuEntry(".."), "default", "focused entry")
-    ] + [
+    ]
+    menu.body += [
         urwid.AttrMap(
             MenuEntry(
-                (basename(entry) if at_top_level else entry) + "/" * (value is ...),
-                "left",
-                "clip",
+                (basename(entry) if at_top_level else entry) + "/" * (value is ...)
             ),
             "default",
             "focused entry",
