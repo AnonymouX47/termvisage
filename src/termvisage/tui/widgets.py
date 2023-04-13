@@ -9,7 +9,7 @@ from os.path import basename
 from typing import List, Optional, Tuple
 
 import urwid
-from term_image.image import BaseImage, Size
+from term_image.image import BaseImage, ITerm2Image, KittyImage, Size
 from term_image.utils import get_terminal_name_version, get_terminal_size
 
 from .. import logging
@@ -419,7 +419,17 @@ class ImageCanvas(urwid.Canvas):
 
         fill = b" " * cols
         fill_left = b" " * pad_left
-        fill_right = b" " * pad_right + b"\b " * self._ti_change_state
+        fill_right = b" " * pad_right
+
+        disguise = (
+            b"\b "
+            * self._ti_change_state
+            * (
+                issubclass(tui_main.ImageClass, KittyImage)
+                or issubclass(tui_main.ImageClass, ITerm2Image)
+                and get_terminal_name_version()[0] == "konsole"
+            )
+        )
 
         # Visible padding may be larger than the visible rows
         for _ in range(min(rows, pad_up)):
@@ -427,7 +437,7 @@ class ImageCanvas(urwid.Canvas):
 
         # See the description of `pad_up` and `pad_down` above
         for line in self.lines[-min(0, pad_up) : min(0, pad_down) or len(self.lines)]:
-            yield [(None, "U", fill_left + line + fill_right)]
+            yield [(None, "U", fill_left + line + fill_right + disguise)]
 
         # Visible padding may be larger than the visible rows
         for _ in range(min(rows, pad_down)):
