@@ -30,7 +30,7 @@ def init(
 
     if args.debug:
         main_widget.contents.insert(
-            -1, (urwid.AttrMap(urwid.Filler(info_bar), "input"), ("given", 1))
+            -1, (urwid.AttrMap(urwid.Filler(info_bar), "reverse"), ("given", 1))
         )
 
     main.DEBUG = args.debug
@@ -162,21 +162,20 @@ class Loop(urwid.MainLoop):
 is_launched = False
 
 palette = [
-    ("default", "", "", "", "#ffffff", ""),
-    ("default bold", "", "", "", "#ffffff, bold", ""),
+    ("default", "", "", "", "", ""),
+    ("default bold", "", "", "", "bold", ""),
+    ("reverse", "", "", "", "standout", ""),
+    ("reverse bold", "", "", "", "standout,bold", ""),
     ("inactive", "", "", "", "#7f7f7f", ""),
     ("white on black", "", "", "", "#ffffff", "#000000"),
     ("black on white", "", "", "", "#000000", "#ffffff"),
-    ("mine", "", "", "", "#ff00ff", "#ffff00"),
     ("focused entry", "", "", "", "standout", ""),
     ("unfocused box", "", "", "", "#7f7f7f", ""),
-    ("focused box", "", "", "", "#ffffff", ""),
+    ("focused box", "default"),
     ("green fg", "", "", "", "#00ff00", ""),
-    ("red on green", "", "", "", "#ff0000,bold", "#00ff00"),
-    ("key", "", "", "", "#ffffff", "#5588ff"),
+    ("key", "", "", "", "", "#5588ff"),
     ("disabled key", "", "", "", "#7f7f7f", "#5588ff"),
     ("error", "", "", "", "bold", "#ff0000"),
     ("warning", "", "", "", "#ff0000,bold", ""),
-    ("input", "", "", "", "standout", ""),
     ("notif context", "", "", "", "#0000ff,bold", ""),
 ]
