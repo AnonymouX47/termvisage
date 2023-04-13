@@ -525,16 +525,10 @@ view = urwid.AttrMap(image_box, "unfocused box", "focused box")
 viewer = NoSwitchColumns(
     [(20, urwid.AttrMap(menu_box, "unfocused box", "focused box")), view]
 )
-banner = urwid.LineBox(
-    urwid.AttrMap(
-        urwid.Filler(urwid.Text(("red on green", "TermVisage"), "center")),
-        "red on green",
-    ),
-)
 loading = urwid.Text("", "center")
 notifications = urwid.Pile([])
 notif_bar = urwid.Columns([(3, urwid.Filler(loading)), urwid.Filler(notifications)])
-pile = urwid.Pile([(3, banner), viewer], 1)
+pile = urwid.Pile([viewer])
 
 info_bar = urwid.Text("")
 
