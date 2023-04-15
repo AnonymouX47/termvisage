@@ -433,7 +433,7 @@ def set_menu_count():
 @register_key(("menu", "Open"))
 def open():
     if menu.focus_position == 0 or main.menu_list[menu.focus_position - 1][1] is ...:
-        main.displayer.send(main.OPEN)
+        main.displayer.send(main.MenuAction.OPEN)
     else:
         main.set_context("full-image")
         main_widget.contents[0] = (view, ("weight", 1))
@@ -444,7 +444,7 @@ def open():
 
 @register_key(("menu", "Back"))
 def back():
-    main.displayer.send(main.BACK)
+    main.displayer.send(main.MenuAction.BACK)
     getattr(main.ImageClass, "clear", lambda: True)()
 
 
@@ -624,7 +624,7 @@ def _confirm_delete(entry):
         confirmation.set_text(("warning", "Unable to delete! Check the logs for info."))
     else:
         successful = True
-        main.displayer.send(main.DELETE)
+        main.displayer.send(main.MenuAction.DELETE)
         confirmation.set_text(f"Successfully deleted {abspath(entry)}")
         confirmation.set_text(("green fg", "Successfully deleted!"))
     main.loop.draw_screen()

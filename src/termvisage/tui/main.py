@@ -56,6 +56,14 @@ class EntryKind(Enum):
     DIR = auto()
 
 
+class MenuAction(Enum):
+    """Some actions of the menu context implemented via ``display_images()``."""
+
+    OPEN = auto()
+    BACK = auto()
+    DELETE = auto()
+
+
 def animate_image(image_w: Image, forced_render: bool = False) -> None:
     """Initializes an animation."""
     if not NO_ANIMATION and (
@@ -95,7 +103,7 @@ def display_images(
     prev_dir: str = "..",
     *,
     top_level: bool = False,
-) -> Generator[None, int, bool]:
+) -> Generator[None, Union[int, MenuAction], bool]:
     """Displays images in _dir_ (and sub-directories, if '--recursive' is set)
     as yielded by ``scan_dir(dir)``.
 
@@ -120,7 +128,7 @@ def display_images(
     Receives:
         Via .send(), either:
           - a menu item position (-1 and above)
-          - a flag denoting a certain action
+          - an enumerator denoting a certain action
     """
     global _grid_list, grid_path, last_non_empty_grid_path
 
@@ -157,11 +165,12 @@ def display_images(
             view.original_widget = image_box
             getattr(ImageClass, "clear", lambda: True)()
 
-        elif pos == OPEN:  # Implements "menu::Open" action (for non-image entries)
+        # Implements "menu::Open" action (for non-image entries)
+        elif pos == MenuAction.OPEN:
             if prev_pos == -1:
                 # prev_pos can never be -1 at top level (See `pos == -1` branch above),
-                # and even if it could `pos == BACK` still guards against it.
-                pos = BACK
+                # and even if it could, `pos == MenuAction.BACK` still guards against it
+                pos = MenuAction.BACK
                 continue
 
             # Ensure menu scanning is halted before WD is changed to prevent
@@ -191,7 +200,7 @@ def display_images(
                 # to the link's parent instead of the linked directory's parent
                 os.getcwd() if top_level or islink(entry) else "..",
             )
-            # Menu change already signaled by the BACK action from the exited directory
+            # Menu change already signaled by menu::Back from the exited directory
 
             # For `.tui.keys.set_menu_actions()`, called by `update_menu()`
             menu_scan_done.set() if menu_is_complete else menu_scan_done.clear()
@@ -213,7 +222,7 @@ def display_images(
             next_menu.put((items, contents, menu_is_complete))
             continue  # Skip `yield`
 
-        elif pos == BACK:  # Implements "menu::Back" action
+        elif pos == MenuAction.BACK:  # Implements "menu::Back" action
             if not top_level:
                 # Ensure menu scanning is halted before WD is changed to prevent
                 # `FileNotFoundError`s
@@ -238,7 +247,7 @@ def display_images(
             # when coming out of a directory that was entered when prev_pos < -1.
             pos = prev_pos
 
-        elif pos == DELETE:
+        elif pos == MenuAction.DELETE:
             del items[prev_pos]
             pos = min(prev_pos, len(items) - 1)
             update_menu(items, top_level, pos)
@@ -692,11 +701,6 @@ next_menu = Queue(1)
 # For Context Management
 _prev_contexts = ["menu"] * 3
 _context = "menu"  # To avoid a NameError the first time set_context() is called.
-
-# FLAGS for `display_images()`
-OPEN = -2
-BACK = -3
-DELETE = -4
 
 # The annotations below are put in comments for compatibility with Python 3.7
 # as it doesn't allow names declared as `global` within functions to be annotated.
