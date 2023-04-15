@@ -461,12 +461,12 @@ class ImageCanvas(urwid.Canvas):
 class LineSquare(urwid.LineBox):
     no_cache = ["render", "rows"]
 
-    def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
+    def __init__(self, widget, title=""):
+        super().__init__(widget, title, "left", "default")
 
         # Prevents `Image.rows()` from being called,
         # in order to get the correct no of rows for a `<LinesSquare <Image>>` widget
-        original_middle = self._wrapped_widget.contents[1]
+        original_middle = self._w.contents[1]
         new_middle = LineSquareMiddleColumns(
             [x[0] for x in original_middle[0].contents],
             box_columns=(0, 2),
@@ -474,7 +474,8 @@ class LineSquare(urwid.LineBox):
         )
         new_middle.contents[0] = (new_middle.contents[0][0], ("given", 1, True))
         new_middle.contents[2] = (new_middle.contents[2][0], ("given", 1, True))
-        self._wrapped_widget.contents[1] = (new_middle, original_middle[1])
+        self._w.contents[1] = (new_middle, original_middle[1])
+        self.title_widget.set_wrap_mode("ellipsis")
 
     def rows(self, size: Tuple[int, int], focus: bool = False) -> int:
         return ceil(size[0] / 2)

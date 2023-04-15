@@ -477,10 +477,13 @@ def scan_dir_grid() -> None:
         for result, item in scan_dir(dir, contents):
             if result == IMAGE:
                 grid_list.append(item)
+                image_w = item[1]
                 grid_contents.append(
                     (
                         urwid.AttrMap(
-                            LineSquare(item[1]), "unfocused box", "focused box"
+                            LineSquare(image_w, basename(image_w._ti_image.source)),
+                            "unfocused box",
+                            "focused box",
                         ),
                         image_grid.options(),
                     )
