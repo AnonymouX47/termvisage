@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging as _logging
 import os
+from enum import Enum, auto
 from operator import mul
 from os.path import abspath, basename, islink
 from pathlib import Path
@@ -43,6 +44,16 @@ from .widgets import (
     view,
     viewer,
 )
+
+
+class EntryKind(Enum):
+    """Kinds of directory entries as used by ``scan_dir*()``."""
+
+    UNKNOWN = auto()
+    HIDDEN = auto()
+    UNREADABLE = auto()
+    IMAGE = auto()
+    DIR = auto()
 
 
 def animate_image(image_w: Image, forced_render: bool = False) -> None:
@@ -363,7 +374,7 @@ def scan_dir(
     sort_key: Optional[Callable] = None,
     *,
     notify_errors: bool = False,
-) -> Generator[Tuple[str, Union[Image, type(...)]], None, int]:
+) -> Generator[Tuple[EntryKind, Tuple[str, Union[Image, type(...)]]], None, int]:
     """Scans *dir* for readable images (and sub-directories containing such,
     if '--recursive' was set).
 
@@ -379,11 +390,13 @@ def scan_dir(
           files will be displayed.
 
     Yields:
-        A tuple ``(entry, value)``, where *entry* is ``str`` (the item name)
-        and *value* is:
+        A tuple ``(kind, (entry, value))``, where
+          - *kind* is the entry's kind,
+          - *entry* is the entry's name,
+          - and *value* is either:
 
-          - ``.tui.widgets.Image``, for images in *dir*, and
-          - `Ellipsis` for sub-directories of *dir* (if '--recursive' is set).
+            - an image widget, for images in *dir*, or
+            - ``Ellipsis``, for sub-directories of *dir* (if '--recursive' is set).
 
     Returns:
         The number of unreadable files in *dir*.
@@ -405,16 +418,16 @@ def scan_dir(
 
     errors = 0
     for entry in entries:
-        result = scan_dir_entry(entry, contents)
-        if result == UNREADABLE:
+        kind = scan_dir_entry(entry, contents)
+        if kind is EntryKind.UNREADABLE:
             errors += 1
-        yield result, (
+        yield kind, (
             entry.name,
             (
                 Image(ImageClass.from_file(entry.path))
-                if result == IMAGE
+                if kind is EntryKind.IMAGE
                 else ...
-                if result == DIR
+                if kind is EntryKind.DIR
                 else None
             ),
         )
@@ -432,26 +445,26 @@ def scan_dir_entry(
     entry: Union[os.DirEntry, Path],
     contents: Dict[str, Union[bool, Dict[str, Union[bool, dict]]]],
     entry_path: Optional[str] = None,
-) -> int:
-    """Scans a single directory entry and returns a flag indicating its kind."""
+) -> EntryKind:
+    """Scans a single directory entry and returns its kind."""
     if not SHOW_HIDDEN and entry.name.startswith("."):
-        return HIDDEN
+        return EntryKind.HIDDEN
     if contents.get("/") and entry.is_file():
         try:
             PIL.Image.open(abspath(entry))
         except PIL.UnidentifiedImageError:
             # Reporting will apply to every non-image file :(
-            return UNKNOWN
+            return EntryKind.UNKNOWN
         except Exception:
             logging.log_exception(f"{abspath(entry)!r} could not be read", logger)
-            return UNREADABLE
+            return EntryKind.UNREADABLE
         else:
-            return IMAGE
+            return EntryKind.IMAGE
     if RECURSIVE and entry.name in contents:
         # `.cli.check_dir()` already eliminated bad symlinks
-        return DIR
+        return EntryKind.DIR
 
-    return UNKNOWN
+    return EntryKind.UNKNOWN
 
 
 def scan_dir_grid() -> None:
@@ -474,8 +487,8 @@ def scan_dir_grid() -> None:
         page_not_complete = True
         notify.start_loading()
 
-        for result, item in scan_dir(dir, contents):
-            if result == IMAGE:
+        for kind, item in scan_dir(dir, contents):
+            if kind is EntryKind.IMAGE:
                 grid_list.append(item)
                 image_w = item[1]
                 grid_contents.append(
@@ -494,7 +507,7 @@ def scan_dir_grid() -> None:
                         update_screen()
                     else:
                         page_not_complete = False
-            elif result == DIR:
+            elif kind is EntryKind.DIR:
                 grid_list.append(item)
 
             if not next_grid.empty():
@@ -530,10 +543,10 @@ def scan_dir_menu() -> None:
         page_not_complete = True
         notify.start_loading()
 
-        for result, item in scan_dir(
+        for kind, item in scan_dir(
             ".", contents, items[-1][0] if items else None, notify_errors=True
         ):
-            if result == IMAGE:
+            if kind is EntryKind.IMAGE:
                 items.append(item)
                 menu_body.append(
                     urwid.AttrMap(MenuEntry(item[0]), "default", "focused entry")
@@ -543,7 +556,7 @@ def scan_dir_menu() -> None:
                         update_screen()
                     else:
                         page_not_complete = False
-            elif result == DIR:
+            elif kind is EntryKind.DIR:
                 items.append(item)
                 menu_body.append(
                     urwid.AttrMap(MenuEntry(item[0] + "/"), "default", "focused entry")
@@ -684,13 +697,6 @@ _context = "menu"  # To avoid a NameError the first time set_context() is called
 OPEN = -2
 BACK = -3
 DELETE = -4
-
-# FLAGS for `scan_dir*()`
-UNKNOWN = -1
-HIDDEN = 0
-UNREADABLE = 1
-IMAGE = 2
-DIR = 3
 
 # The annotations below are put in comments for compatibility with Python 3.7
 # as it doesn't allow names declared as `global` within functions to be annotated.
