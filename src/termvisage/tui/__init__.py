@@ -10,6 +10,7 @@ from typing import Any, Dict, Iterable, Iterator, Tuple, Union
 
 import urwid
 from term_image.utils import get_terminal_name_version, lock_tty, write_tty
+from term_image.widget import UrwidImageScreen
 
 from .. import logging
 from ..utils import CSI
@@ -40,7 +41,9 @@ def init(
     main.RECURSIVE = args.recursive
     main.SHOW_HIDDEN = args.all
     main.ImageClass = ImageClass
-    main.loop = Loop(main_widget, palette, unhandled_input=process_input)
+    main.loop = Loop(
+        main_widget, palette, UrwidImageScreen(), unhandled_input=process_input
+    )
     main.update_pipe = main.loop.watch_pipe(lambda _: None)
 
     render.ANIM_CACHED = not args.cache_no_anim and (
