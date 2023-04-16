@@ -110,6 +110,8 @@ Below are definitions of terms used in the CLI help text, info/warning/error mes
    scale
       The fraction/ratio of an image's size that'll actually be used to :term:`render` it.
       
+      .. seealso:: :option:`-s`, :option:`-x` and :option:`-y`
+
    source
       The resource from which an image instance is initialized.
 

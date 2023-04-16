@@ -56,6 +56,18 @@ description.
     add_help=False,  # `-h` is used for HEIGHT
 )
 
+# Positional
+positional_args = parser.add_argument_group("Positional Arguments")
+positional_args.add_argument(
+    "sources",
+    nargs="*",
+    metavar="source",
+    help=(
+        "Path(s) to local image(s) and/or directory(s) OR URLs. "
+        "If no source is given, the current working directory is used."
+    ),
+)
+
 # General
 general = parser.add_argument_group("General Options")
 general.add_argument(
@@ -282,56 +294,28 @@ cli_options.add_argument(
         "(To be used with :option:`-w` or :option:`--original-size`)"
     ),
 )
-cli_options.add_argument(
-    "-s",
-    "--scale",
-    type=float,
-    metavar="N",
-    help="Image :term:`scale` (overrides :option:`-x` and :option:`-y`) [#]_",
-)
-cli_options.add_argument(
-    "-x",
-    "--scale-x",
-    type=float,
-    metavar="N",
-    default=1.0,
-    help="Image x-axis :term:`scale` (default: 1.0) [4]_",
-)
-cli_options.add_argument(
-    "-y",
-    "--scale-y",
-    type=float,
-    metavar="N",
-    default=1.0,
-    help="Image y-axis :term:`scale` (default: 1.0) [4]_",
-)
-cli_options.add_argument(
-    "--max-pixels-cli",
-    action="store_true",
-    help="Apply :option:`--max-pixels` in CLI mode",
-)
 
 # Sizing
-_size_options = parser.add_argument_group(
+_sizing_options = parser.add_argument_group(
     "Sizing Options (CLI-only)",
     "These apply to all images and are mutually exclusive [#]_",
 )
-size_options = _size_options.add_mutually_exclusive_group()
-size_options.add_argument(
+sizing_options = _sizing_options.add_mutually_exclusive_group()
+sizing_options.add_argument(
     "-w",
     "--width",
     type=int,
     metavar="N",
     help="Image width",
 )
-size_options.add_argument(
+sizing_options.add_argument(
     "-h",
     "--height",
     type=int,
     metavar="N",
     help="Image height",
 )
-size_options.add_argument(
+sizing_options.add_argument(
     "--fit",
     action="store_const",
     const=Size.FIT,
@@ -341,7 +325,7 @@ size_options.add_argument(
         ":term:`terminal size`"
     ),
 )
-size_options.add_argument(
+sizing_options.add_argument(
     "--fit-to-width",
     action="store_const",
     const=Size.FIT_TO_WIDTH,
@@ -352,7 +336,7 @@ size_options.add_argument(
         "is ignored"
     ),
 )
-size_options.add_argument(
+sizing_options.add_argument(
     "--original-size",
     action="store_const",
     const=Size.ORIGINAL,
@@ -361,6 +345,29 @@ size_options.add_argument(
         "Render each image using its original size "
         "(See :option:`-O`, **USE WITH CAUTION!**)"
     ),
+)
+sizing_options.add_argument(
+    "-s",
+    "--scale",
+    type=float,
+    metavar="N",
+    help="Image :term:`scale` (overrides :option:`-x` and :option:`-y`) [#]_",
+)
+sizing_options.add_argument(
+    "-x",
+    "--scale-x",
+    type=float,
+    metavar="N",
+    default=1.0,
+    help="Image horizontal :term:`scale` (overriden by :option:`-s`) (default: 1.0)",
+)
+sizing_options.add_argument(
+    "-y",
+    "--scale-y",
+    type=float,
+    metavar="N",
+    default=1.0,
+    help="Image vertical :term:`scale` (overriden by :option:`-s`) (default: 1.0)",
 )
 
 # # Alignment
@@ -433,7 +440,7 @@ tui_options.add_argument(
 )
 
 # Performance
-perf_options = parser.add_argument_group("Performance Options (General)")
+perf_options = parser.add_argument_group("Performance Options")
 perf_options.add_argument(
     "--max-pixels",
     type=int,
@@ -443,13 +450,17 @@ perf_options.add_argument(
         f"(default: {config_options.max_pixels}) [#]_"
     ),
 )
-
+perf_options.add_argument(
+    "--max-pixels-cli",
+    action="store_true",
+    help="Apply :option:`--max-pixels` in CLI mode",
+)
 perf_options.add_argument(
     "--checkers",
     type=int,
     metavar="N",
     help=(
-        "Maximum number of sub-processes for checking directory sources (default: auto)"
+        "Maximum number of subprocesses for checking directory sources (default: auto)"
     ),
 )
 perf_options.add_argument(
@@ -466,7 +477,7 @@ perf_options.add_argument(
     type=int,
     metavar="N",
     help=(
-        "Number of subprocesses for rendering grid cells "
+        "Number of subprocesses for rendering grid cells in the TUI "
         f"(default: {config_options.grid_renderers})"
     ),
 )
@@ -546,16 +557,8 @@ log_options.add_argument(
     help="Implies :option:`--log-level=DEBUG` with verbosity",
 )
 
-# Positional
-parser.add_argument(
-    "sources",
-    nargs="*",
-    metavar="source",
-    help=(
-        "Path(s) to local image(s) and/or directory(s) OR URLs. "
-        "If no source is given, the current working directory is used."
-    ),
-)
+
+# Style-specific Parsers
 
 kitty_parser = ArgumentParser(add_help=False)
 kitty_options = kitty_parser.add_argument_group(

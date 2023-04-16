@@ -117,12 +117,18 @@ del argparse.Action.help
 del argparse._ArgumentGroup.description
 
 
-# Omit `program` directive for shorter references
+# Omit `program` directive for shorter references.
+# Also, omit program title and description.
 def render_rst(title, options, is_program, *args, **kwargs):
     render = _render_rst(title, options, is_program, *args, **kwargs)
+
     if is_program:
-        next(render)
-        next(render)
+        for _ in range(6):
+            next(render)
+        while next(render):
+            pass
+        yield ""
+
     yield from render
 
 
