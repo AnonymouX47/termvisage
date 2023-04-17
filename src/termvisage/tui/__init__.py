@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Tuple, Union
 
 import urwid
-from term_image.utils import get_terminal_name_version, lock_tty, write_tty
+from term_image.utils import lock_tty, write_tty
 from term_image.widget import UrwidImageScreen
 
 from .. import logging
@@ -59,22 +59,10 @@ def init(
     )
     main.displayer = main.display_images(".", images, contents, top_level=True)
 
-    is_on_kitty = get_terminal_name_version()[0] == "kitty"
-    if ImageClass.style == "kitty" and is_on_kitty:
-        # `z_index=None` is pretty glitchy for animations with WHOLE method
-        render.anim_style_specs["kitty"] = "+L"
-    for name in ("anim", "grid", "image"):
-        specs = getattr(render, f"{name}_style_specs")
-        if ImageClass.style == "kitty":
-            if is_on_kitty:
-                # Kitty blends images at the same z-index and position, unlike Konsole
-                specs["kitty"] += "z"
-            # Style-specifc args with default values would've been removed
-            if "compress" in style_args:
-                specs["kitty"] += f"c{style_args['compress']}"
-        # Style-specifc args with default values would've been removed
-        elif ImageClass.style == "iterm2" and "compress" in style_args:
-            specs["iterm2"] += f"c{style_args['compress']}"
+    if "compress" in style_args:
+        for name in ("anim", "grid", "image"):
+            specs = getattr(render, f"{name}_style_specs")
+            specs[ImageClass.style] += f"c{style_args['compress']}"
 
     Image._ti_alpha = (
         "#"
