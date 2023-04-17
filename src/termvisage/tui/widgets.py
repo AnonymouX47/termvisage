@@ -9,7 +9,7 @@ from os.path import basename
 from typing import List, Optional, Tuple
 
 import urwid
-from term_image.image import BaseImage, ITerm2Image, KittyImage, Size
+from term_image.image import BaseImage, Size
 from term_image.utils import get_terminal_name_version, get_terminal_size
 
 from .. import logging
@@ -417,31 +417,30 @@ class ImageCanvas(urwid.Canvas):
         pad_up -= trim_top
         pad_down -= trim_bottom
 
-        fill = b" " * cols
-        fill_left = b" " * pad_left
-        fill_right = b" " * pad_right
+        fill = (None, "U", b" " * cols)
+        fill_left = (None, "U", b" " * pad_left)
+        fill_right = (None, "U", b" " * pad_right)
 
+        terminal_name = get_terminal_name_version()[0]
+        style = tui_main.ImageClass.style
         disguise = (
             b"\b "
             * self._ti_change_state
-            * (
-                issubclass(tui_main.ImageClass, KittyImage)
-                or issubclass(tui_main.ImageClass, ITerm2Image)
-                and get_terminal_name_version()[0] == "konsole"
-            )
+            * (style == "kitty" or style == "iterm2" and terminal_name == "konsole")
         )
+        disguise = (None, "U", disguise)
 
         # Visible padding may be larger than the visible rows
         for _ in range(min(rows, pad_up)):
-            yield [(None, "U", fill)]
+            yield [fill]
 
         # See the description of `pad_up` and `pad_down` above
         for line in self.lines[-min(0, pad_up) : min(0, pad_down) or len(self.lines)]:
-            yield [(None, "U", fill_left + line + fill_right + disguise)]
+            yield [fill_left, (None, "U", line), fill_right, disguise]
 
         # Visible padding may be larger than the visible rows
         for _ in range(min(rows, pad_down)):
-            yield [(None, "U", fill)]
+            yield [fill]
 
     @classmethod
     def change(cls):
