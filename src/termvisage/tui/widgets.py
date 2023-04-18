@@ -14,6 +14,7 @@ from term_image.utils import get_terminal_name_version, get_terminal_size
 
 from .. import logging
 from ..config import config_options, expand_key, navi
+from ..utils import KITTY_DELETE_CURSOR_IMAGES_b
 from . import keys, main as tui_main
 from .render import anim_render_queue, grid_render_queue, image_render_queue
 
@@ -429,6 +430,11 @@ class ImageCanvas(urwid.Canvas):
             * (style == "kitty" or style == "iterm2" and terminal_name == "konsole")
         )
         disguise = (None, "U", disguise)
+        delete = (
+            ((None, "U", KITTY_DELETE_CURSOR_IMAGES_b),)
+            if style == "kitty" == terminal_name
+            else ()
+        )
 
         # Visible padding may be larger than the visible rows
         for _ in range(min(rows, pad_up)):
@@ -436,7 +442,13 @@ class ImageCanvas(urwid.Canvas):
 
         # See the description of `pad_up` and `pad_down` above
         for line in self.lines[-min(0, pad_up) : min(0, pad_down) or len(self.lines)]:
-            yield [fill_left, (None, "U", line), fill_right, disguise]
+            yield [
+                fill_left,
+                *(delete * line.startswith(b"\033_G")),
+                (None, "U", line),
+                fill_right,
+                disguise,
+            ]
 
         # Visible padding may be larger than the visible rows
         for _ in range(min(rows, pad_down)):

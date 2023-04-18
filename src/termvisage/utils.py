@@ -20,3 +20,5 @@ def clear_queue(queue: Union[Queue, mp_Queue]):
 ESC = "\033"
 CSI = f"{ESC}["
 COLOR_RESET = f"{CSI}m"
+KITTY_DELETE_CURSOR_IMAGES = f"{ESC}_Ga=d,d=C;{ESC}\\"
+KITTY_DELETE_CURSOR_IMAGES_b = KITTY_DELETE_CURSOR_IMAGES.encode()
