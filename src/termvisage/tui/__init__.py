@@ -95,9 +95,7 @@ def init(
         daemon=True,
     )
 
-    urwid.raw_display.Screen.get_available_raw_input = lock_tty(
-        urwid.raw_display.Screen.get_available_raw_input
-    )
+    UrwidImageScreen.draw_screen = lock_tty(UrwidImageScreen.draw_screen)
     main.loop.screen.clear()
     main.loop.screen.set_terminal_properties(2**24)
 
