@@ -231,6 +231,7 @@ def reconfigure_tui(
     """Updates aspects of the TUI to use the current config option values and
     keybindings.
     """
+    from .cli import args
     from .tui.keys import change_key
     from .tui.widgets import expand, image_grid, notif_bar, pile
 
@@ -253,7 +254,7 @@ def reconfigure_tui(
     expand_or_collapse = expand.original_widget.text[0]
     expand.original_widget.set_text(f"{expand_or_collapse} [{expand_key[1]}]")
 
-    if not logging.QUIET:
+    if not args.quiet:
         if pile.contents[-1][0] is notif_bar:
             pile.contents.pop()
         if config_options.max_notifications:
