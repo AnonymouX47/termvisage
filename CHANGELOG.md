@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [tui] Render style support when multiprocessing is enabled ([1637a38]).
 - [tui] Erasure of the last column of images with *iterm2* render style ([5d828d1]).
 - [tui] UI Foreground color for terminals with white background ([c1249ce]).
+- [tui] Notification bar not hidden when `--quiet` is specified ([1692d6c]).
 
 ### Changed
 - [config] Changed default value of "log file" config option to `"{$XDG_STATE_HOME}/termvisage/log"` ([ab971d6]).
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [e64edd4]: https://github.com/AnonymouX47/termvisage/commit/e64edd4017f98733a2d53d627b7481b5a209937b
 [ad059bb]: https://github.com/AnonymouX47/termvisage/commit/ad059bbddc072ad641c4e7d524d2cb1edbf54dce
 [ab971d6]: https://github.com/AnonymouX47/termvisage/commit/ab971d6766fe5fa260f9963fbffbca48e10b4d37
+[1692d6c]: https://github.com/AnonymouX47/termvisage/commit/1692d6cf453ebeb9629713aaf85b231c4492b9a0
 
 
 ## Pre-0.1
