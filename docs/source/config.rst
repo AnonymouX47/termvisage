@@ -104,8 +104,8 @@ These are top-level fields whose values control various settings of the viewer.
 .. confval:: log file
    :synopsis: The file to which logs are written.
    :type: string
-   :valid: An absolute path to a writable file
-   :default: ``"~/.termvisage/termvisage.log"``
+   :valid: A writable/creatable file path
+   :default: ``"{$XDG_STATE_HOME}/termvisage/log"``
 
    If the file:
 
@@ -116,9 +116,11 @@ These are top-level fields whose values control various settings of the viewer.
    Supports tilde expansion i.e a leading ``~`` (tilde) character is expanded to the
    current user's home directory.
 
+   The environment variable ``$XDG_STATE_HOME`` defaults to ``~/.local/state`` if undefined.
+
    .. warning::
       Relative paths are allowed but this will cause the log file to be written (or
-      created) relative to the **current working directory** every time the process
+      created) relative to the **current working directory** every time a session
       is started.
 
    .. note:: Overridden by :option:`-l`.
