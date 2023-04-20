@@ -8,7 +8,7 @@ import argparse
 from docutils.parsers.rst import directives
 from docutils.statemachine import StringList
 from sphinx_toolbox import confval
-from sphinxcontrib import autoprogram
+from sphinxcontrib import autoprogram, video
 
 # Sets the attributes removed in the CLI Parser section below
 from termvisage import parsers  # noqa: F401
@@ -32,6 +32,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_toolbox.confval",
     "sphinxcontrib.autoprogram",
+    "sphinxcontrib.video",
 ]
 
 # -- Options for HTML output -------------------------------------------------
@@ -79,6 +80,19 @@ class ConfigValue(confval.ConfigurationValue, ConfigValueSibling):
 
 
 confval.ConfigurationValue = ConfigValue
+
+# # -- Custom `video` ------------------------------------------------------
+
+
+class Video(video.Video):
+    def run(self):
+        node = super().run()[0]
+        node["width"] = "100%"
+
+        return [node]
+
+
+video.Video = Video
 
 # # -- CLI Parser -----------------------------------------------------------
 
