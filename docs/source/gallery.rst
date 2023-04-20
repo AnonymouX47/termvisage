@@ -1,52 +1,94 @@
 Gallery
 =======
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785256-c5ee4904-7acb-4dfb-a601-dd86fec0a6f3.png
+Render Styles
+-------------
+
+*iterm2* render style in Konsole
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: https://user-images.githubusercontent.com/61663146/233486305-cc3cf661-bcbd-4dda-8a6c-26702ab1336e.png
    :align: center
 
-   **kitty** render style in Kitty
+*iterm2* render style in Wezterm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785272-b3f90745-289e-47e9-bae3-418305c7c053.png
+.. figure:: https://user-images.githubusercontent.com/61663146/233488248-8c5750d2-9281-4a96-b0f4-32d61c29b02c.png
    :align: center
 
-   **kitty** render style in Konsole
+*kitty* render style in Kitty
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785305-e2f2647d-fa28-442e-9330-6ddd109d3ae6.png
+.. figure:: https://user-images.githubusercontent.com/61663146/233488260-6e7ce3fe-7561-44f7-aafe-d7a708e14758.png
    :align: center
 
-   **iterm2** render style in Konsole
+*kitty* render style in Konsole
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785308-f54275d6-a1ff-4dc8-ae00-72c20f111621.png
+.. figure:: https://user-images.githubusercontent.com/61663146/233488267-eaf46bf4-21b4-4055-b7a2-64607f234472.png
    :align: center
 
-   **iterm2** render style in Wezterm
+*block* render style in Alacritty
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785312-f8627aa8-8b01-43ae-b35c-64097ab31841.png
+.. figure:: https://user-images.githubusercontent.com/61663146/233488229-d4d0258c-2567-4b2a-ba38-8546b886fba3.png
    :align: center
 
-   **block** render style in Alacritty
+*block* render style in Terminator
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785314-721742a7-5127-4b87-9337-7dd5cc6fa435.png
+.. figure:: https://user-images.githubusercontent.com/61663146/233488238-eba87c77-0511-463e-8f39-97f5c405f15c.png
    :align: center
 
-   **block** render style in Terminator
+*block* render style in Termux
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175977625-62ee40d2-81b9-41fb-8244-25164e2d2ae7.png
+.. figure:: https://user-images.githubusercontent.com/61663146/233488245-9e2b184e-c497-4350-b122-0e795212a9f7.png
    :align: center
 
-   **block** render style in Termux
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175784933-64481c55-331f-468e-8102-7891a98b7f86.png
-   :align: center
+Feature Highlights
+------------------
 
-   Handles large image grids efficiently
+Image Grids
+^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785197-c2c87772-feaa-442e-9b8c-259b1fdf82a0.png
-   :align: center
+.. video:: https://user-images.githubusercontent.com/61663146/233408602-3a502b95-6902-4ea9-bda0-e94c53d4a68e.mp4
+   :preload: metadata
 
-   Loads large directories efficiently
+* Smooth and fast navigation
+* Mouse support for selection
+* Can maximize selected image cell
+* Adjustable cell size
+* Handles large grids efficiently
+* Concurrent/parallel rendering
+* Low memory consumption (compared against conventional viewers)
 
-.. figure:: https://user-images.githubusercontent.com/61663146/175785085-abb782c3-9bc0-4859-9184-14729a804508.png
-   :align: center
+High resolution images
+^^^^^^^^^^^^^^^^^^^^^^
 
-   Displays high resolution images efficiently
+.. video:: https://user-images.githubusercontent.com/61663146/233483835-674ee0ce-dc31-4793-8a16-0a947e49b3f0.mp4
+   :preload: metadata
+
+* Rendering doesn't affect interface responsiveness
+* Low memory consumption (compared to conventional viewers)
+
+Animated images
+^^^^^^^^^^^^^^^
+
+.. video:: https://user-images.githubusercontent.com/61663146/233483900-02abc2e1-894e-4d8b-b991-2ca66ffc5a85.mp4
+   :preload: metadata
+
+* All major formats supported: GIF (with alpha channel support), Animated PNG, Animated WEBP
+* Looping control
+* Speed/Frame duration control
+
+Recursive browsing
+^^^^^^^^^^^^^^^^^^
+
+.. video:: https://user-images.githubusercontent.com/61663146/233485536-4fb5dd63-93be-43e8-9cb9-e5cecccfa43c.mp4
+   :preload: metadata
+
+* Smooth and responsive navigation
+* Scans directories concurrently
+* Handles large directories efficiently
