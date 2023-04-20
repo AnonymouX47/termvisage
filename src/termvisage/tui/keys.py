@@ -244,7 +244,7 @@ def display_context_keys(context: str) -> None:
             if visible
         ]
     )
-    resize()
+    adjust_bottom_bar()
 
 
 def register_key(*args: Tuple[str, str]) -> FunctionType:
@@ -349,7 +349,7 @@ def help():
     getattr(main.ImageClass, "clear", lambda: True)()
 
 
-def resize():
+def adjust_bottom_bar():
     cols = get_terminal_size()[0]
     rows = key_bar.original_widget.rows((cols,))
     if expand._ti_shown:
@@ -379,6 +379,15 @@ def key_bar_rows():
         - (len(expand.original_widget.text) + 2) * expand._ti_shown
     )
     return key_bar.original_widget.rows((cols,))
+
+
+def resize():
+    adjust_bottom_bar()
+    main.grid_render_queue.put(None)  # Mark the start of a new grid
+    main.grid_change.set()
+    # Wait till GridRenderManager clears the cache
+    while main.grid_change.is_set():
+        pass
 
 
 keys["global"].update({"resized": [resize, True]})

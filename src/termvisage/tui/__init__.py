@@ -142,7 +142,7 @@ class Loop(urwid.MainLoop):
 
     def process_input(self, keys):
         if "window resize" in keys:
-            # Adjust bottom bar upon window resize
+            # Adjust bottom bar and clear grid cache upon window resize
             keys.append("resized")
             getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
         return super().process_input(keys)
