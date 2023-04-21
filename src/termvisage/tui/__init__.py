@@ -15,8 +15,9 @@ from term_image.widget import UrwidImageScreen
 from .. import logging
 from ..utils import CSI
 from . import main, render
+from .keys import adjust_bottom_bar
 from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
-from .widgets import Image, ImageCanvas, info_bar, main as main_widget
+from .widgets import Image, info_bar, main as main_widget
 
 
 def init(
@@ -136,15 +137,14 @@ def init(
 
 class Loop(urwid.MainLoop):
     def start(self):
-        # Properly set expand key visbility at initialization
-        self.unhandled_input("resized")
+        adjust_bottom_bar()  # Properly set expand key visbility at initialization
         return super().start()
 
     def process_input(self, keys):
         if "window resize" in keys:
-            # Adjust bottom bar and clear grid cache upon window resize
+            # "window resize" never reaches `.unhandled_input()`.
+            # Adjust the bottom bar and clear grid cache.
             keys.append("resized")
-            getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
         return super().process_input(keys)
 
 

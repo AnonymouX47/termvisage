@@ -389,6 +389,7 @@ def resize():
         # Wait till GridRenderManager clears the cache
         while main.grid_change.is_set():
             pass
+    getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
 
 
 keys["global"].update({"resized": [resize, True]})
