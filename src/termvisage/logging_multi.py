@@ -97,7 +97,7 @@ class Process(Process):
                     AutoCellRatio.is_supported = True
                 set_cell_ratio(self._cell_ratio or AutoCellRatio.DYNAMIC)
 
-            super().run(set_tty_lock=bool(self._ImageClass))
+            super().run()
         except KeyboardInterrupt:
             # Log only if the main process was not interrupted
             if not self._main_process_interrupted.wait(0.1):
