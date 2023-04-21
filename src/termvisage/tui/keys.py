@@ -383,11 +383,12 @@ def key_bar_rows():
 
 def resize():
     adjust_bottom_bar()
-    main.grid_render_queue.put(None)  # Mark the start of a new grid
-    main.grid_change.set()
-    # Wait till GridRenderManager clears the cache
-    while main.grid_change.is_set():
-        pass
+    if main.grid_active.is_set():
+        main.grid_render_queue.put(None)  # Mark the start of a new grid
+        main.grid_change.set()
+        # Wait till GridRenderManager clears the cache
+        while main.grid_change.is_set():
+            pass
 
 
 keys["global"].update({"resized": [resize, True]})
