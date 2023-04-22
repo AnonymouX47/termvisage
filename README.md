@@ -31,7 +31,7 @@
       <img src='https://readthedocs.org/projects/termvisage/badge/?version=latest' alt='Documentation Status'/>
    </a>
    <img src="https://img.shields.io/github/last-commit/AnonymouX47/termvisage"/>
-   <a href="https://twitter.com/intent/tweet?text=Display%20and%20browse%20images%20in%20the%20the%20terminal&url=https://github.com/AnonymouX47/termvisage&hashtags=developers,images,terminal,python">
+   <a href="https://twitter.com/intent/tweet?text=Browse%20and%20view%20images%20in%20the%20terminal&url=https://github.com/AnonymouX47/termvisage&hashtags=developers,images,terminal,python">
       <img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/>
    </a>
 </p>
