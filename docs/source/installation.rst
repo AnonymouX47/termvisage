@@ -20,33 +20,19 @@ Requirements
 Steps
 -----
 
-The latest **stable** version can be installed from `PyPI <https://pypi.python.org/pypi/termvisage>`_ using ``pip``:
+The latest version can be installed from `PyPI <https://pypi.org/project/termvisage>`_ with:
 
 .. code-block:: shell
 
-   pip install termvisage
+   pipx install termvisage
 
-The **development** version can be installed thus:
-
-**NOTE:** it's recommended to install in an isolated virtual environment, can be created by any means.
-
-Clone the `repository <https://github.com/AnonymouX47/termvisage>`_,
+and upgraded with:
 
 .. code-block:: shell
 
-   git clone https://github.com/AnonymouX47/termvisage.git
+   pipx upgrade termvisage
 
-then navigate into the local repository
-
-.. code-block:: shell
-
-   cd termvisage
-
-and run
-
-.. code-block:: shell
-
-   pip install .
+.. note:: ``pip`` can also be used but ``pipx`` is recommended.
 
 
 Supported Terminal Emulators
