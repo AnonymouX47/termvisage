@@ -1,26 +1,38 @@
 <div align="center">
-<h1><b>TermVisage</b></h1>
-<b>Browse and view images in the terminal</b>
-<br>
-<img src="https://raw.githubusercontent.com/AnonymouX47/termvisage/main/docs/source/resources/tui.png">
 
-<p align="center">
+<h1><b>TermVisage</b></h1>
+
+<p>
+<img src="https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png">
+</p>
+
+<p>
+<b>Browse and view images in the terminal</b>
+</p>
+
+<p>
+   &#128214; <a href='https://termvisage.readthedocs.io'>Manual</a>
+    &#9553; 
+   &#128444; <a href='https://termvisage.readthedocs.io/en/latest/gallery.html'>Gallery</a>
+</p>
+
+<p>
    <a href='https://pypi.org/project/termvisage/'>
-      <img src='https://img.shields.io/pypi/v/termvisage.svg'>
+      <img src='https://img.shields.io/pypi/v/termvisage.svg'/>
    </a>
-   <img src="https://static.pepy.tech/badge/termvisage">
+   <img src="https://static.pepy.tech/badge/termvisage"/>
    <a href='https://pypi.org/project/termvisage/'>
-      <img src='https://img.shields.io/pypi/pyversions/termvisage.svg'>
+      <img src='https://img.shields.io/pypi/pyversions/termvisage.svg'/>
    </a>
    <a href='https://github.com/psf/black'>
-      <img src='https://img.shields.io/badge/code%20style-black-000000.svg'>
+      <img src='https://img.shields.io/badge/code%20style-black-000000.svg'/>
    </a>
    <a href='https://termvisage.readthedocs.io/en/latest/?badge=latest'>
-      <img src='https://readthedocs.org/projects/termvisage/badge/?version=latest' alt='Documentation Status' />
+      <img src='https://readthedocs.org/projects/termvisage/badge/?version=latest' alt='Documentation Status'/>
    </a>
-   <img src="https://img.shields.io/github/last-commit/AnonymouX47/termvisage">
+   <img src="https://img.shields.io/github/last-commit/AnonymouX47/termvisage"/>
    <a href="https://twitter.com/intent/tweet?text=Display%20and%20browse%20images%20in%20the%20the%20terminal&url=https://github.com/AnonymouX47/termvisage&hashtags=developers,images,terminal,python">
-      <img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social">
+      <img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"/>
    </a>
 </p>
 
@@ -29,16 +41,10 @@
 
 > # 🚧 WIP 🚧
 >
-> ## Working on getting things back in sync with the library, [term-image]
->
-> In the mean time, install with
+> In the mean time, install with:
 > ```shell
-> pip install "term-image==0.5.*"
+> pipx install "term-image==0.5.*"
 > ```
->
-> Also, working on the docs... [this](https://term-image.readthedocs.io/en/v0.5.0/viewer/index.html) should suffice in the mean time.
->
-> **NOTE:** Any other link on this README may be broken at the moment.
 
 
 ## Contents
@@ -69,30 +75,19 @@
   **Plans to support a wider variety of terminal emulators are in motion** (see the [library][term-image]'s planned features).
 
 ### Steps
-The latest **stable** version can be installed from [PyPI](https://pypi.python.org/pypi/termvisage) using `pip`:
+The latest version can be installed from [PyPI](https://pypi.org/project/termvisage) with:
 
 ```shell
-pip install termvisage
+pipx install termvisage
 ```
 
-The **development** version can be installed thus:
+and upgraded with:
 
-**NOTE:** it's recommended to install in an isolated virtual environment which can be created by any means.
-
-Clone this repository from within a terminal
 ```shell
-git clone https://github.com/AnonymouX47/termvisage.git
+pipx upgrade termvisage
 ```
 
-then navigate into the local repository
-```shell
-cd termvisage
-```
-
-and run
-```shell
-pip install .
-```
+**NOTE:** `pip` can also be used but `pipx` is recommended.
 
 
 ## Features
@@ -110,26 +105,24 @@ pip install .
 
 ## Demo
 
-Check out the [gallery](https://termvisage.readthedocs.io/en/latest/gallery.html).
+<video autoplay loop poster="https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png" src="https://user-images.githubusercontent.com/61663146/233754941-7d5e5205-6a4e-4743-9518-6ac4c6b3fb92.mp4" width="100%">TUI Demo Video</video>
 
-[TUI Demo Video](https://user-images.githubusercontent.com/61663146/163809903-e8fb254b-a0aa-4d0d-9fc9-dd676c10b735.mp4)
-
-_\*The video was recorded at normal speed and not sped up._
+Check out the [Gallery](https://termvisage.readthedocs.io/en/latest/gallery.html) for more.
 
 
 ## Quick Start
 
-With a local image file
+With a file path:
 ```shell
 termvisage path/to/image.png
 ```
 
-With an image URL
+With a URL:
 ```shell
 termvisage https://www.example.com/image.png
 ```
 
-With a directory, recursively (not currently supported on Windows)
+With a directory, recursively (not currently supported on Windows):
 ```shell
 termvisage -r path/to/dir/
 ```
@@ -141,12 +134,10 @@ By **default**, if multiple sources or at least one directory source is given, t
 
 ## Usage
 
-<p align="center"><b>
-   🚧 Under Construction - There might be incompatible changes between minor versions of <a href='https://semver.org/spec/v2.0.0.html#spec-item-4'>version zero</a>!
-</b></p>
-
 ### CLI (Command-Line Interface)
 Run `termvisage --help` to see the full usage info and list of options.
+
+See the [CLI manual](https://termvisage.readthedocs.io/en/latest/cli.html).
 
 ### TUI (Terminal User Interface)
 The controls are **context-based** and always displayed at the bottom of the screen.
@@ -155,6 +146,8 @@ Pressing the `F1` key (in most contexts) brings up a **help** menu describing th
 The TUI can be configured using a config file. See the [Configuration](https://termvisage.readthedocs.io/en/latest/config.html) section of the docs.
 
 [Here](https://github.com/AnonymouX47/termvisage/blob/main/vim-style_config.json) is a config file with Vim-style key-bindings (majorly navigation).
+
+See the [TUI manual](https://termvisage.readthedocs.io/en/latest/tui.html).
 
 
 ## Contribution
