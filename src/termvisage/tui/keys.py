@@ -10,6 +10,7 @@ from types import FunctionType
 from typing import Tuple
 
 import urwid
+from term_image import get_cell_ratio
 from term_image.utils import get_terminal_size
 
 from .. import __version__, logging
@@ -382,13 +383,18 @@ def key_bar_rows():
 
 
 def resize():
-    adjust_bottom_bar()
+    global _prev_cell_ratio
+
     if main.grid_active.is_set():
-        main.grid_render_queue.put(None)  # Mark the start of a new grid
-        main.grid_change.set()
-        # Wait till GridRenderManager clears the cache
-        while main.grid_change.is_set():
-            pass
+        cell_ratio = get_cell_ratio()
+        if cell_ratio != _prev_cell_ratio:
+            _prev_cell_ratio = cell_ratio
+            main.grid_render_queue.put(None)  # Mark the start of a new grid
+            main.grid_change.set()
+            # Wait till GridRenderManager clears the cache
+            while main.grid_change.is_set():
+                pass
+    adjust_bottom_bar()
     getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
 
 
@@ -728,3 +734,6 @@ _cancel = None  #: Optional[Tuple[FunctionType, Tuple[Any]]]
 
 # Used for overlays
 _prev_view_widget = None  #: Optional[urwid.Widget]
+
+# Used to guard clearing of grid render cache
+_prev_cell_ratio = None  #: Optional[float]
