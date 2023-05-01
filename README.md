@@ -109,8 +109,20 @@ pipx upgrade termvisage
 
 ## Demo
 
-<video autoplay loop poster="https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png" src="https://user-images.githubusercontent.com/61663146/233754941-7d5e5205-6a4e-4743-9518-6ac4c6b3fb92.mp4" width="100%">TUI Demo Video</video>
+### Render Styles
+| block | iterm2 | kitty |
+|:-----:|:------:|:-----:|
+| ![block style](https://user-images.githubusercontent.com/61663146/233488229-d4d0258c-2567-4b2a-ba38-8546b886fba3.png) | ![iterm2 style](https://user-images.githubusercontent.com/61663146/233488248-8c5750d2-9281-4a96-b0f4-32d61c29b02c.png) | ![kitty style](https://user-images.githubusercontent.com/61663146/233488260-6e7ce3fe-7561-44f7-aafe-d7a708e14758.png) |
 
+### High-Resolution Images
+|||
+|:---:|:---:|
+| ![high_res_1](https://user-images.githubusercontent.com/61663146/235449392-b464ff19-82ac-4c55-9244-e718bc999e98.png) | ![high_res_2](https://user-images.githubusercontent.com/61663146/235449402-c339acf8-c6e6-4e38-9d35-497c2752e75f.png) |
+
+### Video Demo
+<video autoplay loop poster="https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png" src="https://user-images.githubusercontent.com/61663146/233754941-7d5e5205-6a4e-4743-9518-6ac4c6b3fb92.mp4" width="100%">Demo Video</video>
+
+### Gallery
 Check out the [Gallery](https://termvisage.readthedocs.io/en/latest/gallery.html) for more.
 
 
