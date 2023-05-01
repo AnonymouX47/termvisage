@@ -4,47 +4,34 @@ Gallery
 Render Styles
 -------------
 
-*iterm2* render style in Konsole
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*iterm2* render style
+^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/233486305-cc3cf661-bcbd-4dda-8a6c-26702ab1336e.png
-   :align: center
+.. csv-table::
+   :header: Konsole, Wezterm
 
-*iterm2* render style in Wezterm
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   .. image:: https://user-images.githubusercontent.com/61663146/233486305-cc3cf661-bcbd-4dda-8a6c-26702ab1336e.png, .. image:: https://user-images.githubusercontent.com/61663146/233488248-8c5750d2-9281-4a96-b0f4-32d61c29b02c.png
 
-.. figure:: https://user-images.githubusercontent.com/61663146/233488248-8c5750d2-9281-4a96-b0f4-32d61c29b02c.png
-   :align: center
+*kitty* render style
+^^^^^^^^^^^^^^^^^^^^
 
-*kitty* render style in Kitty
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. csv-table::
+   :header: Kitty, Konsole
 
-.. figure:: https://user-images.githubusercontent.com/61663146/233488260-6e7ce3fe-7561-44f7-aafe-d7a708e14758.png
-   :align: center
+   .. image:: https://user-images.githubusercontent.com/61663146/233488260-6e7ce3fe-7561-44f7-aafe-d7a708e14758.png, .. image:: https://user-images.githubusercontent.com/61663146/233488267-eaf46bf4-21b4-4055-b7a2-64607f234472.png
 
-*kitty* render style in Konsole
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*block* render style
+^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: https://user-images.githubusercontent.com/61663146/233488267-eaf46bf4-21b4-4055-b7a2-64607f234472.png
-   :align: center
+.. csv-table::
+   :header: Alacritty, Terminator
 
-*block* render style in Alacritty
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   .. image:: https://user-images.githubusercontent.com/61663146/233488229-d4d0258c-2567-4b2a-ba38-8546b886fba3.png, .. image:: https://user-images.githubusercontent.com/61663146/233488238-eba87c77-0511-463e-8f39-97f5c405f15c.png
 
-.. figure:: https://user-images.githubusercontent.com/61663146/233488229-d4d0258c-2567-4b2a-ba38-8546b886fba3.png
-   :align: center
+.. csv-table::
+   :header: Termux
 
-*block* render style in Terminator
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: https://user-images.githubusercontent.com/61663146/233488238-eba87c77-0511-463e-8f39-97f5c405f15c.png
-   :align: center
-
-*block* render style in Termux
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. figure:: https://user-images.githubusercontent.com/61663146/233488245-9e2b184e-c497-4350-b122-0e795212a9f7.png
-   :align: center
+   .. image:: https://user-images.githubusercontent.com/61663146/233488245-9e2b184e-c497-4350-b122-0e795212a9f7.png
 
 
 Feature Highlights
