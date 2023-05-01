@@ -54,6 +54,10 @@ Image Grids
 High resolution images
 ^^^^^^^^^^^^^^^^^^^^^^
 
+.. csv-table::
+
+   .. image:: https://user-images.githubusercontent.com/61663146/235449392-b464ff19-82ac-4c55-9244-e718bc999e98.png, .. image:: https://user-images.githubusercontent.com/61663146/235449402-c339acf8-c6e6-4e38-9d35-497c2752e75f.png
+
 .. video:: https://user-images.githubusercontent.com/61663146/233483835-674ee0ce-dc31-4793-8a16-0a947e49b3f0.mp4
    :preload: metadata
 
