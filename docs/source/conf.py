@@ -42,7 +42,7 @@ html_theme = "furo"
 
 # # -- sphinx-intersphinx ----------------------------------------------
 intersphinx_mapping = {
-    "term_image": ("https://term-image.readthedocs.io/en/v0.6.0/", None),
+    "term_image": ("https://term-image.readthedocs.io/en/stable/", None),
 }
 intersphinx_disabled_reftypes = ["*"]
 
