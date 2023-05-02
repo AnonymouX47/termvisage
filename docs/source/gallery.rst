@@ -83,3 +83,22 @@ Recursive browsing
 * Smooth and responsive navigation
 * Scans directories concurrently
 * Handles large directories efficiently
+
+Sizing (CLI only)
+^^^^^^^^^^^^^^^^^
+
+.. video:: https://user-images.githubusercontent.com/61663146/235648974-5796bf59-c6fd-4dce-b3f3-f612b40f7050.mp4
+   :preload: metadata
+
+* Size images based on terminal size or original image size.
+* Specifiy image width or height (in columns or lines respectively).
+
+Alignment/Padding (CLI only)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. video:: https://user-images.githubusercontent.com/61663146/235649185-863a41ff-dc9e-4492-be8c-c5ec1b167a84.mp4
+   :preload: metadata
+
+* Adjust the padding width and height of images.
+* Adjust the horizontal and vertical alignment of images within the given padding.
+* Display images without padding.
