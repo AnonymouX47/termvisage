@@ -21,6 +21,7 @@ def strip_markup(string: str) -> str:
     """Strip selected reST markup from the *string*."""
     if string:
         string = string.replace("``", "`")
+        string = string.replace("\\", "")
         for pattern, repl in (
             (r":(\w+):`(.+?)( <.+>)?`", rst_role_repl),
             (r"\*\*(.+)\*\*", r"\1"),
