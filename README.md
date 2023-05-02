@@ -79,7 +79,7 @@
   **Plans to support a wider variety of terminal emulators are in motion** (see the [library][term-image]'s planned features).
 
 ### Steps
-The latest version can be installed from [PyPI](https://pypi.org/project/termvisage) with:
+The latest version can be installed from [PyPI](https://pypi.org/project/termvisage) using [`pipx`](https://pypa.github.io/pipx/) with:
 
 ```shell
 pipx install termvisage
@@ -91,7 +91,7 @@ and upgraded with:
 pipx upgrade termvisage
 ```
 
-**NOTE:** `pip` can also be used but `pipx` is recommended.
+**NOTE:** [`pip`](https://pip.pypa.io/en/stable/) can also be used but `pipx` is recommended.
 
 
 ## Features

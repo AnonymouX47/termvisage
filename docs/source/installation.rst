@@ -20,7 +20,7 @@ Requirements
 Steps
 -----
 
-The latest version can be installed from `PyPI <https://pypi.org/project/termvisage>`_ with:
+The latest version can be installed from `PyPI <https://pypi.org/project/termvisage>`_ using `pipx <https://pypa.github.io/pipx/>`_ with:
 
 .. code-block:: shell
 
@@ -32,7 +32,7 @@ and upgraded with:
 
    pipx upgrade termvisage
 
-.. note:: ``pip`` can also be used but ``pipx`` is recommended.
+.. note:: `pip <https://pip.pypa.io/en/stable/>`_ can also be used but ``pipx`` is recommended.
 
 
 Supported Terminal Emulators
