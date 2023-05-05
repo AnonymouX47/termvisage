@@ -47,9 +47,8 @@ parser = ArgumentParser(
 from options/flags, to avoid ambiguity.
 For example, ``$ termvisage [options] -- -image.jpg --image.png``.
 
-Supports all image formats supported by ``PIL.Image.open()``.
 See https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html for \
-details.
+supported image formats.
 
 See https://termvisage.readthedocs.io/en/stable/cli.html for the complete CLI \
 description.
@@ -64,8 +63,8 @@ positional_args.add_argument(
     nargs="*",
     metavar="source",
     help=(
-        "Path(s) to local image(s) and/or directory(s) OR URLs. "
-        "If no source is given, the current working directory is used."
+        "Image file path(s), directory path(s) and/or image URL(s). "
+        "If no source is provided, the current working directory is used."
     ),
 )
 
@@ -158,7 +157,7 @@ mode_options.add_argument(
 mode_options.add_argument(
     "--tui",
     action="store_true",
-    help="Always launch the TUI, even for a single image",
+    help="Launch the TUI, even for a single image",
 )
 
 # # Animation
