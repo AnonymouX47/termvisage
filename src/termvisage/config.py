@@ -213,7 +213,7 @@ def load_config(config_file: str) -> None:
 def load_xdg_config() -> None:
     """Loads user config files according to the XDG Base Directories spec."""
     for config_dir in reversed(os.environ.get("XDG_CONFIG_DIRS", "/etc").split(":")):
-        config_file = path.join(config_dir, "termvisage", "config.json")
+        config_file = path.join(config_dir, "termvisage", "termvisage.json")
         if (
             # The XDG Base Dirs spec states that relative paths should be ignored
             path.abspath(config_dir) == config_dir
@@ -499,7 +499,7 @@ user_config_file = None
 xdg_config_file = path.join(
     os.environ.get("XDG_CONFIG_HOME", path.join(path.expanduser("~"), ".config")),
     "termvisage",
-    "config.json",
+    "termvisage.json",
 )
 
 _valid_keys = {*bytes(range(32, 127)).decode(), *urwid.escape._keyconv.values(), "esc"}

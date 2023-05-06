@@ -10,8 +10,8 @@ The configuration file is written in **JSON** format, using a *partial config* s
 i.e only the fields to be modified need to be present in the config file.
 
 By default, ``termvisage`` searches the following locations, **in the specified order**,
-for ``$DIR/termvisage/config.json`` (a file named ``config.json`` within a ``termvisage``
-directory):
+for ``$DIR/termvisage/termvisage.json`` (a file named ``termvisage.json`` within a
+directory named ``termvisage``):
 
 * All valid directories specified in the ``XDG_CONFIG_DIRS`` enviroment variable,
   **in reverse order** or ``/etc/xdg`` if not set.
@@ -31,7 +31,7 @@ To use the default configuration and not load any config file, use :option:`--no
    file and reports any errors. To see information about how the errors are resolved
    (if resolvable), use :option:`-v`.
 
-`This <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/default_config.json>`_
+`This <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/default-termvisage.json>`_
 is a sample config file with all options and keybindings at their defaults.
 Note that **this is only for reference**, using any field within it as-is has no effect.
 
@@ -255,7 +255,7 @@ The format of the ``keys`` field is thus::
       from that config file are considered invalid and any changes already made are
       reverted.
 
-`Here <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/vim-style_config.json>`_
+`Here <https://raw.githubusercontent.com/AnonymouX47/termvisage/main/vim_style-termvisage.json>`_
 is a sample config file with Vim-style (majorly navigation) keybindings.
 
 Below is a list of all **valid** values for *key*::

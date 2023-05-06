@@ -161,7 +161,7 @@ Pressing the `F1` key (in most contexts) brings up a **help** menu describing th
 
 The TUI can be configured using a config file. See the [Configuration](https://termvisage.readthedocs.io/en/latest/config.html) section of the docs.
 
-[Here](https://github.com/AnonymouX47/termvisage/blob/main/vim-style_config.json) is a config file with Vim-style key-bindings (majorly navigation).
+[Here](https://github.com/AnonymouX47/termvisage/blob/main/vim_style-termvisage.json) is a config file with Vim-style key-bindings (majorly navigation).
 
 See the [TUI manual](https://termvisage.readthedocs.io/en/latest/tui.html).
 

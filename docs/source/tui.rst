@@ -130,4 +130,4 @@ An action has the following defining properties:
 .. tip::
 
    All contexts and their actions (excluding navigation actions) with default properties
-   can be found `here <https://github.com/AnonymouX47/termvisage/blob/main/default_config.json>`_.
+   can be found `here <https://github.com/AnonymouX47/termvisage/blob/main/default-termvisage.json>`_.
