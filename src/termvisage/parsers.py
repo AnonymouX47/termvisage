@@ -11,6 +11,11 @@ from . import __version__
 from .config import config_options
 
 
+class BasicHelpAction(Action):
+    def __call__(self, *args):
+        basic_parser.parse_args(["--help"])
+
+
 def rst_role_repl(match):
     if match.group(1) == "option":
         return f"`{match.group(2)}`"
@@ -33,9 +38,89 @@ def strip_markup(string: str) -> str:
     return string
 
 
-# Parser epilog, group descriptions and argument help may contain reStructuredText
+# NOTE: Parser epilog, group descriptions and argument help may contain reStructuredText
 # markup.
 # Ensure any markup used is stripped by `strip_markup()`.
+
+# Main parser subset with only arguments/options for basic usage (for `--help`)
+
+basic_parser = ArgumentParser(
+    prog="termvisage",
+    usage="%(prog)s [options] [source ...]",
+    formatter_class=RawDescriptionHelpFormatter,
+    description="Display/Browse images in a terminal",
+    epilog="""
+``--`` should be used to separate positional arguments that begin with an ``-`` \
+from options/flags, to avoid ambiguity.
+For example, ``$ termvisage [options] -- -image.jpg --image.png``.
+""",
+    add_help=False,
+)
+
+basic_parser.add_argument(
+    "sources",
+    nargs="*",
+    metavar="source",
+    help="Image file path(s), directory path(s) and/or image URL(s)",
+)
+basic_parser.add_argument(
+    "-S",
+    "--style",
+    choices=("auto", "block", "iterm2", "kitty"),
+    help=f"Image :term:`render style` (default: {config_options.style})",
+)
+basic_parser.add_argument(
+    "-r",
+    "--recursive",
+    action="store_true",
+    help="Scan for local images recursively",
+)
+basic_parser.add_argument(
+    "--no-anim",
+    action="store_true",
+    help="Disable image animation",
+)
+
+basic_mode_options = basic_parser.add_mutually_exclusive_group()
+basic_mode_options.add_argument(
+    "--cli",
+    action="store_true",
+    help="Draw all image sources to the terminal directly",
+)
+basic_mode_options.add_argument(
+    "--tui",
+    action="store_true",
+    help="Launch the TUI, even for a single image",
+)
+
+basic_parser.add_argument(
+    "-v",
+    "--verbose",
+    action="store_true",
+    help="More detailed event reporting",
+)
+
+basic_help_options = basic_parser.add_mutually_exclusive_group()
+basic_help_options.add_argument(
+    "--help",
+    action="help",
+    help="Show this help message and exit",
+)
+basic_help_options.add_argument(
+    "--long-help",
+    action="help",
+    help="Show the full help message and exit",
+)
+
+basic_parser.add_argument(
+    "--version",
+    action="version",
+    version=__version__,
+    help="Show the program version and exit",
+)
+
+
+# Main Parser
 
 parser = ArgumentParser(
     prog="termvisage",
@@ -70,11 +155,20 @@ positional_args.add_argument(
 
 # General
 general = parser.add_argument_group("General Options")
-general.add_argument(
+
+help_options = general.add_mutually_exclusive_group()
+help_options.add_argument(
     "--help",
+    nargs=0,
+    action=BasicHelpAction,
+    help="Show the basic help message and exit",
+)
+help_options.add_argument(
+    "--long-help",
     action="help",
     help="Show this help message and exit",
 )
+
 general.add_argument(
     "--version",
     action="version",
