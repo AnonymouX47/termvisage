@@ -14,7 +14,6 @@ from term_image.image import ITerm2Image, Size
 
 from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
-from .config import config_options
 
 
 class BasicHelpAction(Action):
@@ -23,7 +22,7 @@ class BasicHelpAction(Action):
 
 
 def rst_role_repl(match):
-    if match.group(1) == "option":
+    if match.group(1) in {"option", "confval"}:
         return f"`{match.group(2)}`"
     return match.group(2)
 
@@ -73,7 +72,7 @@ basic_parser.add_argument(
     "-S",
     "--style",
     choices=("auto", "block", "iterm2", "kitty"),
-    help=f"Image :term:`render style` (default: {config_options.style})",
+    help="Image :term:`render style` (default: :confval:`style` config)",
 )
 basic_parser.add_argument(
     "-r",
@@ -187,14 +186,14 @@ general.add_argument(
     metavar="N",
     help=(
         "Timeout (in seconds) for all terminal queries "
-        f"(default: {config_options.query_timeout})"
+        "(default: :confval:`query timeout` config)"
     ),
 )
 general.add_argument(
     "-S",
     "--style",
     choices=("auto", "block", "iterm2", "kitty"),
-    help=f"Image :term:`render style` (default: {config_options.style}) [#]_",
+    help="Image :term:`render style` (default: :confval:`style` config) [#]_",
 )
 general.add_argument(
     "--force-style",
@@ -213,7 +212,8 @@ cell_ratio_options.add_argument(
     metavar="N",
     help=(
         "The :term:`cell ratio` (width-to-height ratio of a character cell) in the "
-        "terminal; to preserve image aspect ratio (default: auto)"
+        "terminal; to preserve image aspect ratio "
+        "(default: :confval:`cell ratio` config)"
     ),
 )
 cell_ratio_options.add_argument(
@@ -221,7 +221,7 @@ cell_ratio_options.add_argument(
     action="store_true",
     help=(
         "Determine the :term:`cell ratio` from the terminal emulator, if possible "
-        "(default)"
+        "(default: :confval:`cell ratio` config)"
     ),
 )
 
@@ -232,7 +232,7 @@ general.add_argument(
     help=(
         "Enable/Disable a workaround for *auto* :term:`cell ratio` on some terminal "
         "emulators (e.g older VTE-based ones) that wrongly report window dimensions "
-        "swapped"
+        "swapped (default: :confval:`swap win size` config)"
     ),
 )
 
@@ -282,7 +282,7 @@ anim_cache_options.add_argument(
     metavar="N",
     help=(
         "Maximum frame count for animation frames to be cached (Better performance "
-        f"at the cost of memory) (default: {config_options.anim_cache}) [#]_"
+        "at the cost of memory) (default: :confval:`anim cache` config) [#]_"
     ),
 )
 anim_cache_options.add_argument(
@@ -538,7 +538,7 @@ perf_options.add_argument(
     metavar="N",
     help=(
         "Maximum amount of pixels in images to be displayed "
-        f"(default: {config_options.max_pixels}) [#]_"
+        "(default: :confval:`max pixels` config) [#]_"
     ),
 )
 perf_options.add_argument(
@@ -551,7 +551,8 @@ perf_options.add_argument(
     type=int,
     metavar="N",
     help=(
-        "Maximum number of subprocesses for checking directory sources (default: auto)"
+        "Maximum number of subprocesses for checking directory sources "
+        "(default: :confval:`checkers` config)"
     ),
 )
 perf_options.add_argument(
@@ -560,7 +561,7 @@ perf_options.add_argument(
     metavar="N",
     help=(
         "Number of threads for downloading images from URL sources "
-        f"(default: {config_options.getters})"
+        "(default: :confval:`getters` config)"
     ),
 )
 perf_options.add_argument(
@@ -569,14 +570,17 @@ perf_options.add_argument(
     metavar="N",
     help=(
         "Number of subprocesses for rendering grid cells in the TUI "
-        f"(default: {config_options.grid_renderers})"
+        "(default: :confval:`grid renderers` config)"
     ),
 )
 perf_options.add_argument(
     "--multi",
     action=BooleanOptionalAction,
     default=None,
-    help="Enable (if supported) or disable multiprocessing (default: enabled)",
+    help=(
+        "Enable (if supported) or disable multiprocessing "
+        "(default: :confval:`multi` config)"
+    ),
 )
 
 # Config
@@ -608,7 +612,7 @@ log_options_.add_argument(
     "-l",
     "--log-file",
     metavar="FILE",
-    help=f"The file to write logs to (default: {config_options.log_file})",
+    help="The file to write logs to (default: :confval:`log file` config)",
 )
 log_options.add_argument(
     "--log-level",
