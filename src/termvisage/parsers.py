@@ -34,8 +34,8 @@ def strip_markup(string: str) -> str:
         string = string.replace("\\", "")
         for pattern, repl in (
             (r":(\w+):`(.+?)( <.+>)?`", rst_role_repl),
-            (r"\*\*(.+)\*\*", r"\1"),
-            (r"\*(.+)\*", r"\1"),
+            (r"\*\*(.+?)\*\*", r"\1"),
+            (r"\*(.+?)\*", r"\1"),
             (r" \[.+\]_", ""),
         ):
             string = re.sub(pattern, repl, string)
