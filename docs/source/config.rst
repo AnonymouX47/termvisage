@@ -155,12 +155,13 @@ These are top-level fields whose values control various settings of the viewer.
    .. note:: Overridden by :option:`--max-pixels`.
 
 .. confval:: multi
-   :synopsis: Enable or disable multiprocessing.
+   :synopsis: Enable (if supported) or disable multiprocessing.
    :type: boolean
    :valid: ``true``, ``false``
    :default: ``true``
 
-   If ``false``, the ``checkers`` and ``grid renderers`` options have no effect.
+   If ``false``, the :confval:`checkers` and :confval:`grid renderers` options have no
+   effect.
 
    .. note:: Overridden by :option:`--multi` and :option:`--no-multi`.
 
