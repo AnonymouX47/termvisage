@@ -1,7 +1,8 @@
 Command-Line Interface
 ======================
 
-Run ``termvisage --help`` to see the usage info and help text.
+Run ``termvisage --help`` to see the basic help message or ``termvisage --long-help``
+for the full help message.
 
 .. note::
    Some options are only applicable in a specific :ref:`mode <modes>`.

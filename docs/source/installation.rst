@@ -55,8 +55,7 @@ Some terminals emulators that have been tested to meet the requirements for at l
 - MinTTY (on Windows)
 - Termux (on Android)
 
-For style-specific support, see the **Render Styles** section towards the bottom of the
-command-line help text (i.e the output of ``termvisage --help``).
+For render style-specific support, see :ref:`render-styles`.
 
 .. note::
    Some terminal emulators support truecolor escape sequences but have a

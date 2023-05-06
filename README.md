@@ -147,7 +147,7 @@ By **default**, if multiple sources or at least one directory source is given, t
 ## Usage
 
 ### CLI (Command-Line Interface)
-Run `termvisage --help` to see the full usage info and list of options.
+Run ``termvisage --help`` to see the basic help message or ``termvisage --long-help`` for the full help message.
 
 See the [CLI manual](https://termvisage.readthedocs.io/en/latest/cli.html).
 
