@@ -16,11 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [config] Changed default value of "log file" config option to `"{$XDG_STATE_HOME}/termvisage/log"` ([ab971d6]).
 - [tui] Grid cells are now re-rendered upon window resize ([a244048]).
+- [cli] Shorten the output of `--help` command-line option ([d5852e6]).
+- [config] Rename config files from "config.json" to "termvisage.json" ([a23f2fe]).
 
 ### Added
 - [tui] "About" section within the "Help" overlay ([19b6650]).
 - [tui] File name labels to image grid cells ([e64edd4]).
 - [tui] Support for terminal synchronized output ([ad059bb]).
+- [cli] `--long-help` command-line option for full help message ([d5852e6]).
 
 ### Removed
 - As much private API usage across the CLI and TUI code ([term-image#70]).
@@ -37,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [ab971d6]: https://github.com/AnonymouX47/termvisage/commit/ab971d6766fe5fa260f9963fbffbca48e10b4d37
 [1692d6c]: https://github.com/AnonymouX47/termvisage/commit/1692d6cf453ebeb9629713aaf85b231c4492b9a0
 [a244048]: https://github.com/AnonymouX47/termvisage/commit/a2440484b36621138cda853cdcce9faf0ac569e1
+[a244048]: https://github.com/AnonymouX47/termvisage/commit/d5852e6e5db48d34bc0ea119c54b510924501318
+[a244048]: https://github.com/AnonymouX47/termvisage/commit/a23f2fe5d7e2d53d1847dc2bcf2552718c22e7fd
 
 
 ## Pre-0.1
