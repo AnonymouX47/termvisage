@@ -3,3 +3,7 @@ furo==2022.12.7
 sphinxcontrib.autoprogram==0.1.8
 sphinx-toolbox==3.4.0
 sphinxcontrib.video==0.1.1
+
+# `sphinx-toolbox` requires `cachecontrol`, which is incompatible with `urllib3>=2`
+# See https://github.com/ionrock/cachecontrol/issues/292
+urllib3<2
