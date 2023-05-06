@@ -2,7 +2,13 @@
 
 import re
 import sys
-from argparse import Action, ArgumentParser, RawDescriptionHelpFormatter, _ArgumentGroup
+from argparse import (
+    Action,
+    ArgumentParser,
+    BooleanOptionalAction,
+    RawDescriptionHelpFormatter,
+    _ArgumentGroup,
+)
 
 from term_image.image import ITerm2Image, Size
 
@@ -219,23 +225,14 @@ cell_ratio_options.add_argument(
     ),
 )
 
-win_size_options = general.add_mutually_exclusive_group()
-win_size_options.add_argument(
+general.add_argument(
     "--swap-win-size",
-    action="store_true",
+    action=BooleanOptionalAction,
     default=None,
     help=(
-        "A workaround for *auto* :term:`cell ratio` on some terminal emulators "
-        "(e.g older VTE-based ones) that wrongly report window dimensions swapped"
-    ),
-)
-win_size_options.add_argument(
-    "--no-swap-win-size",
-    action="store_false",
-    default=None,
-    dest="swap_win_size",
-    help=(
-        "Unlike :option:`--swap-win-size`, use the reported window size as-is (default)"
+        "Enable/Disable a workaround for *auto* :term:`cell ratio` on some terminal "
+        "emulators (e.g older VTE-based ones) that wrongly report window dimensions "
+        "swapped"
     ),
 )
 
@@ -575,20 +572,11 @@ perf_options.add_argument(
         f"(default: {config_options.grid_renderers})"
     ),
 )
-
-multi_options = perf_options.add_mutually_exclusive_group()
-multi_options.add_argument(
+perf_options.add_argument(
     "--multi",
-    action="store_true",
+    action=BooleanOptionalAction,
     default=None,
-    help="Enable multiprocessing, if supported (default)",
-)
-multi_options.add_argument(
-    "--no-multi",
-    action="store_false",
-    default=None,
-    dest="multi",
-    help="Disable multiprocessing",
+    help="Enable (if supported) or disable multiprocessing (default: enabled)",
 )
 
 # Config
