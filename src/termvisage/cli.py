@@ -50,6 +50,27 @@ else:
     OS_HAS_FCNTL = True
 
 
+# Checks for CL arguments that have possible invalid values and don't have corresponding
+# config options. See `check_arg()`.
+ARG_CHECKS = (
+    ("frame_duration", lambda x: x is None or x > 0.0, "must be greater than zero"),
+    ("max_depth", lambda x: x > 0, "must be greater than zero"),
+    (
+        "max_depth",
+        lambda x: (x + 50 > sys.getrecursionlimit() and sys.setrecursionlimit(x + 50)),
+        "too deep",
+        (RecursionError, OverflowError),
+    ),
+    ("repeat", lambda x: x != 0, "must be non-zero"),
+    ("alpha", lambda x: 0.0 <= x < 1.0, "out of range"),
+    (
+        "alpha_bg",
+        lambda x: not x or re.fullmatch("#([0-9a-fA-F]{6})?", "#" + x),
+        "invalid hex color",
+    ),
+)
+
+
 def check_dir(
     dir: str, prev_dir: str = "..", *, _links: List[Tuple[str]] = None
 ) -> Optional[Dict[str, Union[bool, Dict[str, Union[bool, dict]]]]]:
@@ -540,6 +561,56 @@ def open_files(
         clear_queue(file_queue)
 
 
+def check_arg(
+    name: str,
+    check: Callable[[Any], Any],
+    msg: str,
+    exceptions: Tuple[Exception] = None,
+    *,
+    fatal: bool = True,
+) -> bool:
+    """Performs generic argument value checks and outputs the given message if the
+    argument value is invalid.
+
+    Returns:
+        ``True`` if valid, otherwise ``False``.
+
+    If *exceptions* is :
+      - not given or ``None``, the argument is invalid only if ``check(arg)``
+        returns a falsy value.
+      - given, the argument is invalid if ``check(arg)`` raises one of the given
+        exceptions. It's also invalid if it raises any other exception but the
+        error message is different.
+    """
+    value = getattr(args, name)
+    if exceptions:
+        valid = False
+        try:
+            check(value)
+            valid = True
+        except exceptions:
+            pass
+        except Exception:
+            log_exception(
+                "Invalid! See the logs",
+                logger,
+                f"--{name.replace('_', '-')}",
+                direct=True,
+                fatal=fatal,
+            )
+    else:
+        valid = check(value)
+
+    if not valid:
+        notify.notify(
+            f"{msg} (got: {value!r})",
+            notify.CRITICAL if fatal else notify.ERROR,
+            f"--{name.replace('_', '-')}",
+        )
+
+    return bool(valid)
+
+
 def main() -> None:
     """CLI execution sub-entry-point"""
     # Importing these (in isort order) at module-level results in circular imports
@@ -552,55 +623,6 @@ def main() -> None:
     global args, url_images, MAX_DEPTH, RECURSIVE, SHOW_HIDDEN
 
     warnings.filterwarnings("error", "", TermImageWarning, "term_image.image.iterm2")
-
-    def check_arg(
-        name: str,
-        check: Callable[[Any], Any],
-        msg: str,
-        exceptions: Tuple[Exception] = None,
-        *,
-        fatal: bool = True,
-    ) -> bool:
-        """Performs generic argument value checks and outputs the given message if the
-        argument value is invalid.
-
-        Returns:
-            ``True`` if valid, otherwise ``False``.
-
-        If *exceptions* is :
-          - not given or ``None``, the argument is invalid only if ``check(arg)``
-            returns a falsy value.
-          - given, the argument is invalid if ``check(arg)`` raises one of the given
-            exceptions. It's also invalid if it raises any other exception but the
-            error message is different.
-        """
-        value = getattr(args, name)
-        if exceptions:
-            valid = False
-            try:
-                check(value)
-                valid = True
-            except exceptions:
-                pass
-            except Exception:
-                log_exception(
-                    "Invalid! See the logs",
-                    logger,
-                    f"--{name.replace('_', '-')}",
-                    direct=True,
-                    fatal=fatal,
-                )
-        else:
-            valid = check(value)
-
-        if not valid:
-            notify.notify(
-                f"{msg} (got: {value!r})",
-                notify.CRITICAL if fatal else notify.ERROR,
-                f"--{name.replace('_', '-')}",
-            )
-
-        return bool(valid)
 
     args = parser.parse_args()
     MAX_DEPTH = args.max_depth
@@ -632,26 +654,8 @@ def main() -> None:
         args.verbose_log,
     )
 
-    for details in (
-        ("frame_duration", lambda x: x is None or x > 0.0, "must be greater than zero"),
-        ("max_depth", lambda x: x > 0, "must be greater than zero"),
-        (
-            "max_depth",
-            lambda x: (
-                x + 50 > sys.getrecursionlimit() and sys.setrecursionlimit(x + 50)
-            ),
-            "too deep",
-            (RecursionError, OverflowError),
-        ),
-        ("repeat", lambda x: x != 0, "must be non-zero"),
-        ("alpha", lambda x: 0.0 <= x < 1.0, "out of range"),
-        (
-            "alpha_bg",
-            lambda x: not x or re.fullmatch("#([0-9a-fA-F]{6})?", "#" + x),
-            "invalid hex color",
-        ),
-    ):
-        if not check_arg(*details):
+    for arg_details in ARG_CHECKS:
+        if not check_arg(*arg_details):
             return INVALID_ARG
 
     for name, option in config_options.items():
