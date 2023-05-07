@@ -991,7 +991,7 @@ def main() -> None:
                         if (
                             get_terminal_name_version()[0] == "konsole"
                             # Always applies to non-native animations also
-                            or image.rendered_height <= get_terminal_size()[1]
+                            or image.rendered_height <= get_terminal_size().lines
                         )
                         else "lines"
                     )
