@@ -33,6 +33,9 @@ The viewer can be used in two modes:
    * there is only a single image source
    * :option:`--cli` is specified
 
+   If there are multiple image sources, animations are skipped (except when
+   :option:`--itn` is used with the **iterm2** :term:`render style`)
+
 2. **TUI mode**
 
    In this mode, a Terminal/Text-based User Interface is launched, within which images
