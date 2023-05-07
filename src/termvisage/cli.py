@@ -53,15 +53,15 @@ else:
 # Checks for CL arguments that have possible invalid values and don't have corresponding
 # config options. See `check_arg()`.
 ARG_CHECKS = (
-    ("frame_duration", lambda x: x is None or x > 0.0, "must be greater than zero"),
-    ("max_depth", lambda x: x > 0, "must be greater than zero"),
+    ("frame_duration", lambda x: x is None or x > 0.0, "less than or equal to zero"),
+    ("max_depth", lambda x: x > 0, "less than or equal to zero"),
     (
         "max_depth",
         lambda x: (x + 50 > sys.getrecursionlimit() and sys.setrecursionlimit(x + 50)),
         "too deep",
         (RecursionError, OverflowError),
     ),
-    ("repeat", lambda x: x != 0, "must be non-zero"),
+    ("repeat", lambda x: x != 0, "zero"),
     ("alpha", lambda x: 0.0 <= x < 1.0, "out of range"),
     (
         "alpha_bg",
