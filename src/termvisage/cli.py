@@ -68,6 +68,40 @@ ARG_CHECKS = (
         lambda x: not x or re.fullmatch("#([0-9a-fA-F]{6})?", "#" + x),
         "invalid hex color",
     ),
+    ("h_allow", lambda x: x >= 0, "less than zero"),
+    ("v_allow", lambda x: x >= 0, "less than zero"),
+    ("width", lambda x: x is None or x > 0, "less than or equal to zero"),
+    (
+        "width",
+        lambda x: (
+            x is None
+            or x <= (get_terminal_size().columns - args.h_allow)
+            or args.oversize
+        ),
+        "greater than the available terminal width and `--oversize` is not specified",
+    ),
+    ("height", lambda x: x is None or x > 0, "less than or equal to zero"),
+    (
+        "height",
+        lambda x: (
+            x is None
+            or x <= (get_terminal_size().lines - args.v_allow)
+            or args.scroll
+            or args.oversize
+        ),
+        "greater than the available terminal height and `--scroll` or `--oversize` is "
+        "not specified",
+    ),
+    ("scale", lambda x: x is None or 0.0 < x <= 1.0, "out of range"),
+    ("scale_x", lambda x: 0.0 < x <= 1.0, "out of range"),
+    ("scale_y", lambda x: 0.0 < x <= 1.0, "out of range"),
+    ("pad_width", lambda x: x is None or x > 0, "less than or equal to zero"),
+    (
+        "pad_width",
+        lambda x: x is None or x <= (get_terminal_size().columns - args.h_allow),
+        "greater than available terminal width",
+    ),
+    ("pad_height", lambda x: x is None or x > 0, "less than or equal to zero"),
 )
 
 
