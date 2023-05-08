@@ -88,7 +88,7 @@ def main() -> int:
         logger.info(f"Session ended with return-code {exit_code} ({codes[exit_code]})")
         return exit_code
     finally:
-        write_tty(b"\033[22;2t")  # Restore window title
+        write_tty(b"\033[23;2t")  # Restore window title
         # Explicit cleanup is neccessary since the top-level `Image` widgets
         # will still hold references to the `BaseImage` instances
         if cli.url_images:
