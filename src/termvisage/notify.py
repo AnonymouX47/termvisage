@@ -75,7 +75,7 @@ def load() -> None:
                 stream.flush()
                 if _n_loading <= 0:
                     break
-                sleep(0.25)
+                cli_loading_interrupt.wait(0.25)  # Doubles as a delay
         stream.write(" " * 3 + "\b" * 3)
         stream.flush()
         if _n_loading > -1:
@@ -180,6 +180,7 @@ _alarms = Queue(5)  # Max value for "max notifications" is 5
 
 _loading = Event()
 _n_loading = 0
+cli_loading_interrupt = Event()
 
 # Set from `.logging.init_log()`.
 loading_indicator: Optional[Thread] = None

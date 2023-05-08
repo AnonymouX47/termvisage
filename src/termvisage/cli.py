@@ -911,6 +911,7 @@ def main() -> None:
         raise interrupt from None
 
     notify.stop_loading()
+    notify.cli_loading_interrupt.set()
     while notify.is_loading():
         pass
 
