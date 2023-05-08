@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [tui] Grid cells are now re-rendered upon window resize ([a244048]).
 - [cli] Shorten the output of `--help` command-line option ([d5852e6]).
 - [config] Rename config files from "config.json" to "termvisage.json" ([a23f2fe]).
+- Improve startup time when `--quiet` is not specified ([aa05a76]).
 
 ### Added
 - [tui] "About" section within the "Help" overlay ([19b6650]).
@@ -42,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [a244048]: https://github.com/AnonymouX47/termvisage/commit/a2440484b36621138cda853cdcce9faf0ac569e1
 [a244048]: https://github.com/AnonymouX47/termvisage/commit/d5852e6e5db48d34bc0ea119c54b510924501318
 [a244048]: https://github.com/AnonymouX47/termvisage/commit/a23f2fe5d7e2d53d1847dc2bcf2552718c22e7fd
+[aa05a76]: https://github.com/AnonymouX47/termvisage/commit/aa05a76c7fff0ad79d9e0ee72e00cef88396163e
 
 
 ## Pre-0.1
