@@ -15,10 +15,54 @@ from term_image.image import ITerm2Image, Size
 from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
 
+COMPLETIONS = """First, if `termvisage` was installed using `pipx`,
+run the following (outside any virtual environment):
+
+    pip install --user --upgrade argcomplete
+
+Then, follow the appropriate instructions for your shell:
+
+NOTE: If you add a command to your shell's config file, you will likely
+have to restart the shell or re-login for autocompletion to start working.
+
+Bash or Zsh:
+    Add the following to your shell's config file:
+
+        eval "$(register-python-argcomplete termvisage)"
+
+Tcsh:
+    Add the following to your shell's config file:
+
+        eval "$(register-python-argcomplete --shell tcsh termvisage)"
+
+Fish:
+    Run the following once to create new completion file:
+
+        register-python-argcomplete --shell fish termvisage \
+> ~/.config/fish/completions/termvisage.fish
+
+    OR add the following to your shell's config file:
+
+        register-python-argcomplete --shell fish termvisage | source
+
+Git Bash:
+    Add the following to your shell's config file:
+
+        export ARGCOMPLETE_USE_TEMPFILES=1
+        eval "$(register-python-argcomplete termvisage)"
+
+For other shells, see https://github.com/kislyuk/argcomplete/tree/develop/contrib
+"""
+
 
 class BasicHelpAction(Action):
     def __call__(self, *args):
         basic_parser.parse_args(["--help"])
+
+
+class CompletionsAction(Action):
+    def __call__(self, parser, *args):
+        parser.exit(message=COMPLETIONS)
 
 
 def rst_role_repl(match):
@@ -86,6 +130,12 @@ basic_parser.add_argument(
     action="version",
     version=__version__,
     help="Show the program version and exit",
+)
+basic_parser.add_argument(
+    "--completions",
+    nargs=0,
+    action=CompletionsAction,
+    help="Show instructions to enable shell completions and exit",
 )
 basic_parser.add_argument(
     "-S",
@@ -179,6 +229,12 @@ general.add_argument(
     action="version",
     version=__version__,
     help="Show the program version and exit",
+)
+general.add_argument(
+    "--completions",
+    nargs=0,
+    action=CompletionsAction,
+    help="Show instructions to enable shell completions and exit",
 )
 general.add_argument(
     "--query-timeout",
