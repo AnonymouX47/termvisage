@@ -14,6 +14,12 @@ from .exit_codes import FAILURE, INTERRUPTED, codes
 
 def main() -> int:
     """CLI execution entry-point"""
+    from argcomplete import autocomplete
+
+    from .parsers import parser
+
+    autocomplete(parser)
+
     from . import cli, logging, notify
     from .tui import main
 
