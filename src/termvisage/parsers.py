@@ -68,6 +68,25 @@ basic_parser.add_argument(
     metavar="source",
     help="Image file path(s), directory path(s) and/or image URL(s)",
 )
+
+basic_help_options = basic_parser.add_mutually_exclusive_group()
+basic_help_options.add_argument(
+    "--help",
+    action="help",
+    help="Show this help message and exit",
+)
+basic_help_options.add_argument(
+    "--long-help",
+    action="help",
+    help="Show the full help message and exit",
+)
+
+basic_parser.add_argument(
+    "--version",
+    action="version",
+    version=__version__,
+    help="Show the program version and exit",
+)
 basic_parser.add_argument(
     "-S",
     "--style",
@@ -103,25 +122,6 @@ basic_parser.add_argument(
     "--verbose",
     action="store_true",
     help="More detailed event reporting",
-)
-
-basic_help_options = basic_parser.add_mutually_exclusive_group()
-basic_help_options.add_argument(
-    "--help",
-    action="help",
-    help="Show this help message and exit",
-)
-basic_help_options.add_argument(
-    "--long-help",
-    action="help",
-    help="Show the full help message and exit",
-)
-
-basic_parser.add_argument(
-    "--version",
-    action="version",
-    version=__version__,
-    help="Show the program version and exit",
 )
 
 
