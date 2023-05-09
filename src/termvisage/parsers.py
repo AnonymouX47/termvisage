@@ -15,10 +15,9 @@ from term_image.image import ITerm2Image, Size
 from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
 
-COMPLETIONS = """First, if `termvisage` was installed using `pipx`,
-run the following (outside any virtual environment):
+COMPLETIONS = """First, if `termvisage` was installed using `pipx`, run:
 
-    pip install --user --upgrade argcomplete
+    pipx install argcomplete
 
 Then, follow the appropriate instructions for your shell:
 
