@@ -9,6 +9,13 @@ for the full help message.
    If used with the other mode, they're simply ignored.
 
 
+Shell Completion
+----------------
+
+Run ``termvisage --completions`` for instructions on enabling tab completion for options
+and arguments of ``termvisage`` in your preferred shell.
+
+
 Options and Arguments
 ---------------------
 

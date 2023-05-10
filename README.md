@@ -100,6 +100,7 @@ pipx upgrade termvisage
 - Context-based controls
 - Customizable controls and configuration options
 - Smooth and performant experience
+- Shell completion for command-line arguments
 - and more... 😁
 
 
