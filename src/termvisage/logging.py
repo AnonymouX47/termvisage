@@ -208,9 +208,7 @@ class Thread(Thread):
         try:
             super().run()
         except Exception:
-            log_exception(
-                "Aborted" if logging.DEBUG else f"{self.name} was aborted", _logger
-            )
+            log_exception("Aborted" if DEBUG else f"{self.name} was aborted", _logger)
         else:
             _logger.debug("Exiting")
 
