@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [tui] Notification bar not hidden when `--quiet` is specified ([1692d6c]).
 
 ### Changed
-- [config] Changed default value of "log file" config option to `"{$XDG_STATE_HOME}/termvisage/log"` ([ab971d6]).
+- [config] Changed default value of "log file" config option to `"{$XDG_STATE_HOME}/termvisage/termvisage.log"` ([ab971d6], [cbbd162]).
 - [tui] Grid cells are now re-rendered upon window resize ([a244048]).
 - [cli] Shorten the output of `--help` command-line option ([d5852e6]).
 - [config] Rename config files from "config.json" to "termvisage.json" ([a23f2fe]).
@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [d5852e6]: https://github.com/AnonymouX47/termvisage/commit/d5852e6e5db48d34bc0ea119c54b510924501318
 [a23f2fe]: https://github.com/AnonymouX47/termvisage/commit/a23f2fe5d7e2d53d1847dc2bcf2552718c22e7fd
 [aa05a76]: https://github.com/AnonymouX47/termvisage/commit/aa05a76c7fff0ad79d9e0ee72e00cef88396163e
+[cbbd162]: https://github.com/AnonymouX47/termvisage/commit/cbbd16227eef8a0aefafae908dc8de615f218750
 
 
 ## Pre-0.1
