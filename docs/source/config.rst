@@ -105,7 +105,7 @@ These are top-level fields whose values control various settings of the viewer.
    :synopsis: The file to which logs are written.
    :type: string
    :valid: A writable/creatable file path
-   :default: ``"{$XDG_STATE_HOME}/termvisage/log"``
+   :default: ``"{$XDG_STATE_HOME}/termvisage/termvisage.log"``
 
    If the file:
 

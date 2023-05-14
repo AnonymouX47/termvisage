@@ -581,7 +581,7 @@ config_options = {
         path.join(
             os.environ.get("XDG_STATE_HOME", path.join("~", ".local", "state")),
             "termvisage",
-            "log",
+            "termvisage.log",
         ),
         lambda x: isinstance(x, str) and is_writable(x),
         "must be a string containing a writable/creatable file path",
