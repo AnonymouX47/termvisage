@@ -9,15 +9,7 @@ from term_image.image import ITerm2Image, Size
 from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
 
-COMPLETIONS = """First, if `termvisage` was installed using `pipx`,
-run the following (outside any virtual environment):
-
-    pip install --user --upgrade argcomplete
-
-Then, follow the appropriate instructions for your shell:
-
-NOTE: If you add a command to your shell's config file, you will likely
-have to restart the shell or re-login for autocompletion to start working.
+COMPLETIONS = """Follow the appropriate instructions for your shell:
 
 Bash or Zsh:
     Add the following to your shell's config file:
@@ -46,6 +38,14 @@ Git Bash:
         eval "$(register-python-argcomplete termvisage)"
 
 For other shells, see https://github.com/kislyuk/argcomplete/tree/develop/contrib
+
+NOTES:
+    - If you added a command to your shell's config file, you will likely
+      have to restart the shell or re-login for completion to start working.
+
+    - If `termvisage` was installed using `pipx`, you may need to run:
+
+          pip install --user --upgrade argcomplete
 """
 
 
