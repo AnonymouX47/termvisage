@@ -2,13 +2,7 @@
 
 import re
 import sys
-from argparse import (
-    Action,
-    ArgumentParser,
-    BooleanOptionalAction,
-    RawDescriptionHelpFormatter,
-    _ArgumentGroup,
-)
+from argparse import Action, ArgumentParser, RawDescriptionHelpFormatter, _ArgumentGroup
 
 from term_image.image import ITerm2Image, Size
 
@@ -57,6 +51,20 @@ For other shells, see https://github.com/kislyuk/argcomplete/tree/develop/contri
 class BasicHelpAction(Action):
     def __call__(self, *args):
         basic_parser.parse_args(["--help"])
+
+
+try:
+    from argparse import BooleanOptionalAction
+except ImportError:  # Python < 3.9
+
+    class BooleanOptionalAction(Action):
+        def __init__(self, *args, **kwargs):
+            kwargs["nargs"] = 0
+            super().__init__(*args, **kwargs)
+            self.option_strings.append(f"--no-{self.option_strings[0][2:]}")
+
+        def __call__(self, parser, namespace, values, option_string):
+            setattr(namespace, self.dest, not option_string.startswith("--no-"))
 
 
 class CompletionsAction(Action):
