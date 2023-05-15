@@ -95,8 +95,6 @@ These are top-level fields whose values control various settings of the viewer.
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
 
-   .. note:: Overridden by :option:`--grid-renderers`.
-
 .. confval:: log file
    :synopsis: The file to which logs are written.
    :type: string

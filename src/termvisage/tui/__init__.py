@@ -13,6 +13,7 @@ from term_image.utils import lock_tty, write_tty
 from term_image.widget import UrwidImageScreen
 
 from .. import logging
+from ..config import config_options
 from ..utils import CSI
 from . import main, render
 from .keys import adjust_bottom_bar
@@ -36,7 +37,6 @@ def init(
         )
 
     main.DEBUG = args.debug
-    main.GRID_RENDERERS = args.grid_renderers
     main.MAX_PIXELS = args.max_pixels
     main.NO_ANIMATION = args.no_anim
     main.RECURSIVE = args.recursive
@@ -81,7 +81,7 @@ def init(
     grid_scanner = logging.Thread(target=scan_dir_grid, name="GridScanner", daemon=True)
     grid_render_manager = logging.Thread(
         target=render.manage_grid_renders,
-        args=(args.grid_renderers,),
+        args=(config_options.grid_renderers,),
         name="GridRenderManager",
         daemon=True,
     )

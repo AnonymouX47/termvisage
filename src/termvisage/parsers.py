@@ -602,15 +602,6 @@ perf_options.add_argument(
     help="Apply :option:`--max-pixels` in CLI mode",
 )
 perf_options.add_argument(
-    "--grid-renderers",
-    type=int,
-    metavar="N",
-    help=(
-        "Number of subprocesses for rendering grid cells in the TUI "
-        "(default: :confval:`grid renderers` config)"
-    ),
-)
-perf_options.add_argument(
     "--multi",
     action=BooleanOptionalAction,
     default=None,
