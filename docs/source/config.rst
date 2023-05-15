@@ -81,8 +81,6 @@ These are top-level fields whose values control various settings of the viewer.
 
    If less than ``2``, directory sources are checked within the main process.
 
-   .. note:: Overridden by :option:`--checkers`.
-
 .. confval:: getters
    :synopsis: Number of threads for downloading images from URL sources.
    :type: integer
