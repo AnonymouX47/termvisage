@@ -818,7 +818,7 @@ def main() -> None:
             args=(url_queue, url_images, ImageClass),
             name=f"Getter-{n}",
         )
-        for n in range(1, args.getters + 1)
+        for n in range(1, config_options.getters + 1)
     ]
     getters_started = False
 
@@ -884,7 +884,7 @@ def main() -> None:
 
     # Signal end of sources
     if getters_started:
-        for _ in range(args.getters):
+        for _ in range(config_options.getters):
             url_queue.put(None)
     if opener_started:
         file_queue.put(None)

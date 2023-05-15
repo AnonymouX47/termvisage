@@ -87,8 +87,6 @@ These are top-level fields whose values control various settings of the viewer.
    :valid: *x* > ``0``
    :default: ``4``
 
-   .. note:: Overridden by :option:`--getters`.
-
 .. confval:: grid renderers
    :synopsis: Number of subprocesses for rendering grid cells.
    :type: integer
