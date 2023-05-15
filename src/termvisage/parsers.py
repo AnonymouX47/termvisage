@@ -602,33 +602,6 @@ perf_options.add_argument(
     help="Apply :option:`--max-pixels` in CLI mode",
 )
 perf_options.add_argument(
-    "--checkers",
-    type=int,
-    metavar="N",
-    help=(
-        "Maximum number of subprocesses for checking directory sources "
-        "(default: :confval:`checkers` config)"
-    ),
-)
-perf_options.add_argument(
-    "--getters",
-    type=int,
-    metavar="N",
-    help=(
-        "Number of threads for downloading images from URL sources "
-        "(default: :confval:`getters` config)"
-    ),
-)
-perf_options.add_argument(
-    "--grid-renderers",
-    type=int,
-    metavar="N",
-    help=(
-        "Number of subprocesses for rendering grid cells in the TUI "
-        "(default: :confval:`grid renderers` config)"
-    ),
-)
-perf_options.add_argument(
     "--multi",
     action=BooleanOptionalAction,
     default=None,

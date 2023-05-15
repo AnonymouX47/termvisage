@@ -81,15 +81,11 @@ These are top-level fields whose values control various settings of the viewer.
 
    If less than ``2``, directory sources are checked within the main process.
 
-   .. note:: Overridden by :option:`--checkers`.
-
 .. confval:: getters
    :synopsis: Number of threads for downloading images from URL sources.
    :type: integer
    :valid: *x* > ``0``
    :default: ``4``
-
-   .. note:: Overridden by :option:`--getters`.
 
 .. confval:: grid renderers
    :synopsis: Number of subprocesses for rendering grid cells.
@@ -98,8 +94,6 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``1``
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
-
-   .. note:: Overridden by :option:`--grid-renderers`.
 
 .. confval:: log file
    :synopsis: The file to which logs are written.

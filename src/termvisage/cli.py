@@ -323,6 +323,7 @@ def get_links(source: str, subdir: str) -> List[Tuple[str, str]]:
 
 
 def manage_checkers(
+    n_checkers: int,
     dir_queue: Union[Queue, mp_Queue],
     contents: Dict[str, Union[bool, Dict]],
     images: List[Tuple[str, Generator]],
@@ -373,7 +374,7 @@ def manage_checkers(
             # If the source is actually empty the dict stays empty
             contents[subdir] = {}
 
-    if logging.MULTI and args.checkers > 1:
+    if logging.MULTI and n_checkers > 1:
         content_queue = mp_Queue()
         content_updated = mp_Event()
         progress_queue = mp_Queue()
@@ -398,7 +399,7 @@ def manage_checkers(
                     globals_,
                 ),
             )
-            for n in range(args.checkers)
+            for n in range(n_checkers)
         ]
 
         for checker in checkers:
@@ -408,7 +409,7 @@ def manage_checkers(
         try:
             contents[""] = contents
             content_updated.set()
-            checks_in_progress = [NO_CHECK] * args.checkers
+            checks_in_progress = [NO_CHECK] * n_checkers
             progress_updated.set()
 
             # Wait until at least one checker starts processing a directory
@@ -817,7 +818,7 @@ def main() -> None:
             args=(url_queue, url_images, ImageClass),
             name=f"Getter-{n}",
         )
-        for n in range(1, args.getters + 1)
+        for n in range(1, config_options.getters + 1)
     ]
     getters_started = False
 
@@ -830,8 +831,9 @@ def main() -> None:
     opener_started = False
 
     if OS_HAS_FCNTL and not args.cli:
-        if args.checkers is None:
-            args.checkers = max(
+        n_checkers = config_options.checkers
+        if n_checkers is None:
+            n_checkers = max(
                 (
                     len(os.sched_getaffinity(0))
                     if hasattr(os, "sched_getaffinity")
@@ -840,11 +842,11 @@ def main() -> None:
                 - 1,
                 2,
             )
-        dir_queue = mp_Queue() if logging.MULTI and args.checkers > 1 else Queue()
+        dir_queue = mp_Queue() if logging.MULTI and n_checkers > 1 else Queue()
         dir_queue.sources_finished = False
         check_manager = Thread(
             target=manage_checkers,
-            args=(dir_queue, contents, dir_images),
+            args=(n_checkers, dir_queue, contents, dir_images),
             name="CheckManager",
         )
     checkers_started = False
@@ -882,12 +884,12 @@ def main() -> None:
 
     # Signal end of sources
     if getters_started:
-        for _ in range(args.getters):
+        for _ in range(config_options.getters):
             url_queue.put(None)
     if opener_started:
         file_queue.put(None)
     if checkers_started:
-        if logging.MULTI and args.checkers > 1:
+        if logging.MULTI and n_checkers > 1:
             dir_queue.sources_finished = True
         else:
             dir_queue.put((None,) * 4)

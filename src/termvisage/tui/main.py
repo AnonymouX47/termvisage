@@ -717,7 +717,6 @@ update_pipe: Optional[int] = None
 
 # # Corresponsing to command-line args
 DEBUG: Optional[bool] = None
-GRID_RENDERERS: Optional[int] = None
 MAX_PIXELS: Optional[int] = None
 NO_ANIMATION: Optional[bool] = None
 RECURSIVE: Optional[bool] = None
