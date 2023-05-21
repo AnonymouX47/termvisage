@@ -37,6 +37,8 @@ extensions = [
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "furo"
+html_logo = "resources/logo.png"
+html_favicon = "resources/logo.ico"
 
 # -- Options for extensions ----------------------------------------------
 

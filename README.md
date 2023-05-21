@@ -194,9 +194,11 @@ See the [FAQs](https://termvisage.readthedocs.io/en/latest/faqs.html) section of
 ## Credits
 
 The following projects have been (and are still) crucial to the development of this project:
-
 - [term-image]
 - [Urwid](https://urwid.org)
+
+The project logo was composed using resource(s) from the following source(s):
+- [Gallery icons created by Andrean Prabowo - Flaticon](https://www.flaticon.com/free-icons/gallery)
 
 Thanks to [**@digitallyserviced**](https://github.com/digitallyserviced) for the project name. (Yeah, I totally suck at naming things 🥲)
 
