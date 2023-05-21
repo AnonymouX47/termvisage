@@ -3,7 +3,7 @@
 <h1><b>TermVisage</b></h1>
 
 <p>
-<img src="https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png">
+<img src="https://raw.githubusercontent.com/AnonymouX47/termvisage/23b8b4612e0ac4a167fa92630be63766f7f56e29/docs/source/resources/logo.png" height="200">
 </p>
 
 <p>
@@ -105,6 +105,8 @@ pipx upgrade termvisage
 
 
 ## Demo
+
+![Demo Image](https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png)
 
 ### Render Styles
 | block | iterm2 | kitty |
