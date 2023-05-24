@@ -108,15 +108,14 @@ pipx upgrade termvisage
 
 ![Demo Image](https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png)
 
-### Render Styles
+### Multiple Render Styles
 | block | iterm2 | kitty |
 |:-----:|:------:|:-----:|
 | ![block style](https://user-images.githubusercontent.com/61663146/233488229-d4d0258c-2567-4b2a-ba38-8546b886fba3.png) | ![iterm2 style](https://user-images.githubusercontent.com/61663146/233488248-8c5750d2-9281-4a96-b0f4-32d61c29b02c.png) | ![kitty style](https://user-images.githubusercontent.com/61663146/233488260-6e7ce3fe-7561-44f7-aafe-d7a708e14758.png) |
 
 ### High-Resolution Images
-|||
-|:---:|:---:|
 | ![high_res_1](https://user-images.githubusercontent.com/61663146/235449392-b464ff19-82ac-4c55-9244-e718bc999e98.png) | ![high_res_2](https://user-images.githubusercontent.com/61663146/235449402-c339acf8-c6e6-4e38-9d35-497c2752e75f.png) |
+|:---:|:---:|
 
 ### Video Demo
 [Demo Video](https://user-images.githubusercontent.com/61663146/235648854-dcccd260-c463-4692-bd01-f51c099613cf.mp4)
