@@ -58,7 +58,7 @@
 - [Known Issues](#known-issues)
 - [FAQs](#faqs)
 - [Credits](#credits)
-- [Donate](#donate)
+- [Sponsor This Project](#sponsor-this-project)
 
 
 ## Installation
@@ -195,21 +195,23 @@ See the [FAQs](https://termvisage.readthedocs.io/en/latest/faqs.html) section of
 ## Credits
 
 The following projects have been (and are still) crucial to the development of this project:
-- [term-image]
-- [Urwid](https://urwid.org)
+- [term-image] by [@AnonymouX47](https://github.com/AnonymouX47)
+- [Pillow](https://python-pillow.org) by [Fredrik Lundh, Jeffrey A. Clark (Alex) and contributors](https://github.com/python-pillow/Pillow/graphs/contributors)
+- [Urwid](https://urwid.org) by [Ian Ward et al](https://github.com/urwid/urwid/graphs/contributors)
+- [argcomplete](https://github.com/kislyuk/argcomplete) by [Andrey Kislyuk](https://github.com/kislyuk)
 
-The project logo was composed using resource(s) from the following source(s):
+The logo was composed using resource(s) from the following source(s):
 - [Gallery icons created by Andrean Prabowo - Flaticon](https://www.flaticon.com/free-icons/gallery)
 
-Thanks to [**@digitallyserviced**](https://github.com/digitallyserviced) for the project name. (Yeah, I totally suck at naming things 🥲)
+Thanks to [@digitallyserviced](https://github.com/digitallyserviced) for the project name and logo concept.
 
-## Donate
+## Sponsor This Project
 
 <a href="https://www.buymeacoffee.com/anonymoux47" target="_blank">
    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
 </a>
 
-Your donation will go a long way in aiding the progress and development of this project.
+Any amount will go a long way in aiding the progress and development of this project.
 Thank you! 💓
 
 
