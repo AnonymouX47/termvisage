@@ -39,14 +39,6 @@
 </div>
 
 
-> # 🚧 WIP 🚧
->
-> In the mean time, install with:
-> ```shell
-> pipx install "term-image==0.5.*"
-> ```
-
-
 ## Contents
 - [Installation](#installation)
 - [Features](#features)
@@ -92,7 +84,6 @@ pipx upgrade termvisage
 
 ## Features
 
-### CLI/TUI features
 - Almost everything the [term-image] library supports
 - Display individual images
 - Browse multiple images and directories (recursively)
