@@ -20,7 +20,9 @@
    <a href='https://pypi.org/project/termvisage/'>
       <img src='https://img.shields.io/pypi/v/termvisage.svg'/>
    </a>
-   <img src="https://static.pepy.tech/badge/termvisage"/>
+   <a href='https://pepy.tech/project/termvisage'>
+      <img src="https://pepy.tech/badge/termvisage/month">
+   </a>
    <a href='https://pypi.org/project/termvisage/'>
       <img src='https://img.shields.io/pypi/pyversions/termvisage.svg'/>
    </a>
