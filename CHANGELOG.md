@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ## [Unreleased]
+
+
+## [0.1.0] - 2023-06-03
 ### Fixed
 - Uppercase letters in hex BG colors being flagged as invalid ([term-image@b4533d5]).
 - Crash when `"log file"` or `--log-file` specifies a path with a non-stat-able directory ([term-image@8b0af4c]).
@@ -12,13 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [tui] Erasure of the last column of images with *iterm2* render style ([5d828d1]).
 - [tui] UI Foreground color for terminals with white background ([c1249ce]).
 - [tui] Notification bar not hidden when `--quiet` is specified ([1692d6c]).
-
-### Changed
-- [config] Changed default value of "log file" config option to `"{$XDG_STATE_HOME}/termvisage/termvisage.log"` ([ab971d6], [cbbd162]).
-- [tui] Grid cells are now re-rendered upon window resize ([a244048]).
-- [cli] Shorten the output of `--help` command-line option ([d5852e6]).
-- [config] Rename config files from "config.json" to "termvisage.json" ([a23f2fe]).
-- Improve startup time when `--quiet` is not specified ([aa05a76]).
 
 ### Added
 - [tui] "About" section within the "Help" overlay ([19b6650]).
@@ -29,8 +26,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [argcomplete](https://github.com/kislyuk/argcomplete)>=2,<4 dependency
   - `--completions` command-line option
 
+### Changed
+- [config] Changed default value of "log file" config option to `"{$XDG_STATE_HOME}/termvisage/termvisage.log"` ([ab971d6], [cbbd162]).
+- [tui] Grid cells are now re-rendered upon window resize ([a244048]).
+- [cli] Shortened the output of `--help` command-line option ([d5852e6]).
+- [config] Renamed config files from "config.json" to "termvisage.json" ([a23f2fe]).
+- Improved startup time when `--quiet` is not specified ([aa05a76]).
+
 ### Removed
-- As much private API usage across the CLI and TUI code ([term-image#70]).
+- As much usage of [term-image] private API ([term-image#70]).
 - `--checkers`, `--getters` and `--grid-renderers` command-line options ([#5]).
 
 [term-image#70]: https://github.com/AnonymouX47/term-image/pull/70
@@ -56,6 +60,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Pre-0.1
 See [term-image] up to [term-image v0.5.0].
 
-[Unreleased]: https://github.com/AnonymouX47/termvisage/commits/main
-[term-image v0.5.0]: https://github.com/AnonymouX47/term-image/blob/main/CHANGELOG.md#
+
+[term-image v0.5.0]: https://github.com/AnonymouX47/term-image/blob/main/CHANGELOG.md#050---2023-01-09
 [term-image]: https://github.com/AnonymouX47/term-image
+
+
+[Unreleased]: https://github.com/AnonymouX47/termvisage/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/AnonymouX47/termvisage/releases/tag/v0.1.0
