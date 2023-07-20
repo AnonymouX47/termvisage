@@ -106,7 +106,7 @@ The command-line options are mutually exclusive and override the config option.
 
 By default (i.e without changing the config option value or specifying either
 command-line option), ``termvisage`` tries to determine the value from the
-:term:`active terminal` which works on most mordern terminal emulators (currently
+:term:`active terminal` which works on most modern terminal emulators (currently
 supported on UNIX-like platforms only).
 This is probably the best choice, except the terminal emulator or platform doesn't
 support this feature.
@@ -171,7 +171,7 @@ A log entry has the following format:
   * Only present when running on **Python 3.8+** and *logging level* is set to ``DEBUG``
     (either by :option:`--debug` or :option:`--log-level=DEBUG`).
 
-* *message*: The actual report describing the event that occured.
+* *message*: The actual report describing the event that occurred.
 
 
 .. note::
@@ -182,7 +182,7 @@ A log entry has the following format:
 
      * Only the current and immediate previous log file are kept.
 
-   * The Process ID of the each session preceeds its log entries, so this can be used to distinguish between logs from different sessions running simultaneously while using the same log file.
+   * The Process ID of the each session precedes its log entries, so this can be used to distinguish between logs from different sessions running simultaneously while using the same log file.
 
 
 .. _exit-codes:
@@ -194,5 +194,5 @@ Exit Codes
 * ``0`` (SUCCESS): Exited normally and successfully.
 * ``1`` (FAILURE): Exited due to an unhandled exception or a non-specific error.
 * ``2`` (INVALID_ARG): Exited due to an invalid command-line argument value or option combination.
-* ``3`` (INTERRUPTED): The program recieved an interrupt signal i.e ``SIGINT``.
+* ``3`` (INTERRUPTED): The program received an interrupt signal i.e ``SIGINT``.
 * ``4`` (NO_VALID_SOURCE): Exited due to lack of any valid source.

@@ -514,7 +514,7 @@ sizing_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image horizontal :term:`scale` (overriden by :option:`-s`) (default: 1.0)",
+    help="Image horizontal :term:`scale` (overridden by :option:`-s`) (default: 1.0)",
 )
 sizing_options.add_argument(
     "-y",
@@ -522,7 +522,7 @@ sizing_options.add_argument(
     type=float,
     metavar="N",
     default=1.0,
-    help="Image vertical :term:`scale` (overriden by :option:`-s`) (default: 1.0)",
+    help="Image vertical :term:`scale` (overridden by :option:`-s`) (default: 1.0)",
 )
 
 # # Alignment
@@ -577,7 +577,7 @@ tui_options.add_argument(
     "-a",
     "--all",
     action="store_true",
-    help="Inlcude hidden file and directories",
+    help="Include hidden file and directories",
 )
 tui_options.add_argument(
     "-r",

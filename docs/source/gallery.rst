@@ -91,7 +91,7 @@ Sizing (CLI only)
    :preload: metadata
 
 * Size images based on terminal size or original image size.
-* Specifiy image width or height (in columns or lines respectively).
+* Specify image width or height (in columns or lines respectively).
 
 Alignment/Padding (CLI only)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

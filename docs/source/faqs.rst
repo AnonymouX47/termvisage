@@ -2,7 +2,7 @@ FAQs
 ====
 
 What about Windows support?
-   - Firstly, only the new `Windows Terminal <https://github.com/microsoft/terminal>`_ seems to have proper truecolor support and mordern terminal emulator features.
+   - Firstly, only the new `Windows Terminal <https://github.com/microsoft/terminal>`_ seems to have proper truecolor support and modern terminal emulator features.
    - The CLI mode currently works (with a few quirks), i.e using ``cmd`` or ``powershell``, if the other requirements are satisfied but can't guarantee it'll always be so.
 
      - Drawing images and animations doesn't work completely well in ``cmd`` and ``powershell``.
@@ -13,7 +13,7 @@ What about Windows support?
    - If stuck on Windows and want to use all features, you could use WSL + Windows Terminal.
 
 Why are colours not properly reproduced?
-   - Some terminals support truecolor escape sequences but have a **256-color pallete**. This limits color reproduction.
+   - Some terminals support truecolor escape sequences but have a **256-color palette**. This limits color reproduction.
 
 Why are images out of scale?
    - If *auto* :term:`cell ratio` is supported and enabled,

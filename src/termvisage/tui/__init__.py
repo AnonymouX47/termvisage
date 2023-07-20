@@ -137,7 +137,7 @@ def init(
 
 class Loop(urwid.MainLoop):
     def start(self):
-        adjust_bottom_bar()  # Properly set expand key visbility at initialization
+        adjust_bottom_bar()  # Properly set expand key visibility at initialization
         return super().start()
 
     def process_input(self, keys):

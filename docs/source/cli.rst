@@ -39,7 +39,7 @@ Options and Arguments
 .. [#] The size is multiplied by the scale on respective axes when an image is rendered.
    A scale value must be such that 0.0 < value <= 1.0.
 
-.. [#] Width and height are in units of columns and lines repectively.
+.. [#] Width and height are in units of columns and lines respectively.
 
    By default (i.e if none of the sizing options is specified), the equivalent of
    :option:`--original-size` is used if not larger than the :term:`available size`,

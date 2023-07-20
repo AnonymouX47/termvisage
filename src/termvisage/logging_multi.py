@@ -43,12 +43,12 @@ def process_multi_logs() -> None:
 class Process(Process):
     """A process with integration into the logging system
 
-    Sets up the logging system to redirect all logs (and optionally notifcations)
+    Sets up the logging system to redirect all logs (and optionally notifications)
     in the subprocess, to the main process to be emitted.
 
     NOTE:
         - Only TUI notifications need to be redirected.
-        - The redirected logs and notifcations are automatically handled by
+        - The redirected logs and notifications are automatically handled by
           `process_multi_logs()`, running in the MultiLogger thread of the main process.
     """
 

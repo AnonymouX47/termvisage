@@ -259,7 +259,7 @@ def register_key(*args: Tuple[str, str]) -> FunctionType:
 
     def register(func: FunctionType) -> None:
         """Registers *func* to the key corresponding to each ``(context, action)`` pair
-        recieved by the call to ``register_key()`` that defines it.
+        received by the call to ``register_key()`` that defines it.
         """
         for context, action in args:
             # All actions are enabled by default
@@ -282,7 +282,7 @@ def set_confirmation(
 
     Args:
       - msg: The message to be displayed in the dialog.
-      - bottom_widget: The widget on which the confirmation dialog will be overlayed.
+      - bottom_widget: The widget on which the confirmation dialog will be overlaid.
       - confirm: A function to be called for the "Confirm" action of the
         confirmation context.
       - cancel: A function to be called for the "Cancel" action of the

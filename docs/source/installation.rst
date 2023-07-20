@@ -59,4 +59,4 @@ For render style-specific support, see :ref:`render-styles`.
 
 .. note::
    Some terminal emulators support truecolor escape sequences but have a
-   256-color pallete. This will limit color reproduction.
+   256-color palette. This will limit color reproduction.

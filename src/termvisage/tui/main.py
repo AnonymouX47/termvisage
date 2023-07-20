@@ -715,7 +715,7 @@ displayer: Optional[Generator[None, int, bool]] = None
 loop: Optional[tui.Loop] = None
 update_pipe: Optional[int] = None
 
-# # Corresponsing to command-line args
+# # Corresponding to command-line args
 DEBUG: Optional[bool] = None
 MAX_PIXELS: Optional[int] = None
 NO_ANIMATION: Optional[bool] = None

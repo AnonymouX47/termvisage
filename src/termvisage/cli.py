@@ -114,7 +114,7 @@ def check_dir(
     Args:
         - dir: Path to directory to be scanned.
         - prev_dir: Path (absolute or relative to *dir*) to set as working directory
-          after scannning *dir* (default:  parent directory of *dir*).
+          after scanning *dir* (default:  parent directory of *dir*).
         - _links: Tracks all symlinks from a *source* up **till** a subdirectory.
 
     Returns:

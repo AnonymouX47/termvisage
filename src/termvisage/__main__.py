@@ -95,7 +95,7 @@ def main() -> int:
         return exit_code
     finally:
         write_tty(b"\033[23;2t")  # Restore window title
-        # Explicit cleanup is neccessary since the top-level `Image` widgets
+        # Explicit cleanup is necessary since the top-level `Image` widgets
         # will still hold references to the `BaseImage` instances
         if cli.url_images:
             for _, value in cli.url_images:

@@ -145,7 +145,7 @@ def log_exception(
     direct: bool = False,
     fatal: bool = False,
 ) -> None:
-    """Report an error with the exception reponsible
+    """Report an error with the exception responsible
 
     NOTE: Should be called from within an exception handler
     i.e from (also possibly in a nested context) within an except or finally clause.
