@@ -143,7 +143,7 @@ def manage_image_renders():
 
     def not_skip():
         # If this image is the one currently displayed but the queue is non empty,
-        # it means some "forth and back" has occured.
+        # it means some "forth and back" has occurred.
         # Skipping this render avoids the possibility of wasting time with this render
         # in the case where the image size has changed.
         return image_w is image_box.original_widget and image_render_queue.empty()
@@ -172,7 +172,7 @@ def manage_image_renders():
 
     try:
         while True:
-            # A redraw is neccesary even when the render is skipped, in case the skipped
+            # A redraw is necessary even when the render is skipped, in case the skipped
             # render is of the currently displayed image.
             # So that a new render can be sent in (after `._ti_rendering` is unset).
             # Otherwise, the image will remain unrendered until a redraw.
@@ -224,7 +224,7 @@ def manage_grid_renders(n_renderers: int):
 
     Intended to be executed in a separate thread of the main process.
 
-    If multiprocessing is enabled and *n_renderers* > 0, it spwans *n_renderers*
+    If multiprocessing is enabled and *n_renderers* > 0, it spawns *n_renderers*
     subprocesses to render the cells and handles their proper termination.
     Otherwise, it starts a single new thread to render the cells.
     """
@@ -495,7 +495,7 @@ grid_style_specs = {"kitty": "+L", "iterm2": "+L"}
 image_style_specs = {"kitty": "+W", "iterm2": "+W"}
 
 # Set from `.tui.init()`
-# # Corresponsing to command-line args
+# # Corresponding to command-line args
 ANIM_CACHED: Union[None, bool, int] = None
 FRAME_DURATION: Optional[float] = None
 REPEAT: Optional[int] = None

@@ -13,9 +13,9 @@ By default, ``termvisage`` searches the following locations, **in the specified 
 for ``$DIR/termvisage/termvisage.json`` (a file named ``termvisage.json`` within a
 directory named ``termvisage``):
 
-* All valid directories specified in the ``XDG_CONFIG_DIRS`` enviroment variable,
+* All valid directories specified in the ``XDG_CONFIG_DIRS`` environment variable,
   **in reverse order** or ``/etc/xdg`` if not set.
-* The directory specified by the ``XDG_CONFIG_HOME`` enviroment variable or ``~/.config``
+* The directory specified by the ``XDG_CONFIG_HOME`` environment variable or ``~/.config``
   if not set (where ``~`` is the current user's home directory).
 
 If multiple config files are found (i.e in different locations), they're applied on top of
@@ -173,7 +173,7 @@ These are top-level fields whose values control various settings of the viewer.
    :valid: ``"auto"``, ``"block"``, ``"iterm2"``, ``"kitty"``
    :default: ``"auto"``
 
-   If set to any value other than ``"auto"`` and is not overriden by
+   If set to any value other than ``"auto"`` and is not overridden by
    :option:`-S`, the style is used regardless of whether it's supported or not.
 
    .. note:: Overridden by :option:`-S`.

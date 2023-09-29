@@ -404,7 +404,7 @@ class ImageCanvas(urwid.Canvas):
     def content(self, trim_left=0, trim_top=0, cols=None, rows=None, attr_map=None):
         # In all our use cases, the canvas is never trimmed horizontally
         cols = self.cols()
-        rows = rows or self.rows()  # Visble rows of the widget
+        rows = rows or self.rows()  # Visible rows of the widget
         trim_bottom = self.rows() - trim_top - rows
 
         diff_x, diff_y = map(sub, self.size, self._ti_image_size)
