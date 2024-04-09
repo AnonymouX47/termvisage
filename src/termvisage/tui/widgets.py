@@ -10,7 +10,7 @@ from typing import List, Optional, Tuple
 
 import urwid
 from term_image.image import BaseImage, Size
-from term_image.utils import get_terminal_name_version, get_terminal_size
+from term_image.utils import get_terminal_name_version
 from urwid import (
     AttrMap,
     Canvas,
@@ -260,14 +260,6 @@ class Image(urwid.Widget):
 
     def keypress(self, size: Tuple[int, int], key: str) -> str:
         return key
-
-    def rows(self, size: Tuple[int, int], focus: bool = False) -> int:
-        # Incompetent implementation due to the lack of *maxrows*
-        return self._ti_image._valid_size(
-            size[0],
-            None,
-            maxsize=get_terminal_size(),  # Omit 2-line allowance
-        )[1]
 
     def render(self, size: Tuple[int, int], focus: bool = False) -> urwid.Canvas:
         context = tui_main.get_context()
