@@ -6,11 +6,12 @@ import logging
 import os
 import sys
 import warnings
-from dataclasses import dataclass
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Event as mp_Event
 from threading import Thread
-from typing import Optional, Set
+from typing import Optional
+
+from term_image.widget import UrwidImageScreen
 
 from . import cli, notify
 
@@ -34,7 +35,7 @@ def init_log(
         maxBytes=2**20,  # 1 MiB
         backupCount=1,
     )
-    handler.addFilter(filter_)
+    handler.addFilter(_filter)
 
     QUIET, VERBOSE, VERBOSE_LOG = quiet, verbose or debug, verbose_log
     DEBUG = debug = debug or level == logging.DEBUG
@@ -178,19 +179,12 @@ def _log_warning(msg, catg, fname, lineno, f=None, line=None):
     )
 
 
-# See "Filters" section in `logging` standard library documentation.
-@dataclass
-class Filter:
-    disallowed: Set[str]
-
-    def filter(self, record: logging.LogRecord) -> bool:
-        return record.name.partition(".")[0] not in self.disallowed
-
-    def add(self, name: str) -> None:
-        self.disallowed.add(name)
-
-    def remove(self, name: str) -> None:
-        self.disallowed.remove(name)
+def _filter(record: logging.LogRecord) -> None:
+    return (
+        record.name.partition(".")[0] not in _disallowed_modules
+        # Workaround for urwid screen logs
+        and not record.name.startswith(_urwid_screen_logger_name)
+    )
 
 
 class Thread(Thread):
@@ -213,12 +207,12 @@ class Thread(Thread):
             _logger.debug("Exiting")
 
 
-filter_ = Filter({"PIL", "urllib3"})
-
 # Writing to STDERR messes up output, especially with the TUI
 warnings.showwarning = _log_warning
 
 _logger = logging.getLogger("termvisage")
+_disallowed_modules = frozenset({"PIL", "urllib3", "urwid"})
+_urwid_screen_logger_name = f"{UrwidImageScreen.__module__}.UrwidImageScreen"
 
 # the _stacklevel_ parameter was added in Python 3.8
 stacklevel_is_available = sys.version_info[:3] >= (3, 8, 0)

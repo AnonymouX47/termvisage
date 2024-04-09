@@ -123,7 +123,7 @@ class Process(Process):
         logger = _logging.getLogger()
         logger.setLevel(self._logging_details["logging_level"])
         logger.addHandler(RedirectHandler(self._log_queue))
-        logger.handlers[0].addFilter(logging.filter_)
+        logger.handlers[0].addFilter(logging._filter)
 
         # # Warnings and session-level logs
         _logger.setLevel(min(self._logging_details["logging_level"], _logging.INFO))
