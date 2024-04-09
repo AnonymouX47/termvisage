@@ -11,6 +11,17 @@ from typing import List, Optional, Tuple
 import urwid
 from term_image.image import BaseImage, Size
 from term_image.utils import get_terminal_name_version, get_terminal_size
+from urwid import (
+    AttrMap,
+    Canvas,
+    Columns,
+    Divider,
+    Pile,
+    SolidFill,
+    Text,
+    WidgetDecoration,
+    WidgetWrap,
+)
 
 from .. import logging
 from ..config import config_options, expand_key, navi
@@ -469,39 +480,54 @@ class ImageCanvas(urwid.Canvas):
         cls._ti_change_state = (cls._ti_change_state + 1) % 3
 
 
-class LineSquare(urwid.LineBox):
+class LineSquare(WidgetDecoration, WidgetWrap):
+    """``LineBox`` clone but is a flow widget in order to support dynamic sizing of
+    grid cells.
+    """
+
     no_cache = ["render", "rows"]
+    _sizing = frozenset((urwid.FLOW,))
 
     def __init__(self, widget, title=""):
-        super().__init__(widget, title, "left", "default")
-
-        # Prevents `Image.rows()` from being called,
-        # in order to get the correct no of rows for a `<LinesSquare <Image>>` widget
-        original_middle = self._w.contents[1]
-        new_middle = LineSquareMiddleColumns(
-            [x[0] for x in original_middle[0].contents],
-            box_columns=(0, 2),
-            focus_column=original_middle[0].focus_position,
+        title_w = Text(title and f" {title} ", wrap="ellipsis")
+        top_w = Columns(
+            [
+                (1, Text("┌")),
+                Columns([(urwid.PACK, AttrMap(title_w, "default")), Divider("─")]),
+                (1, Text("┐")),
+            ]
         )
-        new_middle.contents[0] = (new_middle.contents[0][0], ("given", 1, True))
-        new_middle.contents[2] = (new_middle.contents[2][0], ("given", 1, True))
-        self._w.contents[1] = (new_middle, original_middle[1])
-        self.title_widget.set_wrap_mode("ellipsis")
+        middle_w = LineSquareMiddleColumns(
+            [(1, SolidFill("│")), widget, (1, SolidFill("│"))]
+        )
+        bottom_w = Columns([(1, SolidFill("└")), SolidFill("─"), (1, SolidFill("┘"))])
+        main_w = Pile([(1, top_w), middle_w, (1, bottom_w)])
+        super().__init__(widget)
+        super(WidgetDecoration, self).__init__(main_w)
+        self.title_widget = title_w
 
     def rows(self, size: Tuple[int, int], focus: bool = False) -> int:
         return ceil(size[0] / 2)
 
-    def render(self, size: Tuple[int, int], focus: bool = False) -> urwid.Canvas:
-        return super().render((size[0], ceil(size[0] / 2)), focus)
+    def render(self, size: Tuple[int, int], focus: bool = False) -> Canvas:
+        (maxcol,) = size
+        return super().render((maxcol, ceil(maxcol / 2)), focus)
+
+    def sizing(self) -> frozenset[str]:
+        return self._sizing
 
 
-# To prevent `Image.rows()` from being called,
-# in order to get the correct no of rows for a `<LinesSquare <Image>>` widget
+# Required by the underlying `Pile` of a `LineSquare` widget, to compute the correct
+# no of rows for a grid cell.
 class LineSquareMiddleColumns(urwid.Columns):
     no_cache = ["render", "rows"]
+    _sizing = frozenset((urwid.BOX, urwid.FLOW))
 
     def rows(self, size: Tuple[int, int], focus: bool = False) -> int:
         return ceil(size[0] / 2) - 2
+
+    def sizing(self) -> frozenset[str]:
+        return self._sizing
 
 
 class MenuEntry(urwid.Text):
