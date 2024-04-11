@@ -1,7 +1,7 @@
-argcomplete==3.0.8
-black==22.12.0
-flake8==5.0.4
-isort[colors]==5.12.0;python_version>="3.8"
-isort[colors]==5.11.4;python_version<"3.8"
+argcomplete==3.2.3
+black==24.3.0
+flake8==7.0.0;python_version>="3.8.1"
+flake8==5.0.4;python_version<"3.8.1"
+isort[colors]==5.13.2
 term-image==0.6.1
-urwid==2.1.2
+urwid==2.6.10
