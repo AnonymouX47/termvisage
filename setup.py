@@ -9,7 +9,6 @@ classifiers = [
     "Operating System :: Android",
     "Operating System :: Microsoft :: Windows :: Windows 10",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -33,7 +32,7 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT",
     classifiers=classifiers,
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=["argcomplete>=2,<4", "term-image>=0.6,<0.7", "urwid>=2.1,<3.0"],
     entry_points={
         "console_scripts": ["termvisage=termvisage.__main__:main"],
