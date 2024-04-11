@@ -12,6 +12,7 @@ import urwid
 from term_image.image import BaseImage, Size
 from term_image.utils import get_terminal_name_version
 from urwid import (
+    PACK,
     AttrMap,
     Canvas,
     Columns,
@@ -484,16 +485,16 @@ class LineSquare(WidgetDecoration, WidgetWrap):
         title_w = Text(title and f" {title} ", wrap="ellipsis")
         top_w = Columns(
             [
-                (1, Text("┌")),
-                Columns([(urwid.PACK, AttrMap(title_w, "default")), Divider("─")]),
-                (1, Text("┐")),
+                (PACK, Text("┌")),
+                Columns([(PACK, AttrMap(title_w, "default")), Divider("─")]),
+                (PACK, Text("┐")),
             ]
         )
         middle_w = LineSquareMiddleColumns(
             [(1, SolidFill("│")), widget, (1, SolidFill("│"))]
         )
         bottom_w = Columns([(1, SolidFill("└")), SolidFill("─"), (1, SolidFill("┘"))])
-        main_w = Pile([(1, top_w), middle_w, (1, bottom_w)])
+        main_w = Pile([(PACK, top_w), middle_w, (1, bottom_w)])
         super().__init__(widget)
         super(WidgetDecoration, self).__init__(main_w)
         self.title_widget = title_w
