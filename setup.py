@@ -24,7 +24,7 @@ with open("README.md", "r") as fp:
 
 setup(
     name="termvisage",
-    version="0.1.0",
+    version="0.2.0-dev",
     author="Toluwaleke Ogundipe",
     author_email="anonymoux47@gmail.com",
     url="https://github.com/AnonymouX47/termvisage",
