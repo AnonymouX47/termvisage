@@ -219,9 +219,12 @@ class GridListBox(urwid.ListBox):
 
         self.body.extend(
             [
-                content[0] if isinstance(content[0], urwid.Divider)
-                # `.original_widget` gets rid of an unnecessary padding
-                else content[0].original_widget
+                (
+                    content[0]
+                    if isinstance(content[0], urwid.Divider)
+                    # `.original_widget` gets rid of an unnecessary padding
+                    else content[0].original_widget
+                )
                 for content in self._ti_grid.generate_display_widget(size).contents
             ]
         )

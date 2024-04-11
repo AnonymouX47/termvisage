@@ -435,9 +435,7 @@ def scan_dir(
             (
                 Image(ImageClass.from_file(entry.path))
                 if kind is EntryKind.IMAGE
-                else ...
-                if kind is EntryKind.DIR
-                else None
+                else ... if kind is EntryKind.DIR else None
             ),
         )
 
@@ -642,9 +640,11 @@ def update_menu(
     menu_list, at_top_level = items, top_level
 
     menu.body[:] = [
-        urwid.Text(("inactive", ".."))
-        if top_level
-        else urwid.AttrMap(MenuEntry(".."), "default", "focused entry")
+        (
+            urwid.Text(("inactive", ".."))
+            if top_level
+            else urwid.AttrMap(MenuEntry(".."), "default", "focused entry")
+        )
     ]
     menu.body += [
         urwid.AttrMap(

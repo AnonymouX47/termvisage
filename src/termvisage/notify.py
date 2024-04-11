@@ -137,9 +137,7 @@ def notify(
             + (
                 f"{CSI}31m{msg}{COLOR_RESET}"
                 if level >= ERROR
-                else f"{CSI}33m{msg}{COLOR_RESET}"
-                if level == WARNING
-                else msg
+                else f"{CSI}33m{msg}{COLOR_RESET}" if level == WARNING else msg
             ),
             file=stderr if level >= WARNING else stdout,
         )
