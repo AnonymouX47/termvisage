@@ -55,7 +55,9 @@ def init(
 
     images.sort(
         key=lambda x: sort_key_lexi(
-            Path(x[0] if x[1] is ... else x[1]._ti_image._source)
+            Path(x[0] if x[1] is ... else x[1]._ti_image.source),
+            # For the sake of URL-sourced images
+            x[0] if x[1] is ... else x[1]._ti_image._source,
         )
     )
     main.displayer = main.display_images(".", images, contents, top_level=True)

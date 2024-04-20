@@ -6,7 +6,7 @@ import logging as _logging
 import os
 from enum import Enum, auto
 from operator import mul
-from os.path import abspath, basename, islink
+from os.path import abspath, basename, isfile, islink
 from pathlib import Path
 from queue import Queue
 from threading import Event
@@ -617,18 +617,20 @@ def set_prev_context(n: int = 1) -> None:
         info_bar.set_text(f"{_prev_contexts} {info_bar.text}")
 
 
-def sort_key_lexi(entry: Union[os.DirEntry, Path]):
+def sort_key_lexi(entry: os.DirEntry | Path, actual_path: str = ""):
     """Lexicographic ordering key function.
 
     Compatible with ``list.sort()``, ``sorted()``, etc.
     """
     name = entry.name
     return (
-        chr(entry.is_file())  # group directories before files
-        + name.lstrip(".").casefold()  # sorts within each group
-        # '\0' makes the key for the non-hidden longer without affecting it's order
-        # relative to other entries.
-        + "\0" * (not name.startswith("."))  # hidden before non-hidden of the same name
+        # group directories before files
+        chr(isfile(actual_path) if actual_path else entry.is_file())
+        # sort within each group, ignoring visibility and case
+        + name.lstrip(".").casefold()
+        # hidden before non-hidden of the same name; '\0' makes the key for the
+        # non-hidden longer without affecting it's order relative to other entries
+        + "\0" * (not name.startswith("."))
     )
 
 

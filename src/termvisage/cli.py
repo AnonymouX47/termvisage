@@ -810,7 +810,7 @@ def main() -> None:
     sources = [
         abspath(source) if exists(source) else source for source in args.sources or "."
     ]
-    unique_sources = set()
+    unique_sources: dict[str, int] = {}
 
     url_queue = Queue()
     getters = [
@@ -852,11 +852,11 @@ def main() -> None:
         )
     checkers_started = False
 
-    for source in sources:
+    for source_index, source in enumerate(sources):
         if source in unique_sources:
             log(f"Source repeated: {source!r}", logger, verbose=True)
             continue
-        unique_sources.add(source)
+        unique_sources[source] = source_index
 
         if all(urlparse(source)[:3]):  # Is valid URL
             if not getters_started:
@@ -932,6 +932,10 @@ def main() -> None:
     if not images:
         log("No valid source!", logger)
         return NO_VALID_SOURCE
+    # Sort entries by order on the command line
+    images.sort(
+        key=lambda x: unique_sources[x[0] if x[1] is ... else x[1]._ti_image.source]
+    )
 
     if args.cli or (
         not args.tui and len(images) == 1 and isinstance(images[0][1], Image)
