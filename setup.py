@@ -34,7 +34,12 @@ setup(
     license="MIT",
     classifiers=classifiers,
     python_requires=">=3.8",
-    install_requires=["argcomplete>=2,<4", "term-image>=0.6,<0.7", "urwid>=2.1,<3.0"],
+    install_requires=[
+        "argcomplete>=2,<4",
+        "Pillow>=10.1,<11",
+        "term-image>=0.6,<0.7",
+        "urwid>=2.1,<3",
+    ],
     entry_points={
         "console_scripts": ["termvisage=termvisage.__main__:main"],
     },
