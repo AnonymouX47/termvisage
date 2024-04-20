@@ -97,9 +97,8 @@ def main() -> int:
         write_tty(b"\033[23;2t")  # Restore window title
         # Explicit cleanup is necessary since the top-level `Image` widgets
         # will still hold references to the `BaseImage` instances
-        if cli.url_images:
-            for _, value in cli.url_images:
-                value._ti_image.close()
+        for _, image_w in cli.url_images:
+            image_w._ti_image.close()
 
 
 if __name__ == "__main__":

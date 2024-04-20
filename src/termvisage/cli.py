@@ -655,7 +655,7 @@ def main() -> None:
     # # Prevents circular import for docs `autoprogram` (isort order or not)
     from .parsers import parser, style_parsers
 
-    global args, url_images, MAX_DEPTH, RECURSIVE, SHOW_HIDDEN
+    global args, MAX_DEPTH, RECURSIVE, SHOW_HIDDEN
 
     warnings.filterwarnings("error", "", TermImageWarning, "term_image.image.iterm2")
 
@@ -804,7 +804,7 @@ def main() -> None:
     log("Processing sources...", logger, verbose=True)
     notify.start_loading()
 
-    file_images, url_images, dir_images = [], [], []
+    file_images, dir_images = [], []
     contents = {}
     sources = [
         abspath(source) if exists(source) else source for source in args.sources or "."
@@ -1075,4 +1075,4 @@ RECURSIVE = None  #: Optional[bool]
 SHOW_HIDDEN = None  #: Optional[bool]
 # # Used in other modules
 args = None  #: Optional[argparse.Namespace]
-url_images = None  #: Optional[list]
+url_images: list[tuple[str, Image]] = []
