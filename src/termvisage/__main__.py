@@ -23,7 +23,7 @@ def main() -> int:
     from . import cli, logging, notify, tui
 
     def finish_loading():
-        if not logging.QUIET and notify.loading_indicator:
+        if notify.loading_initialized:
             notify.end_loading()
             if not tui.initialized:
                 while notify.is_loading():

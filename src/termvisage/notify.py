@@ -63,9 +63,11 @@ def load() -> None:
     from .tui.main import update_screen
     from .tui.widgets import loading
 
-    global _n_loading
+    global _n_loading, loading_initialized
 
     stream = stdout if stdout.isatty() else stderr
+    loading_initialized = True
+
     _loading.wait()
 
     while _n_loading > -1:
@@ -179,6 +181,7 @@ _alarms = Queue(5)  # Max value for "max notifications" is 5
 _loading = Event()
 _n_loading = 0
 cli_loading_interrupt = Event()
+loading_initialized = False
 
 # Set from `.logging.init_log()`.
 loading_indicator: Optional[Thread] = None
