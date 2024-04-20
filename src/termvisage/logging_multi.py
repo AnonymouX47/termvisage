@@ -26,7 +26,7 @@ def process_multi_logs() -> None:
 
     PID = os.getpid()
     log_queue = JoinableQueue()
-    process_multi_logs.started.set()
+    process_multi_logs.started.set()  # See `.logging.init_log()`
 
     record_type, record = log_queue.get()
     while record:
@@ -118,6 +118,8 @@ class Process(Process):
         self._log_queue.put((NOTIF, (args, kwargs)))
 
     def _redirect_logs(self) -> None:
+        logging.initialized = True
+
         # Logs
         vars(logging).update(self._logging_details["constants"])
         logger = _logging.getLogger()

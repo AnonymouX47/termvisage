@@ -100,10 +100,10 @@ def action_with_key(key: str, keyset: Dict[str, list]) -> Optional[str]:
 
 def get_log_function(level) -> Callable[[str], None]:
     def log(msg: str) -> None:
-        if logging.VERBOSE is None:  # logging not yet initialized
-            notify.notify(msg, notify_level, "config", verbose=verbose)
-        else:
+        if logging.initialized:
             logging.log(msg, _logger, log_level, "config", verbose=verbose)
+        else:
+            notify.notify(msg, notify_level, "config", verbose=verbose)
 
     notify_level = getattr(notify, level)
     log_level = getattr(_logging, level)

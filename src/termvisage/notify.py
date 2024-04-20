@@ -120,13 +120,13 @@ def notify(
 ) -> None:
     """Displays a message in the TUI's notification bar or to STDOUT/STDERR."""
     if (
-        (cli.args.quiet if logging.QUIET is None else logging.QUIET)
+        (logging.QUIET if logging.initialized else cli.args.quiet)
         and level < CRITICAL
         or verbose
         and not (
-            cli.args.verbose or cli.args.debug
-            if logging.VERBOSE is None
-            else logging.VERBOSE
+            logging.VERBOSE
+            if logging.initialized
+            else cli.args.verbose or cli.args.debug
         )
     ):
         return

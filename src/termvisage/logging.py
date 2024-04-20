@@ -8,7 +8,7 @@ import sys
 import warnings
 from logging.handlers import RotatingFileHandler
 from multiprocessing import Event as mp_Event
-from threading import Thread
+from threading import Event, Thread
 from typing import Optional
 
 from term_image.widget import UrwidImageScreen
@@ -26,7 +26,7 @@ def init_log(
     verbose_log: bool,
 ) -> None:
     """Initialize application event logging"""
-    global DEBUG, MULTI, QUIET, VERBOSE, VERBOSE_LOG
+    global DEBUG, MULTI, QUIET, VERBOSE, VERBOSE_LOG, initialized
 
     logfile = os.path.expanduser(logfile)
     os.makedirs(os.path.dirname(logfile) or ".", exist_ok=True)
@@ -91,13 +91,15 @@ def init_log(
     if MULTI:
         from .logging_multi import process_multi_logs
 
-        process_multi_logs.started = mp_Event()
+        process_multi_logs.started = Event()
         Thread(target=process_multi_logs, name="MultiLogger").start()
         process_multi_logs.started.wait()
         del process_multi_logs.started
 
         # Inherited by instances of `.logging_multi.Process`
         cli.interrupted = mp_Event()
+
+    initialized = True
 
 
 def log(
@@ -214,6 +216,7 @@ _logger = logging.getLogger("termvisage")
 _disallowed_modules = frozenset({"PIL", "urllib3", "urwid"})
 _urwid_screen_logger_name = f"{UrwidImageScreen.__module__}.UrwidImageScreen"
 
+initialized = False
 # the _stacklevel_ parameter was added in Python 3.8
 stacklevel_is_available = sys.version_info[:3] >= (3, 8, 0)
 if stacklevel_is_available:

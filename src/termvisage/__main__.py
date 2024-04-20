@@ -33,14 +33,13 @@ def main() -> int:
             notify.loading_indicator.join()
 
     def finish_multi_logging():
-        if logging.MULTI:
+        if logging.initialized and logging.MULTI:
             from .logging_multi import child_processes, log_queue
 
-            if log_queue:  # Multi-logging has been successfully initialized
-                for process in child_processes:
-                    process.join()
-                log_queue.put((None,) * 2)  # End of logs
-                log_queue.join()
+            for process in child_processes:
+                process.join()
+            log_queue.put((None,) * 2)  # End of logs
+            log_queue.join()
 
     # 1. `PIL.Image.open()` seems to cause forked child processes to block when called
     # in both the parent and the child.
@@ -63,8 +62,7 @@ def main() -> int:
             "Session interrupted",
             logger,
             _logging.CRITICAL,
-            # If logging has been successfully initialized
-            file=logging.VERBOSE is not None,
+            file=logging.initialized,
             # If the TUI was not launched, only print to console if verbosity is enabled
             direct=bool(main.loop or cli.args and (cli.args.verbose or cli.args.debug)),
         )
@@ -75,15 +73,14 @@ def main() -> int:
         cli.interrupted.set()  # Signal interruption to subprocesses and other threads.
         finish_loading()
         finish_multi_logging()
-        if logging.VERBOSE is not None:  # logging has been successfully initialized
+        if logging.initialized:
             logger.exception("Session terminated due to:")
         logging.log(
             "Session not ended successfully: "
             f"({type(e).__module__}.{type(e).__qualname__}) {e}",
             logger,
             _logging.CRITICAL,
-            # If logging has been successfully initialized
-            file=logging.VERBOSE is not None,
+            file=logging.initialized,
         )
         if cli.args and cli.args.debug:
             raise
