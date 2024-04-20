@@ -28,15 +28,15 @@ def process_multi_logs() -> None:
     log_queue = JoinableQueue()
     process_multi_logs.started.set()
 
-    log_type, data = log_queue.get()
-    while data:
-        if log_type == LOG:
-            data["process"] = PID
-            _logger.handle(_logging.makeLogRecord(data))
+    record_type, record = log_queue.get()
+    while record:
+        if record_type == LOG:
+            record.process = PID
+            _logger.handle(record)
         else:
-            notify.notify(*data[0], **data[1])
+            notify.notify(*record[0], **record[1])
         log_queue.task_done()
-        log_type, data = log_queue.get()
+        record_type, record = log_queue.get()
     log_queue.task_done()
 
 
@@ -145,15 +145,13 @@ class RedirectHandler(_logging.Handler):
         self._log_queue = log_queue
 
     def handle(self, record: _logging.LogRecord):
-        attrdict = vars(record)
-        exc_info = attrdict["exc_info"]
-        if exc_info:
+        if exc_info := record.exc_info:
             # traceback objects cannot be pickled
-            attrdict["msg"] = "\n".join(
-                (attrdict["msg"], "".join(format_exception(*exc_info)))
+            record.msg = "\n".join(
+                (record.msg, "".join(format_exception(*exc_info)))
             ).rstrip()
-            attrdict["exc_info"] = None
-        self._log_queue.put((LOG, attrdict))
+            record.exc_info = None
+        self._log_queue.put((LOG, record))
 
 
 _logger = _logging.getLogger("termvisage")
