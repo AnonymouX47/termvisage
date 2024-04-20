@@ -14,6 +14,7 @@ from typing import Callable, Dict, Generator, Iterable, List, Optional, Tuple, U
 
 import PIL
 import urwid
+from term_image.image import BaseImage
 
 from .. import logging, notify, tui
 from ..config import context_keys, expand_key
@@ -684,13 +685,10 @@ grid_change = Event()
 grid_scan_done = Event()
 next_grid = Queue(1)
 
-# The annotations below are put in comments for compatibility with Python 3.7
-# as it doesn't allow names declared as `global` within functions to be annotated.
-
 # # Set from within `display_images()`
-_grid_list = None  #: Optional[list]
-grid_path = None  #: Optional[str]
-last_non_empty_grid_path = None  #: Optional[str]
+_grid_list: list | None = None
+grid_path: str | None = None
+last_non_empty_grid_path: str | None = None
 
 # For menu scanning/listing
 menu_acknowledge = Event()
@@ -702,22 +700,19 @@ next_menu = Queue(1)
 _prev_contexts = ["menu"] * 3
 _context = "menu"  # To avoid a NameError the first time set_context() is called.
 
-# The annotations below are put in comments for compatibility with Python 3.7
-# as it doesn't allow names declared as `global` within functions to be annotated.
-
 # Set by `update_menu()`
-menu_list = None  #: Optional[list]
-at_top_level = None  #: Optional[bool]
+menu_list: list
+at_top_level: bool
 
 # Set from `.tui.init()`
-ImageClass: Optional[type] = None
-displayer: Optional[Generator[None, int, bool]] = None
-loop: Optional[tui.Loop] = None
-update_pipe: Optional[int] = None
+ImageClass: BaseImage
+displayer: Generator[None, int, bool]
+loop: tui.Loop
+update_pipe: int
 
 # # Corresponding to command-line args
-DEBUG: Optional[bool] = None
-MAX_PIXELS: Optional[int] = None
-NO_ANIMATION: Optional[bool] = None
-RECURSIVE: Optional[bool] = None
-SHOW_HIDDEN: Optional[bool] = None
+DEBUG: bool
+MAX_PIXELS: int
+NO_ANIMATION: bool
+RECURSIVE: bool
+SHOW_HIDDEN: bool

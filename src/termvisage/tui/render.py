@@ -7,7 +7,7 @@ from multiprocessing import Event as mp_Event, Queue as mp_Queue
 from os.path import split
 from queue import Empty, Queue
 from threading import Event
-from typing import Optional, Union
+from typing import Union
 
 from term_image.image import Size
 
@@ -496,6 +496,6 @@ image_style_specs = {"kitty": "+W", "iterm2": "+W"}
 
 # Set from `.tui.init()`
 # # Corresponding to command-line args
-ANIM_CACHED: Union[None, bool, int] = None
-FRAME_DURATION: Optional[float] = None
-REPEAT: Optional[int] = None
+ANIM_CACHED: bool | int
+FRAME_DURATION: float
+REPEAT: int

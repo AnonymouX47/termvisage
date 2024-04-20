@@ -167,8 +167,5 @@ exported_style_attrs = {
     "kitty": ("_TERM", "_TERM_VERSION", "_KITTY_VERSION"),
 }
 
-# The annotations below are put in comments for compatibility with Python 3.7
-# as it doesn't allow names declared as `global` within functions to be annotated.
-
 # Set from `process_multi_logs()` in the MultiLogger thread, only in the main process
-log_queue = None  #: Optional[JoinableQueue]
+log_queue: JoinableQueue

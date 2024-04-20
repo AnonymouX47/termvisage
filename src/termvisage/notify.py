@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging as _logging
 from queue import Queue
 from sys import stderr, stdout
-from threading import Event, Thread
-from typing import Any, Optional, Tuple, Union
+from threading import Event
+from typing import Any, Tuple, Union
 
 import urwid
 
@@ -31,9 +31,7 @@ def add_notification(msg: Union[str, Tuple[str, str]]) -> None:
     _alarms.put(main.loop.set_alarm_in(5, clear_notification))
 
 
-def clear_notification(
-    loop: Union[urwid.MainLoop, urwid.main_loop.EventLoop], data: Any
-) -> None:
+def clear_notification(loop: urwid.MainLoop, data: Any) -> None:
     """Removes the oldest message in the TUI notification bar."""
     widgets.notifications.contents.pop()
     loop.remove_alarm(_alarms.get())
@@ -204,4 +202,4 @@ loading_initialized = False
 loading_interrupted = Event()
 
 # Set from `.logging.init_log()`.
-loading_indicator: Optional[Thread] = None
+loading_indicator: logging.Thread

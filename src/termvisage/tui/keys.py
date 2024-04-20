@@ -7,7 +7,7 @@ import os
 from os.path import abspath, basename
 from time import sleep
 from types import FunctionType
-from typing import Tuple
+from typing import Any, Tuple
 
 import urwid
 from term_image import get_cell_ratio
@@ -725,15 +725,12 @@ no_globals = {"global", "confirmation", "full-grid-image", "overlay"}
 key_bar._ti_collapsed = True
 expand._ti_shown = True
 
-# The annotations below are put in comments for compatibility with Python 3.7
-# as it doesn't allow names declared as `global` within functions to be annotated.
-
 # Use in the "confirmation" context. Set by `set_confirmation()`
-_confirm = None  #: Optional[Tuple[FunctionType, Tuple[Any]]]
-_cancel = None  #: Optional[Tuple[FunctionType, Tuple[Any]]]
+_confirm: tuple[FunctionType, tuple[Any, ...]] | None = None
+_cancel: tuple[FunctionType, tuple[Any, ...]] | None = None
 
 # Used for overlays
-_prev_view_widget = None  #: Optional[urwid.Widget]
+_prev_view_widget: urwid.Widget | None = None
 
 # Used to guard clearing of grid render cache
-_prev_cell_ratio = None  #: Optional[float]
+_prev_cell_ratio: float = 0.0

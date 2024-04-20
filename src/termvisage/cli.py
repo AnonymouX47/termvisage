@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import logging as _logging
 import os
 import re
@@ -1055,23 +1056,20 @@ logger = _logging.getLogger(__name__)
 
 # Initially set from within `.__main__.main()`
 # Will be updated from `.logging.init_log()` if multiprocessing is enabled
-interrupted: Union[None, Event, mp_Event] = None
-
-# The annotations below are put in comments for compatibility with Python 3.7
-# as it doesn't allow names declared as `global` within functions to be annotated.
+interrupted: Event | mp_Event | None = None
 
 # Used by `check_dir()`
-_depth = None  #: int
+_depth: int
 
 # Set from within `check_dirs()`; Hence, only set in "Checker-?" processes
-_dir_queue = None  #: Union[None, Queue, mp_Queue]
-_free_checkers = None  #: Optional[Value]
-_source = None  #: Optional[str]
+_dir_queue: Queue | mp_Queue
+_free_checkers: Value
+_source: str | None = None
 
 # Set from within `main()`
-MAX_DEPTH = None  #: Optional[int]
-RECURSIVE = None  #: Optional[bool]
-SHOW_HIDDEN = None  #: Optional[bool]
+MAX_DEPTH: int
+RECURSIVE: bool
+SHOW_HIDDEN: bool
 # # Used in other modules
-args = None  #: Optional[argparse.Namespace]
+args: argparse.Namespace | None = None
 url_images: list[tuple[str, Image]] = []
