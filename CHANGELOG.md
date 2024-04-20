@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - tui: Crash on image grid view ([c64f195]).
+- cli,tui: Sorting of top-level (command line) entries ([9ea0572])
 
 [c64f195]: https://github.com/AnonymouX47/termvisage/commit/c64f195a79557fdf5a9323db907a5716a12d6440
+[9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
 
 
 ## [0.1.0] - 2023-06-03
