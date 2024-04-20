@@ -151,24 +151,24 @@ Logs are written to a file on a local filesystem.
 * for all sessions, using :confval:`log file`
 * per session, using :option:`-l`
 
-A log entry has the following format:
+A log record has the following format (``<`` *and* ``>`` *mark placeholders, they're not part of the record itself*):
 
 .. code-block:: none
 
-   (<pid>) (<date> <time>) <process>: <thread>: [<level>] <module>: <function>: <message>
+   (<pid>) (<date> <time>) [<level>] <process>: <thread>: <module>: <function>: <message>
 
 * *pid*: The process ID of the session.
-* *date* and *time*: Current system date and time in the format ``%Y-%m-%d %H:%M:%S,<ms>``, where ``<ms>`` is in milliseconds.
-* *process* and *thread*: The names of the python process and thread that produced the log record.
+* *date* and *time*: System date and time at which the record was created, in the format ``%Y-%m-%d %H:%M:%S,<ms>``, where ``<ms>`` is in milliseconds.
+* *level*: The level of the record, this indicates it's importance.
+* *process* and *thread*: The names of the python process and thread that produced the record.
 
-  * Only present when the *logging level* is set to ``DEBUG`` (either by
-    :option:`--debug` or :option:`--log-level=DEBUG`).
+  * Only present when the *logging level* is set to ``DEBUG``
+    (either by :option:`--debug` or :option:`--log-level=DEBUG`).
 
-* *level*: The level of the log entry, this indicates it's importance.
-* *module*: The package sub-module from which it originated.
+* *module*: The package submodule from which it originated, or "termvisage" for session-level logs.
 * *function*: The function from which it originated.
 
-  * Only present when running on **Python 3.8+** and *logging level* is set to ``DEBUG``
+  * Only present when the *logging level* is set to ``DEBUG``
     (either by :option:`--debug` or :option:`--log-level=DEBUG`).
 
 * *message*: The actual report describing the event that occurred.

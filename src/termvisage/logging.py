@@ -45,10 +45,10 @@ def init_log(
         level = logging.INFO
 
     FORMAT = (
-        "({process}) ({asctime}) "
-        + "{processName}: {threadName}: " * debug
-        + "[{levelname}] {name}: "
-        + "{funcName}: " * (debug and stacklevel_is_available)
+        "({process}) ({asctime}) [{levelname}] "
+        + ("{processName}: {threadName}: " if debug else "")
+        + "{name}: "
+        + ("{funcName}: " if debug and stacklevel_is_available else "")
         + "{message}"
     )
     logging.basicConfig(
