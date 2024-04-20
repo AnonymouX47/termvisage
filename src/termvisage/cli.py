@@ -907,13 +907,13 @@ def main() -> None:
             break
         except KeyboardInterrupt as e:  # Ensure logs are in correct order
             if not interrupt:  # keep the first
-                interrupted.set()
+                interrupted.set()  # Signal interruption to other threads
                 interrupt = e
     if interrupt:
         raise interrupt from None
 
     notify.stop_loading()
-    notify.cli_loading_interrupt.set()
+    notify.loading_interrupted.set()
     while notify.is_loading():
         pass
 
@@ -1039,7 +1039,6 @@ def main() -> None:
                     sys.stdout.close()
                 break
     elif OS_HAS_FCNTL:
-        notify.end_loading()
         tui.init(args, style_args, images, contents, ImageClass)
     else:
         log(

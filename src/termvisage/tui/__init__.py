@@ -12,7 +12,7 @@ import urwid
 from term_image.utils import lock_tty, write_tty
 from term_image.widget import UrwidImageScreen
 
-from .. import logging
+from .. import logging, notify
 from ..config import config_options
 from ..utils import CSI
 from . import main, render
@@ -103,6 +103,18 @@ def init(
     logger = _logging.getLogger(__name__)
     logging.log("Launching the TUI", logger, direct=False)
     main.set_context("menu")
+
+    # End the CLI phase of loading indication and enter the TUI phase.
+    #
+    # NOTE: `finish_loading()` in `.__main__.main()` excpects loading indication to be
+    # in the TUI phase if the TUI has been initialized.
+    #
+    # - It does no harm if loading indication is in the TUI phase but the TUI is not
+    #   yet initialized.
+    # - It will result in a deadlock if the TUI has been initialized but loading
+    #   indication hasn't entered the TUI phase.
+    notify.end_loading()
+
     active = initialized = True
 
     menu_scanner.start()

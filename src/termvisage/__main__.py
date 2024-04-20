@@ -24,12 +24,13 @@ def main() -> int:
 
     def finish_loading():
         if notify.loading_initialized:
-            notify.end_loading()
+            notify.end_loading()  # End the current phase (may be CLI or TUI)
+            notify.loading_interrupted.set()
             if not tui.initialized:
-                while notify.is_loading():
+                while notify.is_loading():  # Wait for the CLI phase to end
                     pass
-                notify.end_loading()
-            notify.loading_indicator.join()
+                notify.end_loading()  # End the TUI phase
+            notify.loading_indicator.join()  # Finally, wait for the thread to exit
 
     def finish_multi_logging():
         if logging.initialized and logging.MULTI:

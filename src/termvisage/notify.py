@@ -6,7 +6,6 @@ import logging as _logging
 from queue import Queue
 from sys import stderr, stdout
 from threading import Event, Thread
-from time import sleep
 from typing import Any, Optional, Tuple, Union
 
 import urwid
@@ -68,28 +67,40 @@ def load() -> None:
     stream = stdout if stdout.isatty() else stderr
     loading_initialized = True
 
-    _loading.wait()
+    # CLI Phase
 
-    while _n_loading > -1:
-        while _n_loading > 0:
+    _loading.wait()  # Wait for a loading operation
+
+    while _n_loading > -1:  # CLI phase hasn't ended?
+        while _n_loading > 0:  # Anything loading?
+            # Animate the CLI loading indicator
             for stage in (".  ", ".. ", "..."):
                 stream.write(stage + "\b" * 3)
                 stream.flush()
-                if _n_loading <= 0:
+                if _n_loading <= 0:  # Nothing loading or CLI phase ended?
                     break
-                cli_loading_interrupt.wait(0.25)  # Doubles as a delay
+                if loading_interrupted.wait(0.25):  # Delay interruptibly
+                    loading_interrupted.clear()
+                if _n_loading <= 0:  # Nothing loading or CLI phase ended?
+                    break
+
+        # Clear the CLI loading indicator
         stream.write(" " * 3 + "\b" * 3)
         stream.flush()
-        if _n_loading > -1:
-            _loading.clear()
-            _loading.wait()
+
+        if _n_loading > -1:  # Still in the CLI phase?
+            _loading.clear()  # Signal "not loading"
+            _loading.wait()  # Wait for a loading operation
+
+    # TUI Phase
 
     _n_loading = 0
-    _loading.clear()
-    _loading.wait()
+    _loading.clear()  # Signal "not loading"
+    _loading.wait()  # Wait for a loading operation
 
-    while _n_loading > -1:
-        while _n_loading > 0:
+    while _n_loading > -1:  # TUI phase hasn't ended?
+        while _n_loading > 0:  # Anything loading?
+            # Animate the TUI loading indicator
             for stage in (
                 "\u28bf",
                 "\u28fb",
@@ -102,14 +113,22 @@ def load() -> None:
             ):
                 loading.set_text(stage)
                 update_screen()
-                if _n_loading <= 0:
+                if _n_loading <= 0:  # Nothing loading or TUI phase ended?
                     break
-                sleep(0.25)
+                if loading_interrupted.wait(0.25):  # Delay interruptibly
+                    loading_interrupted.clear()
+                if _n_loading <= 0:  # Nothing loading or TUI phase ended?
+                    break
+
+        # Clear the TUI loading indicator
         loading.set_text("")
         update_screen()
-        if _n_loading > -1:
-            _loading.clear()
-            _loading.wait()
+
+        if _n_loading > -1:  # Still in the TUI phase?
+            _loading.clear()  # Signal "not loading"
+            _loading.wait()  # Wait for a loading operation
+
+    _loading.clear()  # Signal "not loading"
 
 
 def notify(
@@ -180,8 +199,9 @@ _alarms = Queue(5)  # Max value for "max notifications" is 5
 
 _loading = Event()
 _n_loading = 0
-cli_loading_interrupt = Event()
 loading_initialized = False
+# Used to implement an interruptible loading mechanism.
+loading_interrupted = Event()
 
 # Set from `.logging.init_log()`.
 loading_indicator: Optional[Thread] = None
