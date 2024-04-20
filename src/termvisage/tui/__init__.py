@@ -29,7 +29,7 @@ def init(
     ImageClass: type,
 ) -> None:
     """Initializes the TUI"""
-    global is_launched
+    global active, initialized
 
     if args.debug:
         main_widget.contents.insert(
@@ -101,9 +101,10 @@ def init(
     main.loop.screen.set_terminal_properties(2**24)
 
     logger = _logging.getLogger(__name__)
-    logging.log("Launching TUI", logger, direct=False)
+    logging.log("Launching the TUI", logger, direct=False)
     main.set_context("menu")
-    is_launched = True
+    active = initialized = True
+
     menu_scanner.start()
     grid_scanner.start()
     grid_render_manager.start()
@@ -131,7 +132,7 @@ def init(
         # urwid fails to restore the normal buffer on some terminals
         write_tty(f"{CSI}?1049l".encode())  # Switch back to the normal buffer
         main.displayer.close()
-        is_launched = False
+        active = False
         os.close(main.update_pipe)
 
 
@@ -148,8 +149,7 @@ class Loop(urwid.MainLoop):
         return super().process_input(keys)
 
 
-is_launched = False
-
+active = initialized = False
 palette = [
     ("default", "", "", "", "", ""),
     ("default bold", "", "", "", "bold", ""),

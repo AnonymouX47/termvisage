@@ -20,13 +20,12 @@ def main() -> int:
 
     autocomplete(parser)
 
-    from . import cli, logging, notify
-    from .tui import main
+    from . import cli, logging, notify, tui
 
     def finish_loading():
         if not logging.QUIET and notify.loading_indicator:
             notify.end_loading()
-            if not main.loop:  # TUI was not launched
+            if not tui.initialized:
                 while notify.is_loading():
                     pass
                 notify.end_loading()
@@ -63,8 +62,11 @@ def main() -> int:
             logger,
             _logging.CRITICAL,
             file=logging.initialized,
-            # If the TUI was not launched, only print to console if verbosity is enabled
-            direct=bool(main.loop or cli.args and (cli.args.verbose or cli.args.debug)),
+            # If the TUI was not initialized, write to console only if verbosity is
+            # enabled
+            direct=bool(
+                tui.initialized or cli.args and (cli.args.verbose or cli.args.debug)
+            ),
         )
         if cli.args and cli.args.debug:
             raise

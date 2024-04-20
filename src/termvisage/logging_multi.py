@@ -63,8 +63,9 @@ class Process(Process):
             "redirect_notifs": redirect_notifs,
         }
         self._main_process_interrupted = cli.interrupted
-        self._ImageClass = tui.main.ImageClass
-        if self._ImageClass:  # if the TUI is initialized
+        self._tui_is_initialized = tui.initialized
+        if self._tui_is_initialized:
+            self._ImageClass = tui.main.ImageClass
             self._supported = self._ImageClass._supported
             self._forced_support = self._ImageClass.forced_support
             self._cell_ratio = cli.args.cell_ratio
@@ -81,7 +82,7 @@ class Process(Process):
         _logger.debug("Starting")
 
         try:
-            if self._ImageClass:  # if the TUI is initialized
+            if self._tui_is_initialized:
                 # The unpickled class object is in the originally defined state
                 self._ImageClass._supported = self._supported  # Avoid support check
                 self._ImageClass.forced_support = self._forced_support

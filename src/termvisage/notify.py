@@ -131,7 +131,7 @@ def notify(
     ):
         return
 
-    if not tui.is_launched:
+    if not tui.active:
         print(
             (f"{CSI}34m{context}:{COLOR_RESET} " if context else "")
             + (
