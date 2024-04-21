@@ -159,7 +159,6 @@ def manage_image_renders():
             ImageClass,
             image_style_specs.get(ImageClass.style, ""),
         ),
-        kwargs=dict(out_extras=False, log_faults=True),
         name="ImageRenderer",
         redirect_notifs=True,
     )
@@ -237,14 +236,13 @@ def manage_grid_renders(n_renderers: int):
     grid_render_out = (mp_Queue if multi else Queue)()
     renderers = [
         (Process if multi else logging.Thread)(
-            target=render_images,
+            target=render_grid_images,
             args=(
                 grid_render_in,
                 grid_render_out,
                 ImageClass,
                 grid_style_specs.get(ImageClass.style, ""),
             ),
-            kwargs=dict(out_extras=True, log_faults=False),
             name="GridRenderer" + f"-{n}" * multi,
             redirect_notifs=True,
         )
@@ -421,33 +419,21 @@ def render_frames(
     clear_queue(output)
 
 
-def render_images(
-    input: Union[Queue, mp_Queue],
-    output: Union[Queue, mp_Queue],
+def render_grid_images(
+    input: Queue | mp_Queue,
+    output: Queue | mp_Queue,
     ImageClass: type,
     style_spec: str,
-    *,
-    out_extras: bool,
-    log_faults: bool,
 ):
-    """Renders images.
+    """Renders images for the grid.
 
-    Args:
-        out_extras: If True, details other than the render output and it's size are
-          also passed out.
     Intended to be executed in a subprocess or thread.
     """
     while True:
-        if log_faults:
-            image, size, alpha, faulty = input.get()
-        else:
-            image, size, alpha = input.get()
+        source, size, alpha = input.get()
 
-        if not image:  # Quitting
+        if not source:  # Quitting
             break
-
-        image = ImageClass.from_file(image)
-        image.set_size(Size.AUTO, maxsize=size)
 
         # Using `BaseImage` for padding will use more memory since all the
         # spaces will be in the render output string, and theoretically more time
@@ -456,30 +442,54 @@ def render_images(
         # string (as a list though) then generates and yields the complete lines
         # **as needed**. Trimmed padding lines are never generated at all.
         try:
+            image = ImageClass.from_file(source)
+            image.set_size(Size.AUTO, maxsize=size)
             output.put(
                 (
-                    image._source,
+                    source,
                     f"{image:1.1{alpha}{style_spec}}",
                     size,
                     image.rendered_size,
                 )
-                if out_extras
-                else (f"{image:1.1{alpha}{style_spec}}", image.rendered_size)
             )
+        except Exception:
+            output.put((source, None, size, None))
+
+    clear_queue(output)
+
+
+def render_images(
+    input: Queue | mp_Queue,
+    output: Queue | mp_Queue,
+    ImageClass: type,
+    style_spec: str,
+):
+    """Renders images.
+
+    Intended to be executed in a subprocess or thread.
+    """
+    while True:
+        source, size, alpha, faulty = input.get()
+
+        if not source:  # Quitting
+            break
+
+        # Using `BaseImage` for padding will use more memory since all the
+        # spaces will be in the render output string, and theoretically more time
+        # with all the checks and string splitting & joining.
+        # While `ImageCanvas` is better since it only stores the main image render
+        # string (as a list though) then generates and yields the complete lines
+        # **as needed**. Trimmed padding lines are never generated at all.
+        try:
+            image = ImageClass.from_file(source)
+            image.set_size(Size.AUTO, maxsize=size)
+            output.put((f"{image:1.1{alpha}{style_spec}}", image.rendered_size))
         except Exception as e:
-            output.put(
-                (image._source, None, size, image.rendered_size)
-                if out_extras
-                else (None, image.rendered_size)
-            )
-            # *faulty* ensures a fault is logged only once per `Image` instance
-            if log_faults:
-                if not faulty:
-                    logging.log_exception(
-                        f"Failed to load or render {image._source!r}",
-                        logger,
-                    )
-                notify.notify(str(e), level=notify.ERROR)
+            output.put((None, None))
+            # `faulty` ensures a fault is logged only once per `Image` instance
+            if not faulty:
+                logging.log_exception(f"Failed to load or render {source!r}", logger)
+            notify.notify(str(e), level=notify.ERROR)
 
     clear_queue(output)
 
