@@ -616,6 +616,16 @@ config_options = {
         lambda x: isinstance(x, bool),
         "must be a boolean",
     ),
+    "thumbnail cache": Option(
+        0,
+        lambda x: isinstance(x, int) and x >= 0,
+        "must be a non-negative integer",
+    ),
+    "thumbnail size": Option(
+        128,
+        lambda x: isinstance(x, int) and 32 <= x <= 256,
+        "must be an integer between 32 and 256 (both inclusive)",
+    ),
 }
 config_options = ConfigOptions(config_options)
 

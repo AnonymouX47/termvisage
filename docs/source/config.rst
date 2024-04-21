@@ -191,6 +191,28 @@ These are top-level fields whose values control various settings of the viewer.
       * Overridden by :option:`--swap-win-size` and :option:`--no-swap-win-size`.
       * Affects *auto* :term:`cell ratio` computation.
 
+.. confval:: thumbnail cache
+   :synopsis: The maximum amount of thumbnails that can be cached per time.
+   :type: integer
+   :valid: *x* >= ``0``
+   :default: ``0``
+
+   If ``0``, the cache size is infinite i.e no eviction. Otherwise, older thumbnails
+   will be evicted to accommodate newer ones when the cache is full (i.e the specified
+   size limit is reached).
+
+   .. note:: Overridden by :option:`--thumbnail-cache`.
+
+.. confval:: thumbnail size
+   :synopsis: Maxiumum thumbnail dimension.
+   :type: integer
+   :valid: ``32`` <= *x* <= ``256``
+   :default: ``128``
+
+   Thumbnails generated will have a maximum of *x* pixels in the long dimension.
+
+   .. note:: Overridden by :option:`--thumbnail-size`.
+
 
 Keybindings
 -----------
