@@ -270,19 +270,26 @@ def manage_grid_renders(n_renderers: int):
             if new_grid or grid_change.is_set():  # New grid
                 grid_cache.clear()
                 grid_change.clear()  # Signal "cache cleared"
-                if not new_grid:  # The starting `None` hasn't been gotten
-                    while grid_render_queue.get():
-                        pass
+
+                # Purge the in and out queues and update the loading indicator counter
                 for q in (grid_render_in, grid_render_out):
                     while True:
                         try:
                             q.get(timeout=0.005)
-                            notify.stop_loading()
                         except Empty:
                             break
+                        else:
+                            notify.stop_loading()
+
+                if not new_grid:  # The grid delimeter hasn't been gotten
+                    # Purge all items until the grid delimeter
+                    while grid_render_queue.get():
+                        pass
+                else:
+                    new_grid = False
+
                 cell_width = image_grid.cell_width
                 grid_path = main.grid_path
-                new_grid = False
 
             if grid_change.is_set():
                 continue
@@ -293,7 +300,7 @@ def manage_grid_renders(n_renderers: int):
                 except Empty:
                     pass
                 else:
-                    if not image_info:  # Start of a new grid
+                    if not image_info:  # Grid delimeter
                         new_grid = True
                         continue
                     grid_render_in.put(image_info)
@@ -303,23 +310,21 @@ def manage_grid_renders(n_renderers: int):
                 continue
 
             try:
-                image_path, image, size, rendered_size = grid_render_out.get(
-                    timeout=0.02
-                )
+                source, render, size, rendered_size = grid_render_out.get(timeout=0.02)
             except Empty:
                 pass
             else:
-                dir, entry = split(image_path)
+                source_dirname, source_basename = split(source)
                 # The directory and cell-width checks are to filter out any remnants
                 # that were still being rendered at the other end
                 if (
                     not grid_change.is_set()
-                    and dir == grid_path
+                    and source_dirname == grid_path
                     and size[0] + 2 == cell_width
                 ):
-                    grid_cache[entry] = (
-                        ImageCanvas(image.encode().split(b"\n"), size, rendered_size)
-                        if image
+                    grid_cache[source_basename] = (
+                        ImageCanvas(render.encode().split(b"\n"), size, rendered_size)
+                        if render
                         else faulty_image.render(size)
                     )
                     if grid_active.is_set():
