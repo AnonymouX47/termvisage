@@ -593,6 +593,24 @@ tui_options.add_argument(
     default=sys.getrecursionlimit() - 50,
     help=f"Maximum recursion depth (default: {sys.getrecursionlimit() - 50})",
 )
+tui_options.add_argument(
+    "--thumbnail-cache",
+    type=int,
+    metavar="N",
+    help=(
+        "Maximum amount of thumbnails that can be cached per time (``0`` -> infinite) "
+        "(default: :confval:`thumbnail cache` config)"
+    ),
+)
+tui_options.add_argument(
+    "--thumbnail-size",
+    type=int,
+    metavar="N",
+    help=(
+        "Maxiumum thumbnail dimension; thumbnails generated will have a maximum of "
+        "*N* pixels in the long dimension (default: :confval:`thumbnail size` config)"
+    ),
+)
 
 # Performance
 perf_options = parser.add_argument_group("Performance Options")
