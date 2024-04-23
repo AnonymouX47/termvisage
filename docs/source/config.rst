@@ -201,8 +201,6 @@ These are top-level fields whose values control various settings of the viewer.
    will be evicted to accommodate newer ones when the cache is full (i.e the specified
    size limit is reached).
 
-   .. note:: Overridden by :option:`--thumbnail-cache`.
-
 .. confval:: thumbnail size
    :synopsis: Maxiumum thumbnail dimension.
    :type: integer
@@ -210,8 +208,6 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``128``
 
    Thumbnails generated will have a maximum of *x* pixels in the long dimension.
-
-   .. note:: Overridden by :option:`--thumbnail-size`.
 
 
 Keybindings
