@@ -204,8 +204,8 @@ These are top-level fields whose values control various settings of the viewer.
 .. confval:: thumbnail size
    :synopsis: Maxiumum thumbnail dimension.
    :type: integer
-   :valid: ``32`` <= *x* <= ``256``
-   :default: ``128``
+   :valid: ``32`` <= *x* <= ``512``
+   :default: ``256``
 
    Thumbnails generated will have a maximum of *x* pixels in the long dimension.
 

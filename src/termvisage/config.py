@@ -622,9 +622,9 @@ config_options = {
         "must be a non-negative integer",
     ),
     "thumbnail size": Option(
-        128,
-        lambda x: isinstance(x, int) and 32 <= x <= 256,
-        "must be an integer between 32 and 256 (both inclusive)",
+        256,
+        lambda x: isinstance(x, int) and 32 <= x <= 512,
+        "must be an integer between 32 and 512 (both inclusive)",
     ),
 }
 config_options = ConfigOptions(config_options)
