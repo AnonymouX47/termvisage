@@ -270,33 +270,45 @@ class Image(urwid.Widget):
         image = self._ti_image
         image.set_size(Size.AUTO, maxsize=size)
 
-        # Forced render
+        # Forced render / Large images
 
+        # does the image have more pixels than the maximum?
+        # AND has the image NOT been force-rendered, with a valid-sized canvas?
         if mul(*image.original_size) > tui_main.MAX_PIXELS and not (
+            # has the image been force-rendered?
             self._ti_canv
+            # is the force-rendered canvas valid for the current widget render size?
             and (
-                # will be resized later @ Rendering.
+                # the canvas itself will be resized later at the Rendering stage
+                # below
                 self._ti_canv._ti_image_size == image.size
-                # can either be SolidCanvas (faulty) or ImageCanvas
+                # can either be `SolidCanvas` (faulty) or `ImageCanvas`
                 if isinstance(self._ti_canv, ImageCanvas)
-                # but faulty shouldn't be resized to allow re-rendering after resize
+                # a *faulty* canvas shouldn't be resized, to allow re-rendering the
+                # image after a change in widget size
                 else self._ti_canv.size == size
             )
+            # is the image currently being rendered?
             or self._ti_rendering
         ):
+            # has the image been requested to be force-rendered?
             if self._ti_force_render:
                 # AnimRendermanager or `.tui.main.animate_image()` deletes
-                # `_force_render` when the animation is done to avoid attribute
+                # `_ti_force_render` when the animation is done to avoid attribute
                 # creation and deletion per frame
-                if image.is_animated and not tui_main.NO_ANIMATION:
+                if image.is_animated and not tui_main.NO_ANIMATION:  # an animation?
+                    # has the animation NOT started?
                     if not (self._ti_frame or self._ti_anim_finished):
                         self._ti_forced_anim_size_hash = hash(image.size)
+                    # has the image render size changed?
                     elif hash(image.size) != self._ti_forced_anim_size_hash:
                         self._ti_force_render = False
                         if context in self._ti_force_render_contexts:
                             keys.enable_actions(context, "Force Render")
                         return __class__._ti_large_image.render(size, focus)
-                else:
+                else:  # a non-animation?
+                    # acknowledge the force-render request and prevent it from being
+                    # re-satisfied.
                     del self._ti_force_render
             else:
                 if context in self._ti_force_render_contexts:
@@ -306,28 +318,31 @@ class Image(urwid.Widget):
         if context in self._ti_force_render_contexts:
             keys.disable_actions(context, "Force Render")
 
-        # Grid cells
+        # Grid images
 
         if (
+            # is the image grid in view? (next two lines)
             view.original_widget is image_grid_box
             and context != "full-grid-image"
-            # Grid render cell width adjusts when _maxcols_ < _cell_width_
+            # Grid render cell width adjusts when `maxcols` < `cell_width`
             # `+2` cos `LineSquare` subtracts the columns for surrounding lines
             and size[0] + 2 == image_grid.cell_width
         ):
             canv = __class__._ti_grid_cache.get(basename(image._source))
-            if not canv:
+            if not canv:  # is the image not the grid cache?
                 grid_render_queue.put((image._source, size, self._ti_alpha))
                 __class__._ti_grid_cache[basename(image._source)] = ...
                 canv = __class__._ti_placeholder.render(size, focus)
-            elif canv is ...:
+            elif canv is ...:  # is the image currently being rendered?
                 canv = __class__._ti_placeholder.render(size, focus)
             return canv
 
         # Rendering
 
+        # For when the grid render cell width adjusts i.e when `maxcols` < `cell_width`
+        #
+        # is the image grid in view?
         if view.original_widget is image_grid_box and context != "full-grid-image":
-            # When the grid render cell width adjusts; when _maxcols_ < _cell_width_
             try:
                 canv = ImageCanvas(
                     f"{image:1.1{self._ti_alpha}{self._ti_grid_style_spec}}"
@@ -337,9 +352,11 @@ class Image(urwid.Widget):
                 )
             except Exception:
                 canv = __class__._ti_faulty_image.render(size, focus)
+        # is the image currently being animated (i.e an **ongoing** animation)?
         elif self._ti_frame:
             canv, repeat, frame_no = self._ti_frame
-            if canv._ti_image_size != image.size:  # The canvas is always an ImageCanvas
+            # has the image render size changed? (the canvas is always an `ImageCanvas`)
+            if canv._ti_image_size != image.size:
                 canv = (
                     placeholder
                     if (
@@ -354,16 +371,19 @@ class Image(urwid.Widget):
                 getattr(tui_main.ImageClass, "clear", lambda: True)()
             else:
                 canv.size = size
+        # has the image been rendered, with a valid-sized canvas?
         elif self._ti_canv and (
             self._ti_canv._ti_image_size == image.size
             # Can either be SolidCanvas (faulty) or ImageCanvas
             if isinstance(self._ti_canv, ImageCanvas)
-            # but faulty shouldn't be resized to allow re-rendering after resize
+            # a *faulty* canvas shouldn't be resized, to allow re-rendering the
+            # image after a change in widget size
             else self._ti_canv.size == size
         ):
             self._ti_canv.size = size
             canv = self._ti_canv
         else:
+            # is it an unfinished (yet to start or ongoing) animation?
             if (
                 image.is_animated
                 and not tui_main.NO_ANIMATION
@@ -372,9 +392,11 @@ class Image(urwid.Widget):
                 if not self._ti_anim_ongoing:
                     anim_render_queue.put((self, size, self._ti_force_render))
                     self._ti_anim_ongoing = True
+            # is it a non-animation NOT yet being rendered?
             elif not self._ti_rendering:
                 self._ti_rendering = True
                 image_render_queue.put((self, size, self._ti_alpha))
+
             canv = (
                 placeholder
                 if (
