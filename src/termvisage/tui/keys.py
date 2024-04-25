@@ -16,7 +16,12 @@ from term_image.utils import get_terminal_size
 from .. import __version__, logging
 from ..config import context_keys, expand_key
 from . import main
-from .render import grid_render_queue, grid_renderer_in_sync
+from .render import (
+    grid_render_queue,
+    grid_renderer_in_sync,
+    grid_thumbnail_queue,
+    grid_thumbnailer_in_sync,
+)
 from .widgets import (
     ImageCanvas,
     bottom_bar,
@@ -390,6 +395,11 @@ def resize():
         cell_ratio = get_cell_ratio()
         if cell_ratio != _prev_cell_ratio:
             _prev_cell_ratio = cell_ratio
+
+            grid_thumbnail_queue.put(None)  # Send the grid delimeter
+            grid_thumbnailer_in_sync.clear()
+            grid_thumbnailer_in_sync.wait()
+
             grid_render_queue.put(None)  # Send the grid delimeter
             grid_renderer_in_sync.clear()
             grid_renderer_in_sync.wait()
@@ -480,6 +490,10 @@ def cell_width_dec():
     if image_grid.cell_width > 30:
         image_grid.cell_width -= 2
 
+        grid_thumbnail_queue.put(None)  # Send the grid delimeter
+        grid_thumbnailer_in_sync.clear()
+        grid_thumbnailer_in_sync.wait()
+
         grid_render_queue.put(None)  # Send the grid delimeter
         grid_renderer_in_sync.clear()
         grid_renderer_in_sync.wait()
@@ -491,6 +505,10 @@ def cell_width_dec():
 def cell_width_inc():
     if image_grid.cell_width < 50:
         image_grid.cell_width += 2
+
+        grid_thumbnail_queue.put(None)  # Send the grid delimeter
+        grid_thumbnailer_in_sync.clear()
+        grid_thumbnailer_in_sync.wait()
 
         grid_render_queue.put(None)  # Send the grid delimeter
         grid_renderer_in_sync.clear()

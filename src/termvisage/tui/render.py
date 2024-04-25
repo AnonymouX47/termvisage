@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import logging as _logging
 from multiprocessing import Event as mp_Event, Queue as mp_Queue
-from os.path import split
+from os import remove
+from os.path import basename, split
 from queue import Empty, Queue
-from threading import Event
+from tempfile import mkdtemp, mkstemp
+from threading import Event, Lock
 from typing import Union
 
 from term_image.image import Size
@@ -14,6 +16,108 @@ from term_image.image import Size
 from .. import logging, notify
 from ..logging_multi import Process
 from ..utils import clear_queue
+
+
+def delete_thumbnail(thumbnail: str) -> bool:
+    try:
+        remove(thumbnail)
+    except OSError:  # On Windows, a file in use cannot be deleted
+        logging.log_exception(f"Failed to delete thumbnail file {thumbnail!r}", logger)
+        return False
+
+    return True
+
+
+def generate_grid_thumbnails(
+    input: Queue | mp_Queue,
+    output: Queue | mp_Queue,
+    thumbnail_size: int,
+    not_generating: Event | mp_Event,
+) -> None:
+    from os import fdopen, mkdir
+    from shutil import rmtree
+
+    from PIL.Image import Resampling, open as Image_open
+
+    THUMBNAIL_FRAME_SIZE = (thumbnail_size,) * 2
+    BOX = Resampling.BOX
+    THUMBNAIL_MODES = {"RGB", "RGBA"}
+
+    try:
+        THUMBNAIL_DIR = (TEMP_DIR := mkdtemp(prefix="termvisage-")) + "/thumbnails"
+        mkdir(THUMBNAIL_DIR)
+    except OSError:
+        logging.log_exception(
+            "Failed to create thumbnail directory", logger, fatal=True
+        )
+        raise
+
+    logging.log(
+        f"Created thumbnail directory {THUMBNAIL_DIR!r}",
+        logger,
+        _logging.DEBUG,
+        direct=False,
+    )
+
+    try:
+        while True:
+            not_generating.set()
+            try:
+                if not (source := input.get()):
+                    break  # Quitting
+            finally:
+                not_generating.clear()
+
+            # Make source image into a thumbnail
+            try:
+                img = Image_open(source)
+                has_transparency = img.has_transparency_data
+                img.thumbnail(THUMBNAIL_FRAME_SIZE, BOX)
+                if img.mode not in THUMBNAIL_MODES:
+                    with img:
+                        img = img.convert("RGBA" if has_transparency else "RGB")
+            except Exception:
+                output.put((source, None))
+                logging.log_exception(
+                    f"Failed to generate thumbnail for {source!r}", logger
+                )
+                continue
+
+            # Create thumbnail file
+            try:
+                thumbnail_fd, thumbnail = mkstemp(
+                    "", f"{basename(source)}-", THUMBNAIL_DIR
+                )
+            except Exception:
+                output.put((source, None))
+                logging.log_exception(
+                    f"Failed to create thumbnail file for {source!r}", logger
+                )
+                continue
+
+            # Save thumbnail
+            with img, fdopen(thumbnail_fd, "wb") as thumbnail_file:
+                try:
+                    img.save(thumbnail_file, "PNG")
+                except Exception:
+                    output.put((source, None))
+                    thumbnail_file.close()  # Close before deleting the file
+                    delete_thumbnail(thumbnail)
+                    logging.log_exception(
+                        f"Failed to save thumbnail for {source!r}", logger
+                    )
+                    continue
+
+            output.put((source, thumbnail))
+    finally:
+        try:
+            rmtree(TEMP_DIR, ignore_errors=True)
+        except OSError:
+            logging.log_exception(
+                f"Failed to delete thumbnail directory {THUMBNAIL_DIR!r}", logger
+            )
+
+    clear_queue(output)
 
 
 def manage_anim_renders() -> None:
@@ -231,6 +335,27 @@ def manage_grid_renders(n_renderers: int):
     from .main import ImageClass, grid_active, quitting, update_screen
     from .widgets import Image, ImageCanvas, image_grid
 
+    # NOTE:
+    # Always keep in mind that every directory entry is rendered only once per grid
+    # since results are cached, at least for now.
+
+    def mark_thumbnail_rendered(source: str, thumbnail: str) -> None:
+        with thumbnail_render_lock:
+            """
+            # Better than `e[k] or d.pop(k, None)`.
+            thumbnail = (
+                thumbnail_cache[source]
+                if source in thumbnail_cache
+                # Safe to pop since every source is rendered only once per grid.
+                # Need to pop because after this point, there's no efficient way
+                # to tie `thumbnail` to `source`.
+                else extra_thumbnail_cache.pop(source)
+            )
+            """
+            if source in extra_thumbnail_cache:
+                del extra_thumbnail_cache[source]
+            thumbnails_being_rendered.remove(thumbnail)
+
     multi = logging.MULTI and n_renderers > 0
     grid_render_in = (mp_Queue if multi else Queue)()
     grid_render_out = (mp_Queue if multi else Queue)()
@@ -311,7 +436,9 @@ def manage_grid_renders(n_renderers: int):
                 continue
 
             try:
-                source, render, size, rendered_size = grid_render_out.get(timeout=0.02)
+                source, thumbnail, render, size, rendered_size = grid_render_out.get(
+                    timeout=0.02
+                )
             except Empty:
                 pass
             else:
@@ -330,14 +457,186 @@ def manage_grid_renders(n_renderers: int):
                     )
                     if grid_active.is_set():
                         update_screen()
+                    if THUMBNAIL_CACHE_SIZE and thumbnail:
+                        mark_thumbnail_rendered(source, thumbnail)
                 notify.stop_loading()
     finally:
         clear_queue(grid_render_in)
         for renderer in renderers:
-            grid_render_in.put((None,) * 3)
+            grid_render_in.put((None,) * 4)
         for renderer in renderers:
             renderer.join()
         clear_queue(grid_render_queue)
+
+
+def manage_grid_thumbnails(thumbnail_size: int) -> None:
+    from .main import grid_active, quitting
+
+    # NOTE:
+    # Always keep in mind that every directory entry is rendered only once per grid
+    # since results are cached, at least for now.
+
+    def cache_thumbnail(source: str, thumbnail: str) -> None:
+        # Eviction, for finite cache size
+        if THUMBNAIL_CACHE_SIZE and len(thumbnail_cache) == THUMBNAIL_CACHE_SIZE:
+            # Evict and delete the first cached thumbnail not in the render pipeline
+            for other_source, other_thumbnail in thumbnail_cache.items():
+                # `thumbnail_render_lock` is unnecessary here since it's just a
+                # membership test; the outcome is the same as when the lock is
+                # used but more efficient.
+                if other_thumbnail not in thumbnails_being_rendered:
+                    delete_thumbnail(other_thumbnail)
+                    del thumbnail_cache[other_source]
+                    break
+            # If all are being rendered, evict the oldest and queue it up to be
+            # deleted later.
+            else:
+                with thumbnail_render_lock:
+                    other_source = next(iter(thumbnail_cache))  # oldest entry
+                    other_thumbnail = thumbnail_cache.pop(other_source)
+                    extra_thumbnail_cache[other_source] = other_thumbnail
+                thumbnails_to_be_deleted.add(other_thumbnail)
+
+        thumbnail_cache[source] = thumbnail  # Cache the new thumbnail.
+
+    multi = logging.MULTI
+    thumbnail_in = (mp_Queue if multi else Queue)()
+    thumbnail_out = (mp_Queue if multi else Queue)()
+    not_generating = (mp_Event if multi else Event)()
+    generator = (Process if multi else logging.Thread)(
+        target=generate_grid_thumbnails,
+        args=(thumbnail_in, thumbnail_out, thumbnail_size, not_generating),
+        name="GridThumbnailer",
+        redirect_notifs=True,
+    )
+    generator.start()
+    not_generating.set()
+
+    delimited = False
+    in_sync = grid_thumbnailer_in_sync
+    renderer_in_sync = grid_renderer_in_sync
+    thumbnails_to_be_deleted: set[str] = set()
+    # Stores `(size, alpha)`s (to be passed on to the renderer) in the same order in
+    # which `source`s are sent to the generator.
+    size_alpha_s: Queue[tuple[tuple[int, int], str | float | None]] = Queue()
+
+    try:
+        while True:
+            while not (
+                grid_active.wait(0.1)
+                or quitting.is_set()
+                or not thumbnail_out.empty()
+                or thumbnails_to_be_deleted
+            ):
+                pass
+            if quitting.is_set():
+                break
+
+            if delimited or not in_sync.is_set():
+                in_sync.set()
+                renderer_in_sync.wait()
+
+                if THUMBNAIL_CACHE_SIZE:
+                    with thumbnail_render_lock:
+                        extra_thumbnail_cache.clear()
+                        thumbnails_being_rendered.clear()
+
+                    for thumbnail in thumbnails_to_be_deleted:
+                        delete_thumbnail(thumbnail)
+                    thumbnails_to_be_deleted.clear()
+
+                # Purge the in queue and update the loading indicator counter
+                while True:
+                    try:
+                        thumbnail_in.get(timeout=0.005)
+                    except Empty:
+                        break
+                    else:
+                        notify.stop_loading()
+
+                # Wait for the thumbnail being generated, if any
+                not_generating.wait()
+
+                # Cache or delete already generated thumbnails in the out queue
+                # and update the loading indicator counter
+                while True:
+                    try:
+                        source, thumbnail = thumbnail_out.get(timeout=0.005)
+                    except Empty:
+                        break
+                    else:
+                        if (
+                            THUMBNAIL_CACHE_SIZE
+                            and len(thumbnail_cache) == THUMBNAIL_CACHE_SIZE
+                        ):
+                            # Quicker than the eviction process
+                            delete_thumbnail(thumbnail)
+                        else:
+                            cache_thumbnail(source, thumbnail)
+                        notify.stop_loading()
+
+                # It's okay since we've taken care of all thumbnails that were being
+                # generated.
+                clear_queue(size_alpha_s)
+
+                if not delimited:
+                    while grid_thumbnail_queue.get():
+                        pass
+                else:
+                    delimited = False
+
+            if not in_sync.is_set():
+                continue
+
+            if THUMBNAIL_CACHE_SIZE:
+                for thumbnail in thumbnails_to_be_deleted - thumbnails_being_rendered:
+                    delete_thumbnail(thumbnail)
+                    thumbnails_to_be_deleted.remove(thumbnail)
+
+            if not in_sync.is_set():
+                continue
+
+            if grid_active.is_set():
+                try:
+                    image_info = grid_thumbnail_queue.get(timeout=0.02)
+                except Empty:
+                    pass
+                else:
+                    if not image_info:
+                        delimited = True
+                        continue
+                    if thumbnail := thumbnail_cache.get(source := image_info[0]):
+                        grid_render_queue.put((source, thumbnail, *image_info[2:]))
+                        if THUMBNAIL_CACHE_SIZE:
+                            with thumbnail_render_lock:
+                                thumbnails_being_rendered.add(thumbnail)
+                    else:
+                        thumbnail_in.put(source)
+                        size_alpha_s.put(image_info[2:])
+                        notify.start_loading()
+
+            if not in_sync.is_set():
+                continue
+
+            try:
+                source, thumbnail = thumbnail_out.get(timeout=0.02)
+            except Empty:
+                pass
+            else:
+                size_alpha = size_alpha_s.get()
+                if in_sync.is_set():
+                    grid_render_queue.put((source, thumbnail, *size_alpha))
+                    if THUMBNAIL_CACHE_SIZE and thumbnail:
+                        with thumbnail_render_lock:
+                            thumbnails_being_rendered.add(thumbnail)
+                if thumbnail:
+                    cache_thumbnail(source, thumbnail)
+                notify.stop_loading()
+    finally:
+        clear_queue(thumbnail_in)
+        thumbnail_in.put(None)
+        generator.join()
+        clear_queue(grid_thumbnail_queue)
 
 
 def render_frames(
@@ -436,7 +735,7 @@ def render_grid_images(
     Intended to be executed in a subprocess or thread.
     """
     while True:
-        source, size, alpha = input.get()
+        source, thumbnail, size, alpha = input.get()
 
         if not source:  # Quitting
             break
@@ -448,18 +747,19 @@ def render_grid_images(
         # string (as a list though) then generates and yields the complete lines
         # **as needed**. Trimmed padding lines are never generated at all.
         try:
-            image = ImageClass.from_file(source)
+            image = ImageClass.from_file(thumbnail or source)
             image.set_size(Size.AUTO, maxsize=size)
             output.put(
                 (
                     source,
+                    thumbnail,
                     f"{image:1.1{alpha}{style_spec}}",
                     size,
                     image.rendered_size,
                 )
             )
         except Exception:
-            output.put((source, None, size, None))
+            output.put((source, thumbnail, None, size, None))
 
     clear_queue(output)
 
@@ -503,8 +803,16 @@ def render_images(
 logger = _logging.getLogger(__name__)
 anim_render_queue = Queue()
 grid_render_queue = Queue()
+grid_thumbnail_queue = Queue()
 image_render_queue = Queue()
 grid_renderer_in_sync = Event()
+grid_thumbnailer_in_sync = Event()
+thumbnails_being_rendered: set[str] = set()
+thumbnail_render_lock = Lock()
+# Main thumbnail cache
+thumbnail_cache: dict[str, str] = {}
+# For evicted thumbnails still being rendered
+extra_thumbnail_cache: dict[str, str] = {}
 
 # `GridRenderManager` is actually "in sync" initially.
 #
@@ -519,6 +827,7 @@ grid_renderer_in_sync = Event()
 # the delimeter as for the previous "out of sync" and comes back around to block
 # again since the event will be unset after consuming the delimeter.
 grid_renderer_in_sync.set()
+grid_thumbnailer_in_sync.set()
 
 # Updated from `.tui.init()`
 anim_style_specs = {"kitty": "+W", "iterm2": "+Wm1"}
@@ -526,7 +835,8 @@ grid_style_specs = {"kitty": "+L", "iterm2": "+L"}
 image_style_specs = {"kitty": "+W", "iterm2": "+W"}
 
 # Set from `.tui.init()`
-# # Corresponding to command-line args
+# # Corresponding to command-line args and/or config options
 ANIM_CACHED: bool | int
 FRAME_DURATION: float
 REPEAT: int
+THUMBNAIL_CACHE_SIZE: int

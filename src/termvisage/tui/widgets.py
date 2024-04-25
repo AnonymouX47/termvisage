@@ -28,7 +28,12 @@ from .. import logging
 from ..config import config_options, expand_key, navi
 from ..utils import KITTY_DELETE_CURSOR_IMAGES_b
 from . import keys, main as tui_main
-from .render import anim_render_queue, grid_render_queue, image_render_queue
+from .render import (
+    anim_render_queue,
+    grid_render_queue,
+    grid_thumbnail_queue,
+    image_render_queue,
+)
 
 # NOTE: Any new "private" attribute set on any subclass or instance of an urwid class
 # should be prepended with "_ti" to prevent clashes with names used by urwid itself.
@@ -272,24 +277,33 @@ class Image(urwid.Widget):
 
         # Forced render / Large images
 
-        # does the image have more pixels than the maximum?
-        # AND has the image NOT been force-rendered, with a valid-sized canvas?
-        if mul(*image.original_size) > tui_main.MAX_PIXELS and not (
-            # has the image been force-rendered?
-            self._ti_canv
-            # is the force-rendered canvas valid for the current widget render size?
-            and (
-                # the canvas itself will be resized later at the Rendering stage
-                # below
-                self._ti_canv._ti_image_size == image.size
-                # can either be `SolidCanvas` (faulty) or `ImageCanvas`
-                if isinstance(self._ti_canv, ImageCanvas)
-                # a *faulty* canvas shouldn't be resized, to allow re-rendering the
-                # image after a change in widget size
-                else self._ti_canv.size == size
+        if (
+            # is the image NOT in a grid cell?
+            not (
+                # is the image grid in view? (next two lines)
+                view.original_widget is image_grid_box
+                and context != "full-grid-image"
             )
-            # is the image currently being rendered?
-            or self._ti_rendering
+            # does the image have more pixels than `max pixels`?
+            and mul(*image.original_size) > tui_main.MAX_PIXELS
+            # has the image NOT been force-rendered, with a valid-sized canvas?
+            and not (
+                # has the widget been force-rendered?
+                self._ti_canv
+                # is the force-rendered canvas valid for the current widget render size?
+                and (
+                    # the canvas itself will be resized later at the Rendering stage
+                    # below
+                    self._ti_canv._ti_image_size == image.size
+                    # can either be `SolidCanvas` (faulty) or `ImageCanvas`
+                    if isinstance(self._ti_canv, ImageCanvas)
+                    # a *faulty* canvas shouldn't be resized, to allow re-rendering the
+                    # image after a change in widget size
+                    else self._ti_canv.size == size
+                )
+                # is the image currently being rendered?
+                or self._ti_rendering
+            )
         ):
             # has the image been requested to be force-rendered?
             if self._ti_force_render:
@@ -330,7 +344,11 @@ class Image(urwid.Widget):
         ):
             canv = __class__._ti_grid_cache.get(basename(image._source))
             if not canv:  # is the image not the grid cache?
-                grid_render_queue.put((image._source, size, self._ti_alpha))
+                (
+                    grid_thumbnail_queue
+                    if mul(*image.original_size) > tui_main.THUMBNAIL_SIZE_PRODUCT
+                    else grid_render_queue
+                ).put((image._source, None, size, self._ti_alpha))
                 __class__._ti_grid_cache[basename(image._source)] = ...
                 canv = __class__._ti_placeholder.render(size, focus)
             elif canv is ...:  # is the image currently being rendered?
