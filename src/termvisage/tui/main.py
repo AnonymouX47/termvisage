@@ -30,7 +30,7 @@ from .keys import (
     set_menu_actions,
     set_menu_count,
 )
-from .render import grid_render_queue
+from .render import grid_render_queue, grid_renderer_in_sync
 from .widgets import (
     Image,
     ImageCanvas,
@@ -156,7 +156,7 @@ def display_images(
                     continue
                 else:
                     set_context("global")
-            grid_active.clear()  # Grid not in view
+            grid_active.clear()
             image_box._w.contents[1][0].contents[1] = (
                 placeholder,
                 ("weight", 1, False),
@@ -186,7 +186,7 @@ def display_images(
             # used as the next `menu_list` as is and to prevent `FileNotFoundError`s
             if not grid_scan_done.is_set():
                 grid_acknowledge.clear()
-                grid_active.clear()  # Grid not in view
+                grid_active.clear()
                 grid_acknowledge.wait()
 
             # To restore the menu on the way back
@@ -237,7 +237,7 @@ def display_images(
                 # `FileNotFoundError`s
                 if grid_active.is_set() and not grid_scan_done.is_set():
                     grid_acknowledge.clear()
-                    grid_active.clear()  # Grid not in view
+                    grid_active.clear()
                     grid_acknowledge.wait()
 
                 break
@@ -260,7 +260,7 @@ def display_images(
         else:
             entry, value = items[pos]
             if isinstance(value, Image):
-                grid_active.clear()  # Grid not in view
+                grid_active.clear()
                 image_box._w.contents[1][0].contents[1] = (value, ("weight", 1, False))
                 image_box.set_title(entry)
                 view.original_widget = image_box
@@ -269,7 +269,7 @@ def display_images(
                     animate_image(value)
             else:  # Directory
                 grid_acknowledge.clear()
-                grid_active.set()  # Grid is in view
+                grid_active.set()
 
                 next_grid.put((entry, contents[entry]))
                 # No need to wait for acknowledgement since this is a new list instance
@@ -280,11 +280,10 @@ def display_images(
                 grid_path = abspath(entry)
 
                 if contents[entry].get("/") and grid_path != last_non_empty_grid_path:
-                    grid_render_queue.put(None)  # Mark the start of a new grid
-                    grid_change.set()
-                    # Wait till GridRenderManager clears the cache
-                    while grid_change.is_set():
-                        pass
+                    grid_render_queue.put(None)  # Send the grid delimeter
+                    grid_renderer_in_sync.clear()
+                    grid_renderer_in_sync.wait()
+
                     last_non_empty_grid_path = grid_path
                 image_box.original_widget = placeholder  # halt image and anim rendering
                 image_grid_box.set_title(grid_path + "/")
@@ -683,7 +682,6 @@ quitting = Event()
 # For grid scanning/display
 grid_acknowledge = Event()
 grid_active = Event()
-grid_change = Event()
 grid_scan_done = Event()
 next_grid = Queue(1)
 

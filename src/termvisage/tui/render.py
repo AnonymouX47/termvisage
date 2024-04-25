@@ -228,7 +228,7 @@ def manage_grid_renders(n_renderers: int):
     Otherwise, it starts a single new thread to render the cells.
     """
     from . import main
-    from .main import ImageClass, grid_active, grid_change, quitting, update_screen
+    from .main import ImageClass, grid_active, quitting, update_screen
     from .widgets import Image, ImageCanvas, image_grid
 
     multi = logging.MULTI and n_renderers > 0
@@ -253,8 +253,9 @@ def manage_grid_renders(n_renderers: int):
 
     cell_width = grid_path = None  # Silence flake8's F821
     faulty_image = Image._ti_faulty_image
+    delimited = False
     grid_cache = Image._ti_grid_cache
-    new_grid = False
+    in_sync = grid_renderer_in_sync
 
     try:
         while True:
@@ -267,9 +268,9 @@ def manage_grid_renders(n_renderers: int):
             if quitting.is_set():
                 break
 
-            if new_grid or grid_change.is_set():  # New grid
+            if delimited or not in_sync.is_set():
                 grid_cache.clear()
-                grid_change.clear()  # Signal "cache cleared"
+                in_sync.set()
 
                 # Purge the in and out queues and update the loading indicator counter
                 for q in (grid_render_in, grid_render_out):
@@ -281,17 +282,17 @@ def manage_grid_renders(n_renderers: int):
                         else:
                             notify.stop_loading()
 
-                if not new_grid:  # The grid delimeter hasn't been gotten
+                if not delimited:
                     # Purge all items until the grid delimeter
                     while grid_render_queue.get():
                         pass
                 else:
-                    new_grid = False
+                    delimited = False
 
                 cell_width = image_grid.cell_width
                 grid_path = main.grid_path
 
-            if grid_change.is_set():
+            if not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
@@ -300,13 +301,13 @@ def manage_grid_renders(n_renderers: int):
                 except Empty:
                     pass
                 else:
-                    if not image_info:  # Grid delimeter
-                        new_grid = True
+                    if not image_info:
+                        delimited = True
                         continue
                     grid_render_in.put(image_info)
                     notify.start_loading()
 
-            if grid_change.is_set():
+            if not in_sync.is_set():
                 continue
 
             try:
@@ -318,7 +319,7 @@ def manage_grid_renders(n_renderers: int):
                 # The directory and cell-width checks are to filter out any remnants
                 # that were still being rendered at the other end
                 if (
-                    not grid_change.is_set()
+                    in_sync.is_set()
                     and source_dirname == grid_path
                     and size[0] + 2 == cell_width
                 ):
@@ -503,6 +504,21 @@ logger = _logging.getLogger(__name__)
 anim_render_queue = Queue()
 grid_render_queue = Queue()
 image_render_queue = Queue()
+grid_renderer_in_sync = Event()
+
+# `GridRenderManager` is actually "in sync" initially.
+#
+# Removing these may result in ocassional deadlocks because at init, the thread
+# may detect "out of sync" and try to prep for a new grid but **without a grid
+# delimeter**.
+# The deadlock is unpredictable and timing-dependent, as it only happens when
+# `main.display_images()` signals "out of sync" **after** the thread has responded to
+# the false initial "out of sync". Hence, the thread blocks on trying to get a grid
+# delimeter.
+# When another "out of sync" is signaled (with a grid delimeter), the thread takes
+# the delimeter as for the previous "out of sync" and comes back around to block
+# again since the event will be unset after consuming the delimeter.
+grid_renderer_in_sync.set()
 
 # Updated from `.tui.init()`
 anim_style_specs = {"kitty": "+W", "iterm2": "+Wm1"}

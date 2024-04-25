@@ -16,6 +16,7 @@ from term_image.utils import get_terminal_size
 from .. import __version__, logging
 from ..config import context_keys, expand_key
 from . import main
+from .render import grid_render_queue, grid_renderer_in_sync
 from .widgets import (
     ImageCanvas,
     bottom_bar,
@@ -389,11 +390,9 @@ def resize():
         cell_ratio = get_cell_ratio()
         if cell_ratio != _prev_cell_ratio:
             _prev_cell_ratio = cell_ratio
-            main.grid_render_queue.put(None)  # Mark the start of a new grid
-            main.grid_change.set()
-            # Wait till GridRenderManager clears the cache
-            while main.grid_change.is_set():
-                pass
+            grid_render_queue.put(None)  # Send the grid delimeter
+            grid_renderer_in_sync.clear()
+            grid_renderer_in_sync.wait()
     adjust_bottom_bar()
     getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
 
@@ -480,11 +479,11 @@ def maximize():
 def cell_width_dec():
     if image_grid.cell_width > 30:
         image_grid.cell_width -= 2
-        main.grid_render_queue.put(None)  # Mark the start of a new grid
-        main.grid_change.set()
-        # Wait till GridRenderManager clears the cache
-        while main.grid_change.is_set():
-            pass
+
+        grid_render_queue.put(None)  # Send the grid delimeter
+        grid_renderer_in_sync.clear()
+        grid_renderer_in_sync.wait()
+
         getattr(main.ImageClass, "clear", lambda: True)()
 
 
@@ -492,11 +491,11 @@ def cell_width_dec():
 def cell_width_inc():
     if image_grid.cell_width < 50:
         image_grid.cell_width += 2
-        main.grid_render_queue.put(None)  # Mark the start of a new grid
-        main.grid_change.set()
-        # Wait till GridRenderManager clears the cache
-        while main.grid_change.is_set():
-            pass
+
+        grid_render_queue.put(None)  # Send the grid delimeter
+        grid_renderer_in_sync.clear()
+        grid_renderer_in_sync.wait()
+
         getattr(main.ImageClass, "clear", lambda: True)()
 
 
