@@ -456,10 +456,11 @@ def manage_grid_renders(n_renderers: int):
                 pass
             else:
                 source_dirname, source_basename = split(source)
-                # The directory and cell-width checks are to filter out any remnants
-                # that were still being rendered at the other end
                 if (
                     in_sync.is_set()
+                    # The directory and cell-width checks are to filter out any
+                    # remnants that were caught up in the renderer(s) while syncing
+                    # grid rendering.
                     and source_dirname == grid_path
                     and size[0] + 2 == cell_width
                 ):

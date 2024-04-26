@@ -303,8 +303,8 @@ def set_confirmation(
     main.set_context("confirmation")
 
     # `Image` widgets don't support overlay.
-    # Always reset by or "confirmation::Cancel"
-    # but _confirm()_ must reset `view.original_widget` on it's own.
+    # Always reset by "confirmation::Confirm" or "confirmation::Cancel"
+    # but *confirm* must reset `view.original_widget` on it's own.
     _prev_view_widget = view.original_widget
     view.original_widget = urwid.LineBox(
         placeholder, _prev_view_widget.title_widget.text.strip(" "), "left"
@@ -732,18 +732,23 @@ no_globals = {"global", "confirmation", "full-grid-image", "overlay"}
 key_bar._ti_collapsed = True
 expand._ti_shown = True
 
-# Use in the "confirmation" context. Set by `set_confirmation()`
+# Used in the "confirmation" context.
+#
+# Updated by `set_confirmation()`.
 _confirm: tuple[FunctionType, tuple[Any, ...]] | None = None
 _cancel: tuple[FunctionType, tuple[Any, ...]] | None = None
 
 # Used for overlays
 _prev_view_widget: urwid.Widget | None = None
 
-# Used to guard clearing of grid render cache
-# Updated from `resize()`, for text-based styles.
+# Used to guard grid render refresh upon terminal resize, for text-based styles.
+#
+# Updated from `resize()`.
 _prev_cell_ratio: float = 0.0
 
-# Used to [re]compute the thumbnailing threshold.
+# Used to [re]compute the grid thumbnailing threshold.
+# Also used to guard grid render refresh on terminal resize, for graphics-based styles.
+#
 # The default value is for text-based styles, for which this variable is never updated.
 # Updated from `.tui.init()` and `resize()`, for graphics-based styles.
 _prev_cell_size: tuple[int, int] = (1, 2)
