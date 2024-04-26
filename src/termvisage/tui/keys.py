@@ -394,9 +394,9 @@ def resize():
         # implement the `TIOCSWINSZ` ioctl command. Hence, the `cell_size and`.
         if cell_size and cell_size != _prev_cell_size:
             _prev_cell_size = cell_size
+            refresh_grid_rendering()
             Image._ti_update_grid_thumbnailing_threshold(cell_size)
-
-    if main.grid_active.is_set():
+    else:
         cell_ratio = get_cell_ratio()
         if cell_ratio != _prev_cell_ratio:
             _prev_cell_ratio = cell_ratio
@@ -737,6 +737,7 @@ _cancel: tuple[FunctionType, tuple[Any, ...]] | None = None
 _prev_view_widget: urwid.Widget | None = None
 
 # Used to guard clearing of grid render cache
+# Updated from `resize()`, for text-based styles.
 _prev_cell_ratio: float = 0.0
 
 # Used to [re]compute the thumbnailing threshold.
