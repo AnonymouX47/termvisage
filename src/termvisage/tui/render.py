@@ -103,6 +103,7 @@ def generate_grid_thumbnails(
                 logging.log_exception(
                     f"Failed to create thumbnail file for {source!r}", logger
                 )
+                img.close()
                 continue
 
             # Save thumbnail
