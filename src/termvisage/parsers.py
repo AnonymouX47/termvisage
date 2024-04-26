@@ -593,6 +593,16 @@ tui_options.add_argument(
     default=sys.getrecursionlimit() - 50,
     help=f"Maximum recursion depth (default: {sys.getrecursionlimit() - 50})",
 )
+tui_options.add_argument(
+    "--thumbnail",
+    action=BooleanOptionalAction,
+    default=None,
+    help=(
+        "Enable or disable thumbnail generation for the image grid; if enabled, "
+        "thumbnails are cached on disk and cleaned up upon exit "
+        "(default: :confval:`thumbnail` config)"
+    ),
+)
 
 # Performance
 perf_options = parser.add_argument_group("Performance Options")

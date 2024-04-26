@@ -616,6 +616,11 @@ config_options = {
         lambda x: isinstance(x, bool),
         "must be a boolean",
     ),
+    "thumbnail": Option(
+        True,
+        lambda x: isinstance(x, bool),
+        "must be a boolean",
+    ),
     "thumbnail cache": Option(
         0,
         lambda x: isinstance(x, int) and x >= 0,

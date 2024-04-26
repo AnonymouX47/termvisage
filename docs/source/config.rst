@@ -191,6 +191,22 @@ These are top-level fields whose values control various settings of the viewer.
       * Overridden by :option:`--swap-win-size` and :option:`--no-swap-win-size`.
       * Affects *auto* :term:`cell ratio` computation.
 
+.. confval:: thumbnail
+   :synopsis: Enable or disable thumbnail generation for the image grid.
+   :type: boolean
+   :valid: ``true``, ``false``
+   :default: ``true``
+
+   If ``true``, thumbnails are generated for some images (based on their size), cached
+   on disk and cleaned up upon exit. Otherwise, all images in the grid are rendered
+   directly from the original image files.
+
+   .. note::
+
+      - Overridden by :option:`--thumbnail` and :option:`--no-thumbnail`.
+      - Thumbnails are generated **on demand** i.e a thumbnail will be generated for
+        an image only if its grid cell has come into view at least once.
+
 .. confval:: thumbnail cache
    :synopsis: The maximum amount of thumbnails that can be cached per time.
    :type: integer
@@ -201,6 +217,9 @@ These are top-level fields whose values control various settings of the viewer.
    will be evicted to accommodate newer ones when the cache is full (i.e the specified
    size limit is reached).
 
+   .. note:: Unused if :confval:`thumbnail` is ``false`` or :option:`--no-thumbnail`
+      is specified.
+
 .. confval:: thumbnail size
    :synopsis: Maxiumum thumbnail dimension.
    :type: integer
@@ -208,6 +227,9 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``256``
 
    Thumbnails generated will have a maximum of *x* pixels in the long dimension.
+
+   .. note:: Unused if :confval:`thumbnail` is ``false`` or :option:`--no-thumbnail`
+      is specified.
 
 
 Keybindings
