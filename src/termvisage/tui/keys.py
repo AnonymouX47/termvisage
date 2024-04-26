@@ -11,7 +11,8 @@ from typing import Any, Tuple
 
 import urwid
 from term_image import get_cell_ratio
-from term_image.utils import get_terminal_size
+from term_image.image import GraphicsImage
+from term_image.utils import get_cell_size, get_terminal_size
 
 from .. import __version__, logging
 from ..config import context_keys, expand_key
@@ -23,6 +24,7 @@ from .render import (
     grid_thumbnailer_in_sync,
 )
 from .widgets import (
+    Image,
     ImageCanvas,
     bottom_bar,
     confirmation,
@@ -389,7 +391,15 @@ def key_bar_rows():
 
 
 def resize():
-    global _prev_cell_ratio
+    global _prev_cell_ratio, _prev_cell_size
+
+    if issubclass(main.ImageClass, GraphicsImage):
+        cell_size = get_cell_size()
+        # `get_cell_size()` may sometimes return `None` on terminals that don't
+        # implement the `TIOCSWINSZ` ioctl command. Hence, the `cell_size and`.
+        if cell_size and cell_size != _prev_cell_size:
+            _prev_cell_size = cell_size
+            Image._ti_update_grid_thumbnailing_threshold(cell_size)
 
     if main.grid_active.is_set():
         cell_ratio = get_cell_ratio()
@@ -500,6 +510,8 @@ def cell_width_dec():
 
         getattr(main.ImageClass, "clear", lambda: True)()
 
+    Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
+
 
 @register_key(("image-grid", "Size+"))
 def cell_width_inc():
@@ -515,6 +527,8 @@ def cell_width_inc():
         grid_renderer_in_sync.wait()
 
         getattr(main.ImageClass, "clear", lambda: True)()
+
+    Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
 
 
 @register_key(("image-grid", "Open"))
@@ -751,3 +765,8 @@ _prev_view_widget: urwid.Widget | None = None
 
 # Used to guard clearing of grid render cache
 _prev_cell_ratio: float = 0.0
+
+# Used to [re]compute the thumbnailing threshold.
+# The default value is for text-based styles, for which this variable is never updated.
+# Updated from `.tui.init()` and `resize()`, for graphics-based styles.
+_prev_cell_size: tuple[int, int] = (1, 2)

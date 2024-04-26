@@ -6,7 +6,7 @@ import logging as _logging
 from math import ceil
 from operator import floordiv, mul, sub
 from os.path import basename
-from typing import List, Optional, Tuple
+from typing import ClassVar, List, Optional, Tuple
 
 import urwid
 from term_image.image import BaseImage, Size
@@ -263,6 +263,8 @@ class Image(urwid.Widget):
     # Set from `.tui.init()`
     _ti_alpha = ""
     _ti_grid_style_spec = ""
+    # # Updated in `._ti_update_grid_thumbnailing_threshold()`
+    _ti_grid_thumbnailing_threshold: ClassVar[int]
 
     def __init__(self, image: BaseImage):
         self._ti_image = image
@@ -346,7 +348,10 @@ class Image(urwid.Widget):
             if not canv:  # is the image not the grid cache?
                 (
                     grid_thumbnail_queue
-                    if mul(*image.original_size) > tui_main.THUMBNAIL_SIZE_PRODUCT
+                    if (
+                        mul(*image.original_size)
+                        > __class__._ti_grid_thumbnailing_threshold
+                    )
                     else grid_render_queue
                 ).put((image._source, None, size, self._ti_alpha))
                 __class__._ti_grid_cache[basename(image._source)] = ...
@@ -428,6 +433,15 @@ class Image(urwid.Widget):
             ).render(size)
 
         return canv
+
+    @classmethod
+    def _ti_update_grid_thumbnailing_threshold(cls, cell_size: tuple[int, int]) -> None:
+        grid_cell_width = image_grid.cell_width
+        grid_image_size = (grid_cell_width - 2, ceil(grid_cell_width / 2) - 2)
+        cls._ti_grid_thumbnailing_threshold = max(
+            tui_main.THUMBNAIL_SIZE_PRODUCT,
+            mul(*map(mul, grid_image_size, cell_size)),
+        )
 
 
 class ImageCanvas(urwid.Canvas):

@@ -748,7 +748,7 @@ def render_grid_images(
         # **as needed**. Trimmed padding lines are never generated at all.
         try:
             image = ImageClass.from_file(thumbnail or source)
-            image.set_size(Size.AUTO, maxsize=size)
+            image.set_size(Size.FIT if thumbnail else Size.AUTO, maxsize=size)
             output.put(
                 (
                     source,

@@ -9,7 +9,8 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, Tuple, Union
 
 import urwid
-from term_image.utils import lock_tty, write_tty
+from term_image.image import GraphicsImage
+from term_image.utils import get_cell_size, lock_tty, write_tty
 from term_image.widget import UrwidImageScreen
 
 from .. import logging, notify
@@ -29,6 +30,8 @@ def init(
     ImageClass: type,
 ) -> None:
     """Initializes the TUI"""
+    from . import keys
+
     global active, initialized
 
     if args.debug:
@@ -69,6 +72,11 @@ def init(
             specs = getattr(render, f"{name}_style_specs")
             specs[ImageClass.style] += f"c{style_args['compress']}"
 
+    if issubclass(ImageClass, GraphicsImage):
+        # `get_cell_size()` may sometimes return `None` on terminals that don't
+        # implement the `TIOCSWINSZ` ioctl command. Hence, the `or (1, 2)`.
+        keys._prev_cell_size = get_cell_size() or (1, 2)
+
     Image._ti_alpha = (
         "#"
         if args.no_alpha
@@ -79,6 +87,7 @@ def init(
         )
     )
     Image._ti_grid_style_spec = render.grid_style_specs.get(ImageClass.style, "")
+    Image._ti_update_grid_thumbnailing_threshold(keys._prev_cell_size)
 
     # daemon, to avoid having to check if the main process has been interrupted
     menu_scanner = logging.Thread(target=scan_dir_menu, name="MenuScanner", daemon=True)
