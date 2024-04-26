@@ -16,6 +16,7 @@ from term_image.image import Size
 from .. import logging, notify
 from ..logging_multi import Process
 from ..utils import clear_queue
+from . import main
 
 
 def delete_thumbnail(thumbnail: str) -> bool:
@@ -29,9 +30,10 @@ def delete_thumbnail(thumbnail: str) -> bool:
 
 
 def refresh_grid_rendering() -> None:
-    grid_thumbnail_queue.put(None)  # Send the grid delimiter
-    grid_thumbnailer_in_sync.clear()
-    grid_thumbnailer_in_sync.wait()
+    if main.THUMBNAIL:
+        grid_thumbnail_queue.put(None)  # Send the grid delimiter
+        grid_thumbnailer_in_sync.clear()
+        grid_thumbnailer_in_sync.wait()
 
     grid_render_queue.put(None)  # Send the grid delimiter
     grid_renderer_in_sync.clear()
@@ -468,8 +470,12 @@ def manage_grid_renders(n_renderers: int):
                     )
                     if grid_active.is_set():
                         update_screen()
-                    if THUMBNAIL_CACHE_SIZE and thumbnail:
+
+                    # There's no need to check `.tui.main.THUMBNAIL` since
+                    # `thumbnail` is always `None` when thumbnailing is disabled.
+                    if thumbnail and THUMBNAIL_CACHE_SIZE:
                         mark_thumbnail_rendered(source, thumbnail)
+
                 notify.stop_loading()
     finally:
         clear_queue(grid_render_in)

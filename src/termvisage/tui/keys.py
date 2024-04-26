@@ -395,7 +395,8 @@ def resize():
         if cell_size and cell_size != _prev_cell_size:
             _prev_cell_size = cell_size
             refresh_grid_rendering()
-            Image._ti_update_grid_thumbnailing_threshold(cell_size)
+            if main.THUMBNAIL:
+                Image._ti_update_grid_thumbnailing_threshold(cell_size)
     else:
         cell_ratio = get_cell_ratio()
         if cell_ratio != _prev_cell_ratio:
@@ -491,7 +492,8 @@ def cell_width_dec():
         refresh_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
 
-    Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
+    if main.THUMBNAIL:
+        Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
 
 
 @register_key(("image-grid", "Size+"))
@@ -501,7 +503,8 @@ def cell_width_inc():
         refresh_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
 
-    Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
+    if main.THUMBNAIL:
+        Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
 
 
 @register_key(("image-grid", "Open"))

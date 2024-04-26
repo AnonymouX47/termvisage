@@ -44,6 +44,7 @@ def init(
     main.NO_ANIMATION = args.no_anim
     main.RECURSIVE = args.recursive
     main.SHOW_HIDDEN = args.all
+    main.THUMBNAIL = args.thumbnail
     main.THUMBNAIL_SIZE_PRODUCT = config_options.thumbnail_size**2
     main.ImageClass = ImageClass
     main.loop = Loop(
@@ -87,7 +88,8 @@ def init(
         )
     )
     Image._ti_grid_style_spec = render.grid_style_specs.get(ImageClass.style, "")
-    Image._ti_update_grid_thumbnailing_threshold(keys._prev_cell_size)
+    if main.THUMBNAIL:
+        Image._ti_update_grid_thumbnailing_threshold(keys._prev_cell_size)
 
     # daemon, to avoid having to check if the main process has been interrupted
     menu_scanner = logging.Thread(target=scan_dir_menu, name="MenuScanner", daemon=True)
@@ -98,12 +100,13 @@ def init(
         name="GridRenderManager",
         daemon=True,
     )
-    grid_thumbnail_manager = logging.Thread(
-        target=render.manage_grid_thumbnails,
-        args=(config_options.thumbnail_size,),
-        name="GridThumbnailManager",
-        daemon=True,
-    )
+    if main.THUMBNAIL:
+        grid_thumbnail_manager = logging.Thread(
+            target=render.manage_grid_thumbnails,
+            args=(config_options.thumbnail_size,),
+            name="GridThumbnailManager",
+            daemon=True,
+        )
     image_render_manager = logging.Thread(
         target=render.manage_image_renders,
         name="ImageRenderManager",
@@ -138,7 +141,8 @@ def init(
 
     menu_scanner.start()
     grid_scanner.start()
-    grid_thumbnail_manager.start()
+    if main.THUMBNAIL:
+        grid_thumbnail_manager.start()
     grid_render_manager.start()
     image_render_manager.start()
     anim_render_manager.start()
@@ -147,7 +151,8 @@ def init(
         write_tty(f"{CSI}?1049h".encode())  # Switch to the alternate buffer
         next(main.displayer)
         main.loop.run()
-        grid_thumbnail_manager.join()
+        if main.THUMBNAIL:
+            grid_thumbnail_manager.join()
         grid_render_manager.join()
         render.image_render_queue.put((None,) * 3)
         image_render_manager.join()
