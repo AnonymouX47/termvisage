@@ -28,6 +28,16 @@ def delete_thumbnail(thumbnail: str) -> bool:
     return True
 
 
+def refresh_grid_rendering() -> None:
+    grid_thumbnail_queue.put(None)  # Send the grid delimiter
+    grid_thumbnailer_in_sync.clear()
+    grid_thumbnailer_in_sync.wait()
+
+    grid_render_queue.put(None)  # Send the grid delimiter
+    grid_renderer_in_sync.clear()
+    grid_renderer_in_sync.wait()
+
+
 def generate_grid_thumbnails(
     input: Queue | mp_Queue,
     output: Queue | mp_Queue,
@@ -408,7 +418,7 @@ def manage_grid_renders(n_renderers: int):
                             notify.stop_loading()
 
                 if not delimited:
-                    # Purge all items until the grid delimeter
+                    # Purge all items until the grid delimiter
                     while grid_render_queue.get():
                         pass
                 else:
@@ -818,14 +828,14 @@ extra_thumbnail_cache: dict[str, str] = {}
 #
 # Removing these may result in ocassional deadlocks because at init, the thread
 # may detect "out of sync" and try to prep for a new grid but **without a grid
-# delimeter**.
+# delimiter**.
 # The deadlock is unpredictable and timing-dependent, as it only happens when
 # `main.display_images()` signals "out of sync" **after** the thread has responded to
 # the false initial "out of sync". Hence, the thread blocks on trying to get a grid
-# delimeter.
-# When another "out of sync" is signaled (with a grid delimeter), the thread takes
-# the delimeter as for the previous "out of sync" and comes back around to block
-# again since the event will be unset after consuming the delimeter.
+# delimiter.
+# When another "out of sync" is signaled (with a grid delimiter), the thread takes
+# the delimiter as for the previous "out of sync" and comes back around to block
+# again since the event will be unset after consuming the delimiter.
 grid_renderer_in_sync.set()
 grid_thumbnailer_in_sync.set()
 

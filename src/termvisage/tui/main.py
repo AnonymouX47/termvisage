@@ -30,12 +30,7 @@ from .keys import (
     set_menu_actions,
     set_menu_count,
 )
-from .render import (
-    grid_render_queue,
-    grid_renderer_in_sync,
-    grid_thumbnail_queue,
-    grid_thumbnailer_in_sync,
-)
+from .render import refresh_grid_rendering
 from .widgets import (
     Image,
     ImageCanvas,
@@ -285,15 +280,9 @@ def display_images(
                 grid_path = abspath(entry)
 
                 if contents[entry].get("/") and grid_path != last_non_empty_grid_path:
-                    grid_thumbnail_queue.put(None)  # Send the grid delimeter
-                    grid_thumbnailer_in_sync.clear()
-                    grid_thumbnailer_in_sync.wait()
-
-                    grid_render_queue.put(None)  # Send the grid delimeter
-                    grid_renderer_in_sync.clear()
-                    grid_renderer_in_sync.wait()
-
+                    refresh_grid_rendering()
                     last_non_empty_grid_path = grid_path
+
                 image_box.original_widget = placeholder  # halt image and anim rendering
                 image_grid_box.set_title(grid_path + "/")
                 view.original_widget = image_grid_box
