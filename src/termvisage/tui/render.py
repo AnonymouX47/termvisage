@@ -82,10 +82,10 @@ def generate_grid_thumbnails(
             try:
                 img = Image_open(source)
                 has_transparency = img.has_transparency_data
-                img.thumbnail(THUMBNAIL_FRAME_SIZE, BOX)
                 if img.mode not in THUMBNAIL_MODES:
                     with img:
                         img = img.convert("RGBA" if has_transparency else "RGB")
+                img.thumbnail(THUMBNAIL_FRAME_SIZE, BOX)
             except Exception:
                 output.put((source, None))
                 logging.log_exception(
