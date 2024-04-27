@@ -12,6 +12,9 @@
     "query timeout": 0.1,
     "style": "auto",
     "swap win size": false,
+    "thumbnail": true,
+    "thumbnail cache": 0,
+    "thumbnail size": 256,
     "keys": {
         "navigation": {
             "Left": [
