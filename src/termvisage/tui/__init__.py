@@ -42,6 +42,7 @@ def init(
     main.DEBUG = args.debug
     main.MAX_PIXELS = args.max_pixels
     main.NO_ANIMATION = args.no_anim
+    main.NO_MAX_PIXELS_GRID = args.no_max_pixels_grid
     main.RECURSIVE = args.recursive
     main.SHOW_HIDDEN = args.all
     main.THUMBNAIL = args.thumbnail

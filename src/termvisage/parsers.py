@@ -621,6 +621,14 @@ perf_options.add_argument(
     help="Apply :option:`--max-pixels` in CLI mode",
 )
 perf_options.add_argument(
+    "--no-max-pixels-grid",
+    action="store_true",
+    help=(
+        "Do not apply :option:`--max-pixels` to the image grid in TUI mode when "
+        "thumbnailing is disabled."
+    ),
+)
+perf_options.add_argument(
     "--multi",
     action=BooleanOptionalAction,
     default=None,
