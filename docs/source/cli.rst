@@ -45,16 +45,21 @@ Options and Arguments
    :option:`--original-size` is used if not larger than the :term:`available size`,
    else :option:`--fit`.
 
-.. [#] Any image having more pixels than the specified maximum will be:
+.. [#] Any image having more pixels than the specified value will be:
 
-   - skipped, in CLI mode, if :option:`--max-pixels-cli` is specified.
-   - replaced, in TUI mode, with a placeholder when displayed but can still be
-     explicitly made to display.
+   - **skipped**, in CLI mode, if :option:`--max-pixels-cli` is specified.
+   - **replaced**, in the image grid in TUI mode, with a placeholder only if thumbnail
+     generation is disabled (via :confval:`thumbnail` or :option:`--no-thumbnail`)
+     and :option:`--no-max-pixels-grid` is **not** specified.
+   - **replaced**, in other contexts in TUI mode, with a placeholder but can still be
+     forced to display.
 
-   Note that increasing this should not have any effect on general performance
-   (i.e navigation, etc) but the larger an image is, the more the time and memory
-   it'll take to render it. Thus, a large image might delay the rendering of other
-   images to be rendered immediately after it.
+   .. important::
+
+      Increasing this should have little to no effect on general
+      performance (i.e navigation, etc) but the larger an image is, the more the
+      time and memory it'll take to render it. Thus, a large image might delay the
+      rendering of other images to be rendered immediately after it.
 
 .. [#] Any event with a level lower than the specified one is not reported.
 

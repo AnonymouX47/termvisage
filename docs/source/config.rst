@@ -137,16 +137,21 @@ These are top-level fields whose values control various settings of the viewer.
 
    Any image having more pixels than the specified value will be:
 
-   * skipped, in CLI mode, if :option:`--max-pixels-cli` is specified.
-   * replaced, in TUI mode, with a placeholder when displayed but can still be forced
-     to display or viewed externally.
-
-   Note that increasing this should not have any effect on general performance (i.e
-   navigation, etc) but the larger an image is, the more the time and memory it'll take
-   to render it. Thus, a large image might delay the rendering of other images to be
-   rendered immediately after it.
+   * **skipped**, in CLI mode, if :option:`--max-pixels-cli` is specified.
+   * **replaced**, in the image grid in TUI mode, with a placeholder only if
+     thumbnailing is disabled (via :confval:`thumbnail` or :option:`--no-thumbnail`)
+     and :option:`--no-max-pixels-grid` is **not** specified.
+   * **replaced**, in other contexts in TUI mode, with a placeholder but can still be
+     forced to display.
 
    .. note:: Overridden by :option:`--max-pixels`.
+
+   .. important::
+
+      Increasing this should have little to no effect on general
+      performance (i.e navigation, etc) but the larger an image is, the more the
+      time and memory it'll take to render it. Thus, a large image might delay the
+      rendering of other images to be rendered immediately after it.
 
 .. confval:: multi
    :synopsis: Enable (if supported) or disable multiprocessing.
@@ -192,7 +197,7 @@ These are top-level fields whose values control various settings of the viewer.
       * Affects *auto* :term:`cell ratio` computation.
 
 .. confval:: thumbnail
-   :synopsis: Enable or disable thumbnail generation for the image grid.
+   :synopsis: Enable or disable thumbnailing for the image grid.
    :type: boolean
    :valid: ``true``, ``false``
    :default: ``true``
@@ -206,6 +211,8 @@ These are top-level fields whose values control various settings of the viewer.
       - Overridden by :option:`--thumbnail` and :option:`--no-thumbnail`.
       - Thumbnails are generated **on demand** i.e a thumbnail will be generated for
         an image only if its grid cell has come into view at least once.
+
+   .. seealso:: :option:`--no-max-pixels-grid`.
 
 .. confval:: thumbnail cache
    :synopsis: The maximum amount of thumbnails that can be cached per time.
