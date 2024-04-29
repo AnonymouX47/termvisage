@@ -284,12 +284,8 @@ class Image(urwid.Widget):
                 # is the image grid in view? (next two lines)
                 view.original_widget is image_grid_box
                 and context != "full-grid-image"
-                and (
-                    # is thumbnailing enabled?
-                    tui_main.THUMBNAIL
-                    # does "max pixels" NOT apply to the image grid?
-                    or tui_main.NO_MAX_PIXELS_GRID
-                )
+                # is thumbnailing enabled?
+                and tui_main.THUMBNAIL
             )
             # does the image have more pixels than `max pixels`?
             and mul(*image.original_size) > tui_main.MAX_PIXELS

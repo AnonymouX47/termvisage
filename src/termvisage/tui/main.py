@@ -712,7 +712,6 @@ update_pipe: int
 DEBUG: bool
 MAX_PIXELS: int
 NO_ANIMATION: bool
-NO_MAX_PIXELS_GRID: bool
 RECURSIVE: bool
 SHOW_HIDDEN: bool
 THUMBNAIL: bool
