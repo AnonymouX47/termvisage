@@ -48,11 +48,9 @@ Options and Arguments
 .. [#] Any image having more pixels than the specified value will be:
 
    - **skipped**, in CLI mode, if :option:`--max-pixels-cli` is specified.
-   - **replaced**, in the image grid in TUI mode, with a placeholder only if thumbnail
-     generation is disabled (via :confval:`thumbnail` or :option:`--no-thumbnail`)
-     and :option:`--no-max-pixels-grid` is **not** specified.
-   - **replaced**, in other contexts in TUI mode, with a placeholder but can still be
-     forced to display.
+   - **replaced**, in TUI mode, with a placeholder (filled with exclamation marks)
+     but can be forced to display using the **"Force Render"** action in contexts
+     with full-sized image views.
 
    .. important::
 

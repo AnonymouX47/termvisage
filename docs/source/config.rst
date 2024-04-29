@@ -138,11 +138,9 @@ These are top-level fields whose values control various settings of the viewer.
    Any image having more pixels than the specified value will be:
 
    * **skipped**, in CLI mode, if :option:`--max-pixels-cli` is specified.
-   * **replaced**, in the image grid in TUI mode, with a placeholder only if
-     thumbnailing is disabled (via :confval:`thumbnail` or :option:`--no-thumbnail`)
-     and :option:`--no-max-pixels-grid` is **not** specified.
-   * **replaced**, in other contexts in TUI mode, with a placeholder but can still be
-     forced to display.
+   * **replaced**, in TUI mode, with a placeholder (filled with exclamation marks)
+     but can be forced to display using the **"Force Render"** action in contexts
+     with full-sized image views.
 
    .. note:: Overridden by :option:`--max-pixels`.
 
@@ -211,8 +209,6 @@ These are top-level fields whose values control various settings of the viewer.
       - Overridden by :option:`--thumbnail` and :option:`--no-thumbnail`.
       - Thumbnails are generated **on demand** i.e a thumbnail will be generated for
         an image only if its grid cell has come into view at least once.
-
-   .. seealso:: :option:`--no-max-pixels-grid`.
 
 .. confval:: thumbnail cache
    :synopsis: The maximum amount of thumbnails that can be cached per time.
