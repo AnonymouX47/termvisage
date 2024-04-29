@@ -130,26 +130,20 @@ These are top-level fields whose values control various settings of the viewer.
    Adjusts the height of the :ref:`notification bar <notif-bar>`.
 
 .. confval:: max pixels
-   :synopsis: The maximum amount of pixels in images to be displayed in the TUI.
+   :synopsis: The maximum pixel-count for images that should be rendered.
    :type: integer
-   :valid: *x* > ``0``
-   :default: ``4194304`` (2 ** 22)
+   :valid: *x* >= ``0``
+   :default: ``0``
 
-   Any image having more pixels than the specified value will be:
+   If zero, all images will be rendered normally, regardless of their resolution.
+   Otherwise, any image having more pixels than the specified value will be:
 
    * **skipped**, in CLI mode, if :option:`--max-pixels-cli` is specified.
    * **replaced**, in TUI mode, with a placeholder (filled with exclamation marks)
-     but can be forced to display using the **"Force Render"** action in contexts
-     with full-sized image views.
+     but can be forced to render using the **"Force Render"** :ref:`action <actions>`
+     in :ref:`contexts` with a full-sized image view.
 
    .. note:: Overridden by :option:`--max-pixels`.
-
-   .. important::
-
-      Increasing this should have little to no effect on general
-      performance (i.e navigation, etc) but the larger an image is, the more the
-      time and memory it'll take to render it. Thus, a large image might delay the
-      rendering of other images to be rendered immediately after it.
 
 .. confval:: multi
    :synopsis: Enable (if supported) or disable multiprocessing.

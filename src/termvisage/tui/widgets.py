@@ -280,15 +280,15 @@ class Image(urwid.Widget):
         # Forced render / Large images
 
         if (
-            not (
+            # is there a maximum pixel-count and is the image's pixel-count higher?
+            0 < tui_main.MAX_PIXELS < mul(*image.original_size)
+            and not (
                 # is the image grid in view? (next two lines)
                 view.original_widget is image_grid_box
                 and context != "full-grid-image"
                 # is thumbnailing enabled?
                 and tui_main.THUMBNAIL
             )
-            # does the image have more pixels than `max pixels`?
-            and mul(*image.original_size) > tui_main.MAX_PIXELS
             # has the image NOT been force-rendered, with a valid-sized canvas?
             and not (
                 # has the widget been force-rendered?

@@ -611,8 +611,8 @@ perf_options.add_argument(
     type=int,
     metavar="N",
     help=(
-        "Maximum amount of pixels in images to be displayed "
-        "(default: :confval:`max pixels` config) [#]_"
+        "The maximum pixel-count for images that should be rendered "
+        "(default: :confval:`max pixels` config)"
     ),
 )
 perf_options.add_argument(

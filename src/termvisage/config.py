@@ -592,9 +592,9 @@ config_options = {
         "must be an integer between 0 and 5 (both inclusive)",
     ),
     "max pixels": Option(
-        2**22,  # 2048x2048
-        lambda x: isinstance(x, int) and x > 0,
-        "must be an integer greater than zero",
+        0,
+        lambda x: isinstance(x, int) and x >= 0,
+        "must be a non-negative integer",
     ),
     "multi": Option(
         True,
