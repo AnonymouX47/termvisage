@@ -616,11 +616,6 @@ perf_options.add_argument(
     ),
 )
 perf_options.add_argument(
-    "--max-pixels-cli",
-    action="store_true",
-    help="Apply :option:`--max-pixels` in CLI mode",
-)
-perf_options.add_argument(
     "--multi",
     action=BooleanOptionalAction,
     default=None,

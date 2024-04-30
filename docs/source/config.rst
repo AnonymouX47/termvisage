@@ -138,8 +138,8 @@ These are top-level fields whose values control various settings of the viewer.
    If zero, all images will be rendered normally, regardless of their resolution.
    Otherwise, any image having more pixels than the specified value will be:
 
-   * **skipped**, in CLI mode, if :option:`--max-pixels-cli` is specified.
-   * **replaced**, in TUI mode, with a placeholder (filled with exclamation marks)
+   * **skipped** in CLI mode.
+   * **replaced** in TUI mode, with a placeholder (filled with exclamation marks)
      but can be forced to render using the **"Force Render"** :ref:`action <actions>`
      in :ref:`contexts` with a full-sized image view.
 
