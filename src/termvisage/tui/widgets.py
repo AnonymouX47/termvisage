@@ -248,7 +248,7 @@ class Image(urwid.Widget):
     _ti_placeholder = urwid.SolidFill(".")
 
     _ti_force_render = False
-    _ti_force_render_contexts = {"image", "full-image", "full-grid-image"}
+    _ti_force_render_contexts = {"image", "full-image"}
     _ti_forced_anim_size_hash = None
 
     _ti_frame = None
@@ -282,10 +282,10 @@ class Image(urwid.Widget):
         if (
             # is there a maximum pixel-count and is the image's pixel-count higher?
             0 < tui_main.MAX_PIXELS < mul(*image.original_size)
+            and context != "full-grid-image"
             and not (
-                # is the image grid in view? (next two lines)
+                # is the image grid in view? ("full-grid-image" already ruled out)
                 view.original_widget is image_grid_box
-                and context != "full-grid-image"
                 # is thumbnailing enabled?
                 and tui_main.THUMBNAIL
             )

@@ -139,9 +139,10 @@ These are top-level fields whose values control various settings of the viewer.
    Otherwise, any image having more pixels than the specified value will be:
 
    * **skipped** in CLI mode.
-   * **replaced** in TUI mode, with a placeholder (filled with exclamation marks)
-     but can be forced to render using the **"Force Render"** :ref:`action <actions>`
-     in :ref:`contexts` with a full-sized image view.
+   * **replaced** in TUI mode (except in the ``full-grid-image``
+     :ref:`context <contexts>`), with a placeholder (filled with exclamation marks)
+     but can be forced to render using the ``Force Render`` :ref:`action <actions>`
+     in :ref:`contexts <contexts>` with a full-sized image view.
 
    .. note:: Overridden by :option:`--max-pixels`.
 

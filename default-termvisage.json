@@ -140,10 +140,6 @@
             "Back": [
                 "esc",
                 "\u238b"
-            ],
-            "Force Render": [
-                "F",
-                "\u21e7F"
             ]
         },
         "confirmation": {

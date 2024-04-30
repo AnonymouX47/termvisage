@@ -536,18 +536,6 @@ def set_image_grid_actions():
         disable_actions("image-grid", "Open", "Size-", "Size+")
 
 
-# full-grid-image
-@register_key(("full-grid-image", "Force Render"))
-def force_render_maximized_cell():
-    # Will re-render immediately after processing input, since caching has been disabled
-    # for `Image` widgets.
-    image_w = image_box._w.contents[1][0].contents[1][0]
-    if image_w._ti_image.is_animated:
-        main.animate_image(image_w, True)
-    else:
-        image_w._ti_force_render = True
-
-
 # full-image, full-grid-image
 @register_key(("full-image", "Restore"), ("full-grid-image", "Back"))
 def restore():

@@ -706,11 +706,6 @@ _context_keys = {
     },
     "full-grid-image": {
         "Back": ["esc", "\u238b", "Back to grid view"],
-        "Force Render": [
-            "F",
-            "\u21e7F",
-            "Force an image, with more pixels than the set maximum, to be displayed",
-        ],
     },
     "confirmation": {
         "Confirm": ["enter", "\u23ce", ""],
