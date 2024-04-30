@@ -205,4 +205,5 @@ palette = [
     ("error", "", "", "", "bold", "#ff0000"),
     ("warning", "", "", "", "#ff0000,bold", ""),
     ("notif context", "", "", "", "#0000ff,bold", ""),
+    ("high-res", "", "", "", "#a07f00", ""),
 ]

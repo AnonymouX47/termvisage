@@ -540,12 +540,14 @@ class LineSquare(WidgetDecoration, WidgetWrap):
     no_cache = ["render", "rows"]
     _sizing = frozenset((urwid.FLOW,))
 
-    def __init__(self, widget, title=""):
+    def __init__(self, widget, title="", title_attr=None):
         title_w = Text(title and f" {title} ", wrap="ellipsis")
         top_w = Columns(
             [
                 (PACK, Text("┌")),
-                Columns([(PACK, AttrMap(title_w, "default")), Divider("─")]),
+                Columns(
+                    [(PACK, AttrMap(title_w, title_attr or "default")), Divider("─")]
+                ),
                 (PACK, Text("┐")),
             ]
         )

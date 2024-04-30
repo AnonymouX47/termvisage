@@ -496,12 +496,18 @@ def scan_dir_grid() -> None:
             if kind is EntryKind.IMAGE:
                 grid_list.append(item)
                 image_w = item[1]
+                image = image_w._ti_image
+                border_attr = (
+                    "high-res"
+                    if 0 < MAX_PIXELS < mul(*image.original_size)
+                    else "focused box"
+                )
                 grid_contents.append(
                     (
                         urwid.AttrMap(
-                            LineSquare(image_w, basename(image_w._ti_image.source)),
+                            LineSquare(image_w, basename(image.source), border_attr),
                             "unfocused box",
-                            "focused box",
+                            border_attr,
                         ),
                         image_grid.options(),
                     )

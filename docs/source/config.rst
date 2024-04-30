@@ -144,6 +144,9 @@ These are top-level fields whose values control various settings of the viewer.
      but can be forced to render using the ``Force Render`` :ref:`action <actions>`
      in :ref:`contexts <contexts>` with a full-sized image view.
 
+     In the ``image-grid`` :ref:`context <contexts>`, such images have a **yellow**
+     border (when selected) and title.
+
    .. note:: Overridden by :option:`--max-pixels`.
 
 .. confval:: multi
