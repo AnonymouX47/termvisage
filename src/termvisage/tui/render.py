@@ -496,7 +496,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
 
     def cache_thumbnail(source: str, thumbnail: str) -> None:
         # Eviction, for finite cache size
-        if THUMBNAIL_CACHE_SIZE and len(thumbnail_cache) == THUMBNAIL_CACHE_SIZE:
+        if 0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache):
             # Evict and delete the first cached thumbnail not in the render pipeline
             for other_source, other_thumbnail in thumbnail_cache.items():
                 # `thumbnail_render_lock` is unnecessary here since it's just a
@@ -583,10 +583,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                     except Empty:
                         break
                     else:
-                        if (
-                            THUMBNAIL_CACHE_SIZE
-                            and len(thumbnail_cache) == THUMBNAIL_CACHE_SIZE
-                        ):
+                        if 0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache):
                             # Quicker than the eviction process
                             delete_thumbnail(thumbnail)
                         else:

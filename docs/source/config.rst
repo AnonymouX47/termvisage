@@ -194,9 +194,9 @@ These are top-level fields whose values control various settings of the viewer.
    :valid: ``true``, ``false``
    :default: ``true``
 
-   If ``true``, thumbnails are generated for some images (based on their size), cached
-   on disk and cleaned up upon exit. Otherwise, all images in the grid are rendered
-   directly from the original image files.
+   If ``true``, thumbnails are generated for some images (based on their resolution),
+   cached on disk and cleaned up upon exit. Otherwise, all images in the grid are
+   rendered directly from the original image files.
 
    .. note::
 
