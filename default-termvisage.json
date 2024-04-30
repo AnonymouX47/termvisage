@@ -77,10 +77,6 @@
                 "backspace",
                 "\u27f5 "
             ],
-            "Force Render": [
-                "F",
-                "\u21e7F"
-            ],
             "Delete": [
                 "d",
                 "d"
@@ -88,13 +84,13 @@
             "Switch Pane": [
                 "tab",
                 "\u21b9"
-            ]
-        },
-        "image": {
+            ],
             "Force Render": [
                 "F",
                 "\u21e7F"
-            ],
+            ]
+        },
+        "image": {
             "Maximize": [
                 "f",
                 "f"
@@ -106,6 +102,10 @@
             "Switch Pane": [
                 "tab",
                 "\u21b9"
+            ],
+            "Force Render": [
+                "F",
+                "\u21e7F"
             ]
         },
         "image-grid": {
@@ -131,13 +131,13 @@
                 "esc",
                 "\u238b"
             ],
-            "Force Render": [
-                "F",
-                "\u21e7F"
-            ],
             "Delete": [
                 "d",
                 "d"
+            ],
+            "Force Render": [
+                "F",
+                "\u21e7F"
             ]
         },
         "full-grid-image": {

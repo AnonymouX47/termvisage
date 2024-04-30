@@ -660,13 +660,13 @@ _context_keys = {
         "Prev": ["up", "", "Select the next item on the list"],
         "Next": ["down", "", "Select the previous item on the list"],
         "Back": ["backspace", "\u27f5 ", "Return to the previous directory"],
+        "Delete": ["d", "d", "Delete selected image"],
+        "Switch Pane": ["tab", "\u21b9", "Switch to image pane"],
         "Force Render": [
             "F",
             "\u21e7F",
             "Force an image, with more pixels than the set maximum, to be displayed",
         ],
-        "Delete": ["d", "d", "Delete selected image"],
-        "Switch Pane": ["tab", "\u21b9", "Switch to image pane"],
         "Page Up": ["page up", "", "Jump up one page"],
         "Page Down": ["page down", "", "Jump down one page"],
         "Top": ["home", "", "Jump to the top of the list"],
@@ -675,14 +675,14 @@ _context_keys = {
     "image": {
         "Prev": ["left", "", "Move to the previous image"],
         "Next": ["right", "", "Move to the next image"],
+        "Maximize": ["f", "f", "Maximize the current image"],
+        "Delete": ["d", "d", "Delete current image"],
+        "Switch Pane": ["tab", "\u21b9", "Switch to list pane"],
         "Force Render": [
             "F",
             "\u21e7F",
             "Force an image, with more pixels than the set maximum, to be displayed",
         ],
-        "Maximize": ["f", "f", "Maximize the current image"],
-        "Delete": ["d", "d", "Delete current image"],
-        "Switch Pane": ["tab", "\u21b9", "Switch to list pane"],
     },
     "image-grid": {
         "Open": ["enter", "\u23ce", "Maximize the selected image"],
@@ -702,12 +702,12 @@ _context_keys = {
         "Restore": ["esc", "\u238b", "Exit maximized view"],
         "Prev": ["left", "", "Move to the previous image"],
         "Next": ["right", "", "Move to the next image"],
+        "Delete": ["d", "d", "Delete current image"],
         "Force Render": [
             "F",
             "\u21e7F",
             "Force an image, with more pixels than the set maximum, to be displayed",
         ],
-        "Delete": ["d", "d", "Delete current image"],
     },
     "full-grid-image": {
         "Back": ["esc", "\u238b", "Back to grid view"],
