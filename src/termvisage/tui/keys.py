@@ -578,7 +578,9 @@ def next_image():
     set_menu_count()
 
 
-@register_key(("image", "Force Render"), ("full-image", "Force Render"))
+@register_key(
+    ("menu", "Force Render"), ("image", "Force Render"), ("full-image", "Force Render")
+)
 def force_render():
     # Will re-render immediately after processing input, since caching has been disabled
     # for `Image` widgets.

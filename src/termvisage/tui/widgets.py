@@ -248,7 +248,7 @@ class Image(urwid.Widget):
     _ti_placeholder = urwid.SolidFill(".")
 
     _ti_force_render = False
-    _ti_force_render_contexts = {"image", "full-image"}
+    _ti_force_render_contexts = {"menu", "image", "full-image"}
     _ti_forced_anim_size_hash = None
 
     _ti_frame = None

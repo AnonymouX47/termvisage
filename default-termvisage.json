@@ -77,6 +77,10 @@
                 "backspace",
                 "\u27f5 "
             ],
+            "Force Render": [
+                "F",
+                "\u21e7F"
+            ],
             "Delete": [
                 "d",
                 "d"

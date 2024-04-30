@@ -660,6 +660,11 @@ _context_keys = {
         "Prev": ["up", "", "Select the next item on the list"],
         "Next": ["down", "", "Select the previous item on the list"],
         "Back": ["backspace", "\u27f5 ", "Return to the previous directory"],
+        "Force Render": [
+            "F",
+            "\u21e7F",
+            "Force an image, with more pixels than the set maximum, to be displayed",
+        ],
         "Delete": ["d", "d", "Delete selected image"],
         "Switch Pane": ["tab", "\u21b9", "Switch to image pane"],
         "Page Up": ["page up", "", "Jump up one page"],
