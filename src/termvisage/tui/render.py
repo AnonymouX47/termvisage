@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import logging as _logging
-from multiprocessing import Event as mp_Event, Queue as mp_Queue
+from collections import defaultdict
+from multiprocessing import Event as mp_Event, Lock as mp_Lock, Queue as mp_Queue
 from os import remove
-from os.path import basename, split
+from os.path import split
 from queue import Empty, Queue
 from tempfile import mkdtemp, mkstemp
 from threading import Event, Lock
@@ -45,15 +46,25 @@ def generate_grid_thumbnails(
     output: Queue | mp_Queue,
     thumbnail_size: int,
     not_generating: Event | mp_Event,
+    deduplication_lock: Lock | mp_Lock,
 ) -> None:
-    from os import fdopen, mkdir
-    from shutil import rmtree
+    from glob import iglob
+    from os import fdopen, mkdir, scandir
+    from shutil import copyfile, rmtree
+    from sys import hash_info
 
     from PIL.Image import Resampling, open as Image_open
 
     THUMBNAIL_FRAME_SIZE = (thumbnail_size,) * 2
     BOX = Resampling.BOX
     THUMBNAIL_MODES = {"RGB", "RGBA"}
+    # No of nibbles (hex digits) in the platform-specific hash integer type
+    HEX_HASH_WIDTH = hash_info.width // 4  # 4 bits -> 1 hex digit
+    # The max value for the unsigned counterpart of the platform-specific hash
+    # integer type
+    UINT_HASH_WIDTH_MAX = (1 << hash_info.width) - 1
+
+    deduplicated_to_be_deleted: set[str] = set()
 
     try:
         THUMBNAIL_DIR = (TEMP_DIR := mkdtemp(prefix="termvisage-")) + "/thumbnails"
@@ -80,6 +91,13 @@ def generate_grid_thumbnails(
             finally:
                 not_generating.clear()
 
+            if deduplicated_to_be_deleted:
+                # Retain only the files that still exist;
+                # remove files that have been deleted.
+                deduplicated_to_be_deleted.intersection_update(
+                    entry.path for entry in scandir(THUMBNAIL_DIR)
+                )
+
             # Make source image into a thumbnail
             try:
                 img = Image_open(source)
@@ -89,39 +107,75 @@ def generate_grid_thumbnails(
                         img = img.convert("RGBA" if has_transparency else "RGB")
                 img.thumbnail(THUMBNAIL_FRAME_SIZE, BOX)
             except Exception:
-                output.put((source, None))
+                output.put((source, None, None))
                 logging.log_exception(
                     f"Failed to generate thumbnail for {source!r}", logger
                 )
                 continue
 
+            img_bytes = img.tobytes()
+            # The hash is interpreted as an unsigned integer, represented in hex and
+            # zero-extended to fill up the platform-specific hash integer width.
+            img_hash = f"{hash(img_bytes) & UINT_HASH_WIDTH_MAX:0{HEX_HASH_WIDTH}x}"
+
             # Create thumbnail file
             try:
-                thumbnail_fd, thumbnail = mkstemp(
-                    "", f"{basename(source)}-", THUMBNAIL_DIR
-                )
+                thumbnail_fd, thumbnail = mkstemp("", f"{img_hash}-", THUMBNAIL_DIR)
             except Exception:
-                output.put((source, None))
+                output.put((source, None, None))
                 logging.log_exception(
                     f"Failed to create thumbnail file for {source!r}", logger
                 )
+                del img_bytes  # Possibly relatively large
                 img.close()
                 continue
 
-            # Save thumbnail
-            with img, fdopen(thumbnail_fd, "wb") as thumbnail_file:
-                try:
-                    img.save(thumbnail_file, "PNG")
-                except Exception:
-                    output.put((source, None))
-                    thumbnail_file.close()  # Close before deleting the file
-                    delete_thumbnail(thumbnail)
-                    logging.log_exception(
-                        f"Failed to save thumbnail for {source!r}", logger
-                    )
-                    continue
+            # Deduplication
+            deduplicated = None
+            with deduplication_lock:
+                for other_thumbnail in iglob(
+                    f"{THUMBNAIL_DIR}/{img_hash}-*", root_dir=THUMBNAIL_DIR
+                ):
+                    if (
+                        other_thumbnail == thumbnail
+                        or other_thumbnail in deduplicated_to_be_deleted
+                    ):
+                        continue
 
-            output.put((source, thumbnail))
+                    with Image_open(other_thumbnail) as other_img:
+                        if other_img.tobytes() != img_bytes:
+                            continue
+
+                    try:
+                        copyfile(other_thumbnail, thumbnail)
+                    except Exception:
+                        logging.log_exception(
+                            f"Failed to deduplicate {other_thumbnail!r} for "
+                            "{source!r}",
+                            logger,
+                        )
+                    else:
+                        deduplicated_to_be_deleted.add(deduplicated := other_thumbnail)
+
+                    break
+
+            del img_bytes  # Possibly relatively large
+
+            # Save thumbnail, if deduplication didn't work out
+            if not deduplicated:
+                with img, fdopen(thumbnail_fd, "wb") as thumbnail_file:
+                    try:
+                        img.save(thumbnail_file, "PNG")
+                    except Exception:
+                        output.put((source, None, None))
+                        thumbnail_file.close()  # Close before deleting the file
+                        delete_thumbnail(thumbnail)
+                        logging.log_exception(
+                            f"Failed to save thumbnail for {source!r}", logger
+                        )
+                        continue
+
+            output.put((source, thumbnail, deduplicated))
     finally:
         try:
             rmtree(TEMP_DIR, ignore_errors=True)
@@ -354,20 +408,20 @@ def manage_grid_renders(n_renderers: int):
 
     def mark_thumbnail_rendered(source: str, thumbnail: str) -> None:
         with thumbnail_render_lock:
-            """
-            # Better than `e[k] or d.pop(k, None)`.
-            thumbnail = (
-                thumbnail_cache[source]
-                if source in thumbnail_cache
-                # Safe to pop since every source is rendered only once per grid.
-                # Need to pop because after this point, there's no efficient way
-                # to tie `thumbnail` to `source`.
-                else extra_thumbnail_cache.pop(source)
-            )
-            """
+            if len(sources := thumbnails_being_rendered[thumbnail]) == 1:
+                del thumbnails_being_rendered[thumbnail]
+            else:
+                sources.remove(source)
+            # *source* may be in both caches in the case of thumbnail deduplication.
+            # In such a case, since a source is never rendered more than once
+            # between grid render syncs, then *thumbnail* is the deduplicated thumbnail
+            # in the extra cache.
             if source in extra_thumbnail_cache:
+                # Safe to remove since every source is never rendered more than once
+                # between grid render syncs.
+                # Need to remove at this point because afterwards, there's no efficient
+                # way to tie `thumbnail` to `source`.
                 del extra_thumbnail_cache[source]
-            thumbnails_being_rendered.remove(thumbnail)
 
     multi = logging.MULTI and n_renderers > 0
     grid_render_in = (mp_Queue if multi else Queue)()
@@ -474,7 +528,7 @@ def manage_grid_renders(n_renderers: int):
 
                     # There's no need to check `.tui.main.THUMBNAIL` since
                     # `thumbnail` is always `None` when thumbnailing is disabled.
-                    if thumbnail and THUMBNAIL_CACHE_SIZE:
+                    if thumbnail:
                         mark_thumbnail_rendered(source, thumbnail)
 
                 notify.stop_loading()
@@ -494,36 +548,82 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
     # Always keep in mind that every directory entry is rendered only once per grid
     # since results are cached, at least for now.
 
-    def cache_thumbnail(source: str, thumbnail: str) -> None:
+    def cache_thumbnail(source: str, thumbnail: str, deduplicated: str | None) -> None:
         # Eviction, for finite cache size
-        if 0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache):
-            # Evict and delete the first cached thumbnail not in the render pipeline
-            for other_source, other_thumbnail in thumbnail_cache.items():
-                # `thumbnail_render_lock` is unnecessary here since it's just a
-                # membership test; the outcome is the same as when the lock is
-                # used but more efficient.
-                if other_thumbnail not in thumbnails_being_rendered:
-                    delete_thumbnail(other_thumbnail)
-                    del thumbnail_cache[other_source]
-                    break
-            # If all are being rendered, evict the oldest and queue it up to be
-            # deleted later.
-            else:
+        if not deduplicated and 0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache):
+            # Evict the oldest thumbnail with the least amount of linked sources.
+            other_thumbnail = min(
+                thumbnail_sources,
+                key=lambda thumbnail: len(thumbnail_sources[thumbnail]),
+            )
+            # `thumbnail_render_lock` is unnecessary for just a membership test on
+            # `thumbnails_being_rendered`; the outcome is the same as with the lock
+            # but without is less costly.
+            if other_thumbnail in thumbnails_being_rendered:
                 with thumbnail_render_lock:
-                    other_source = next(iter(thumbnail_cache))  # oldest entry
-                    other_thumbnail = thumbnail_cache.pop(other_source)
-                    extra_thumbnail_cache[other_source] = other_thumbnail
+                    # Copy only the linked sources that are in the render pipeline
+                    # into the extra cache.
+                    for other_source in thumbnails_being_rendered[other_thumbnail]:
+                        extra_thumbnail_cache[other_source] = other_thumbnail
+                    # Remove all linked sources from the main cache.
+                    for other_source in thumbnail_sources[other_thumbnail]:
+                        del thumbnail_cache[other_source]
+                # Queue it up to be deleted later.
                 thumbnails_to_be_deleted.add(other_thumbnail)
+            else:
+                with deduplication_lock:
+                    delete_thumbnail(other_thumbnail)
+                for other_source in thumbnail_sources[other_thumbnail]:
+                    # `thumbnail_render_lock` is unnecessary here since
+                    # `other_thumbnail` is not in the render pipeline.
+                    del thumbnail_cache[other_source]
+            del thumbnail_sources[other_thumbnail]
 
-        thumbnail_cache[source] = thumbnail  # Cache the new thumbnail.
+        thumbnail_cache[source] = thumbnail  # Link *source* to *thumbnail*.
+
+        # Deduplication
+        if deduplicated and (
+            # has the deduplicated thumbnail NOT been evicted? (next two lines)
+            not THUMBNAIL_CACHE_SIZE
+            or deduplicated in thumbnail_sources
+        ):
+            # Unlink *deduplicated* from the sources linked to it and link *thumbnail*
+            # to them, along with *source*.
+            deduplicated_sources = thumbnail_sources.pop(deduplicated)
+            thumbnail_sources[thumbnail] = (*deduplicated_sources, source)
+
+            with thumbnail_render_lock:
+                # Link to *thumbnail*, the sources linked to *deduplicated*.
+                for deduplicated_source in deduplicated_sources:
+                    thumbnail_cache[deduplicated_source] = thumbnail
+
+                if deduplicated in thumbnails_being_rendered:
+                    # Copy sources linked to *deduplicated* and in the render pipeline
+                    # into the extra cache.
+                    for deduplicated_source in thumbnails_being_rendered[deduplicated]:
+                        extra_thumbnail_cache[deduplicated_source] = deduplicated
+                    # Queue *deduplicated* up to be deleted later.
+                    thumbnails_to_be_deleted.add(deduplicated)
+                else:
+                    with deduplication_lock:
+                        delete_thumbnail(deduplicated)
+        else:
+            thumbnail_sources[thumbnail] = (source,)
 
     multi = logging.MULTI
     thumbnail_in = (mp_Queue if multi else Queue)()
     thumbnail_out = (mp_Queue if multi else Queue)()
     not_generating = (mp_Event if multi else Event)()
+    deduplication_lock = (mp_Lock if multi else Lock)()
     generator = (Process if multi else logging.Thread)(
         target=generate_grid_thumbnails,
-        args=(thumbnail_in, thumbnail_out, thumbnail_size, not_generating),
+        args=(
+            thumbnail_in,
+            thumbnail_out,
+            thumbnail_size,
+            not_generating,
+            deduplication_lock,
+        ),
         name="GridThumbnailer",
         redirect_notifs=True,
     )
@@ -554,14 +654,9 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 in_sync.set()
                 renderer_in_sync.wait()
 
-                if THUMBNAIL_CACHE_SIZE:
-                    with thumbnail_render_lock:
-                        extra_thumbnail_cache.clear()
-                        thumbnails_being_rendered.clear()
-
-                    for thumbnail in thumbnails_to_be_deleted:
-                        delete_thumbnail(thumbnail)
-                    thumbnails_to_be_deleted.clear()
+                with thumbnail_render_lock:
+                    extra_thumbnail_cache.clear()
+                    thumbnails_being_rendered.clear()
 
                 # Purge the in queue and update the loading indicator counter
                 while True:
@@ -579,16 +674,24 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 # and update the loading indicator counter
                 while True:
                     try:
-                        source, thumbnail = thumbnail_out.get(timeout=0.005)
+                        source, thumbnail, deduplicated = thumbnail_out.get(
+                            timeout=0.005
+                        )
                     except Empty:
                         break
                     else:
-                        if 0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache):
+                        if not deduplicated and (
+                            0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache)
+                        ):
                             # Quicker than the eviction process
                             delete_thumbnail(thumbnail)
                         else:
-                            cache_thumbnail(source, thumbnail)
+                            cache_thumbnail(source, thumbnail, deduplicated)
                         notify.stop_loading()
+
+                for thumbnail in thumbnails_to_be_deleted:
+                    delete_thumbnail(thumbnail)
+                thumbnails_to_be_deleted.clear()
 
                 # It's okay since we've taken care of all thumbnails that were being
                 # generated.
@@ -603,10 +706,17 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             if not in_sync.is_set():
                 continue
 
-            if THUMBNAIL_CACHE_SIZE:
-                for thumbnail in thumbnails_to_be_deleted - thumbnails_being_rendered:
-                    delete_thumbnail(thumbnail)
-                    thumbnails_to_be_deleted.remove(thumbnail)
+            if thumbnails_to_be_deleted:
+                # `thumbnail_render_lock` is unnecessary here since
+                # `thumbnails_being_rendered` is only **read** just **once**; the
+                # outcome is the same as with the lock but without is less costly.
+                thumbnails_to_delete = (
+                    thumbnails_to_be_deleted - thumbnails_being_rendered.keys()
+                )
+                for thumbnail in thumbnails_to_delete:
+                    with deduplication_lock:
+                        delete_thumbnail(thumbnail)
+                thumbnails_to_be_deleted -= thumbnails_to_delete
 
             if not in_sync.is_set():
                 continue
@@ -622,9 +732,8 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         continue
                     if thumbnail := thumbnail_cache.get(source := image_info[0]):
                         grid_render_queue.put((source, thumbnail, *image_info[2:]))
-                        if THUMBNAIL_CACHE_SIZE:
-                            with thumbnail_render_lock:
-                                thumbnails_being_rendered.add(thumbnail)
+                        with thumbnail_render_lock:
+                            thumbnails_being_rendered[thumbnail].add(source)
                     else:
                         thumbnail_in.put(source)
                         size_alpha_s.put(image_info[2:])
@@ -634,18 +743,18 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 continue
 
             try:
-                source, thumbnail = thumbnail_out.get(timeout=0.02)
+                source, thumbnail, deduplicated = thumbnail_out.get(timeout=0.02)
             except Empty:
                 pass
             else:
                 size_alpha = size_alpha_s.get()
                 if in_sync.is_set():
                     grid_render_queue.put((source, thumbnail, *size_alpha))
-                    if THUMBNAIL_CACHE_SIZE and thumbnail:
+                    if thumbnail:
                         with thumbnail_render_lock:
-                            thumbnails_being_rendered.add(thumbnail)
+                            thumbnails_being_rendered[thumbnail].add(source)
                 if thumbnail:
-                    cache_thumbnail(source, thumbnail)
+                    cache_thumbnail(source, thumbnail, deduplicated)
                 notify.stop_loading()
     finally:
         clear_queue(thumbnail_in)
@@ -822,12 +931,14 @@ grid_thumbnail_queue = Queue()
 image_render_queue = Queue()
 grid_renderer_in_sync = Event()
 grid_thumbnailer_in_sync = Event()
-thumbnails_being_rendered: set[str] = set()
 thumbnail_render_lock = Lock()
+thumbnail_sources: dict[str, tuple[str]] = {}
 # Main thumbnail cache
 thumbnail_cache: dict[str, str] = {}
-# For evicted thumbnails still being rendered
+# For evicted and deduplicated thumbnails still being rendered
 extra_thumbnail_cache: dict[str, str] = {}
+# Each value contains the sources currently using the thumbnail
+thumbnails_being_rendered: defaultdict[str, set] = defaultdict(set)
 
 # `GridRenderManager` is actually "in sync" initially.
 #

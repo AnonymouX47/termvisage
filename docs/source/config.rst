@@ -207,6 +207,8 @@ These are top-level fields whose values control various settings of the viewer.
       - Overridden by :option:`--thumbnail` and :option:`--no-thumbnail`.
       - Thumbnails are generated **on demand** i.e a thumbnail will be generated for
         an image only if its grid cell has come into view at least once.
+      - Thumbnails are **deduplicated** i.e only one thumbnail is cached and used for
+        different images having exactly identical thumbnails.
 
 .. confval:: thumbnail cache
    :synopsis: The maximum amount of thumbnails that can be cached per time.
