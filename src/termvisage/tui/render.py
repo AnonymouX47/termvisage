@@ -30,7 +30,7 @@ def delete_thumbnail(thumbnail: str) -> bool:
     return True
 
 
-def refresh_grid_rendering() -> None:
+def resync_grid_rendering() -> None:
     if main.THUMBNAIL:
         grid_thumbnail_queue.put(None)  # Send the grid delimiter
         grid_thumbnailer_in_sync.clear()

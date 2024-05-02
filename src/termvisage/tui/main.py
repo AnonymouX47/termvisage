@@ -30,7 +30,7 @@ from .keys import (
     set_menu_actions,
     set_menu_count,
 )
-from .render import refresh_grid_rendering
+from .render import resync_grid_rendering
 from .widgets import (
     Image,
     ImageCanvas,
@@ -280,7 +280,7 @@ def display_images(
                 grid_path = abspath(entry)
 
                 if contents[entry].get("/") and grid_path != last_non_empty_grid_path:
-                    refresh_grid_rendering()
+                    resync_grid_rendering()
                     last_non_empty_grid_path = grid_path
 
                 image_box.original_widget = placeholder  # halt image and anim rendering

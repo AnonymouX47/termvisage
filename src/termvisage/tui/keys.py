@@ -17,7 +17,7 @@ from term_image.utils import get_cell_size, get_terminal_size
 from .. import __version__, logging
 from ..config import context_keys, expand_key
 from . import main
-from .render import refresh_grid_rendering
+from .render import resync_grid_rendering
 from .widgets import (
     Image,
     ImageCanvas,
@@ -394,14 +394,14 @@ def resize():
         # implement the `TIOCSWINSZ` ioctl command. Hence, the `cell_size and`.
         if cell_size and cell_size != _prev_cell_size:
             _prev_cell_size = cell_size
-            refresh_grid_rendering()
+            resync_grid_rendering()
             if main.THUMBNAIL:
                 Image._ti_update_grid_thumbnailing_threshold(cell_size)
     else:
         cell_ratio = get_cell_ratio()
         if cell_ratio != _prev_cell_ratio:
             _prev_cell_ratio = cell_ratio
-            refresh_grid_rendering()
+            resync_grid_rendering()
 
     adjust_bottom_bar()
     getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
@@ -489,7 +489,7 @@ def maximize():
 def cell_width_dec():
     if image_grid.cell_width > 30:
         image_grid.cell_width -= 2
-        refresh_grid_rendering()
+        resync_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
 
     if main.THUMBNAIL:
@@ -500,7 +500,7 @@ def cell_width_dec():
 def cell_width_inc():
     if image_grid.cell_width < 50:
         image_grid.cell_width += 2
-        refresh_grid_rendering()
+        resync_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
 
     if main.THUMBNAIL:
