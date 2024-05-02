@@ -394,14 +394,16 @@ def resize():
         # implement the `TIOCSWINSZ` ioctl command. Hence, the `cell_size and`.
         if cell_size and cell_size != _prev_cell_size:
             _prev_cell_size = cell_size
-            resync_grid_rendering()
             if main.THUMBNAIL:
                 Image._ti_update_grid_thumbnailing_threshold(cell_size)
+            if main.grid_active.is_set():
+                resync_grid_rendering()
     else:
         cell_ratio = get_cell_ratio()
         if cell_ratio != _prev_cell_ratio:
             _prev_cell_ratio = cell_ratio
-            resync_grid_rendering()
+            if main.grid_active.is_set():
+                resync_grid_rendering()
 
     adjust_bottom_bar()
     getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
