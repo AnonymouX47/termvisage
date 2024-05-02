@@ -550,7 +550,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
 
     def cache_thumbnail(source: str, thumbnail: str, deduplicated: str | None) -> None:
         # Eviction, for finite cache size
-        if not deduplicated and 0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache):
+        if not deduplicated and 0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_sources):
             # Evict the oldest thumbnail with the least amount of linked sources.
             other_thumbnail = min(
                 thumbnail_sources,
@@ -681,7 +681,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         break
                     else:
                         if not deduplicated and (
-                            0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_cache)
+                            0 < THUMBNAIL_CACHE_SIZE == len(thumbnail_sources)
                         ):
                             # Quicker than the eviction process
                             delete_thumbnail(thumbnail)
