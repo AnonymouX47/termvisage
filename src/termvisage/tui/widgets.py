@@ -439,7 +439,7 @@ class Image(urwid.Widget):
     @classmethod
     def _ti_update_grid_thumbnailing_threshold(cls, cell_size: tuple[int, int]) -> None:
         grid_cell_width = image_grid.cell_width
-        grid_image_size = (grid_cell_width - 2, ceil(grid_cell_width / 2) - 2)
+        grid_image_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
         cls._ti_grid_thumbnailing_threshold = max(
             tui_main.THUMBNAIL_SIZE_PRODUCT,
             mul(*map(mul, grid_image_size, cell_size)),
