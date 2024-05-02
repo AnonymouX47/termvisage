@@ -433,6 +433,7 @@ def manage_grid_renders(n_renderers: int):
                 grid_render_in,
                 grid_render_out,
                 ImageClass,
+                Image._ti_alpha,
                 grid_style_specs.get(ImageClass.style, ""),
             ),
             name="GridRenderer" + f"-{n}" * multi,
@@ -443,7 +444,7 @@ def manage_grid_renders(n_renderers: int):
     for renderer in renderers:
         renderer.start()
 
-    cell_width = grid_path = None  # Silence flake8's F821
+    grid_image_size = grid_path = None  # Silence flake8's F821
     faulty_image = Image._ti_faulty_image
     delimited = False
     grid_cache = Image._ti_grid_cache
@@ -481,30 +482,32 @@ def manage_grid_renders(n_renderers: int):
                 else:
                     delimited = False
 
-                cell_width = image_grid.cell_width
                 grid_path = main.grid_path
+                grid_cell_width = image_grid.cell_width
+                grid_image_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
+                del grid_cell_width
 
             if not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
                 try:
-                    image_info = grid_render_queue.get(timeout=0.02)
+                    source_and_thumbnail = grid_render_queue.get(timeout=0.02)
                 except Empty:
                     pass
                 else:
-                    if not image_info:
+                    if not source_and_thumbnail:
                         delimited = True
                         continue
-                    grid_render_in.put(image_info)
+                    grid_render_in.put((*source_and_thumbnail, grid_image_size))
                     notify.start_loading()
 
             if not in_sync.is_set():
                 continue
 
             try:
-                source, thumbnail, render, size, rendered_size = grid_render_out.get(
-                    timeout=0.02
+                source, thumbnail, render, canvas_size, rendered_size = (
+                    grid_render_out.get(timeout=0.02)
                 )
             except Empty:
                 pass
@@ -516,12 +519,14 @@ def manage_grid_renders(n_renderers: int):
                     # remnants that were caught up in the renderer(s) while syncing
                     # grid rendering.
                     and source_dirname == grid_path
-                    and size[0] + 2 == cell_width
+                    and canvas_size == grid_image_size
                 ):
                     grid_cache[source_basename] = (
-                        ImageCanvas(render.encode().split(b"\n"), size, rendered_size)
+                        ImageCanvas(
+                            render.encode().split(b"\n"), canvas_size, rendered_size
+                        )
                         if render
-                        else faulty_image.render(size)
+                        else faulty_image.render(canvas_size)
                     )
                     if grid_active.is_set():
                         update_screen()
@@ -535,7 +540,7 @@ def manage_grid_renders(n_renderers: int):
     finally:
         clear_queue(grid_render_in)
         for renderer in renderers:
-            grid_render_in.put((None,) * 4)
+            grid_render_in.put((None,) * 3)
         for renderer in renderers:
             renderer.join()
         clear_queue(grid_render_queue)
@@ -634,9 +639,6 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
     in_sync = grid_thumbnailer_in_sync
     renderer_in_sync = grid_renderer_in_sync
     thumbnails_to_be_deleted: set[str] = set()
-    # Stores `(size, alpha)`s (to be passed on to the renderer) in the same order in
-    # which `source`s are sent to the generator.
-    size_alpha_s: Queue[tuple[tuple[int, int], str | float | None]] = Queue()
 
     try:
         while True:
@@ -693,10 +695,6 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                     delete_thumbnail(thumbnail)
                 thumbnails_to_be_deleted.clear()
 
-                # It's okay since we've taken care of all thumbnails that were being
-                # generated.
-                clear_queue(size_alpha_s)
-
                 if not delimited:
                     while grid_thumbnail_queue.get():
                         pass
@@ -723,20 +721,21 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
 
             if grid_active.is_set():
                 try:
-                    image_info = grid_thumbnail_queue.get(timeout=0.02)
+                    source_and_thumbnail = grid_thumbnail_queue.get(timeout=0.02)
                 except Empty:
                     pass
                 else:
-                    if not image_info:
+                    if not source_and_thumbnail:
                         delimited = True
                         continue
-                    if thumbnail := thumbnail_cache.get(source := image_info[0]):
-                        grid_render_queue.put((source, thumbnail, *image_info[2:]))
+                    if thumbnail := thumbnail_cache.get(
+                        source := source_and_thumbnail[0]
+                    ):
+                        grid_render_queue.put((source, thumbnail))
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)
                     else:
                         thumbnail_in.put(source)
-                        size_alpha_s.put(image_info[2:])
                         notify.start_loading()
 
             if not in_sync.is_set():
@@ -747,9 +746,8 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             except Empty:
                 pass
             else:
-                size_alpha = size_alpha_s.get()
                 if in_sync.is_set():
-                    grid_render_queue.put((source, thumbnail, *size_alpha))
+                    grid_render_queue.put((source, thumbnail))
                     if thumbnail:
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)
@@ -852,6 +850,7 @@ def render_grid_images(
     input: Queue | mp_Queue,
     output: Queue | mp_Queue,
     ImageClass: type,
+    alpha: str,
     style_spec: str,
 ):
     """Renders images for the grid.
@@ -859,7 +858,7 @@ def render_grid_images(
     Intended to be executed in a subprocess or thread.
     """
     while True:
-        source, thumbnail, size, alpha = input.get()
+        source, thumbnail, canvas_size = input.get()
 
         if not source:  # Quitting
             break
@@ -872,18 +871,18 @@ def render_grid_images(
         # **as needed**. Trimmed padding lines are never generated at all.
         try:
             image = ImageClass.from_file(thumbnail or source)
-            image.set_size(Size.FIT if thumbnail else Size.AUTO, maxsize=size)
+            image.set_size(Size.FIT if thumbnail else Size.AUTO, maxsize=canvas_size)
             output.put(
                 (
                     source,
                     thumbnail,
                     f"{image:1.1{alpha}{style_spec}}",
-                    size,
+                    canvas_size,
                     image.rendered_size,
                 )
             )
         except Exception:
-            output.put((source, thumbnail, None, size, None))
+            output.put((source, thumbnail, None, canvas_size, None))
 
     clear_queue(output)
 

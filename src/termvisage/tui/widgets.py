@@ -355,7 +355,7 @@ class Image(urwid.Widget):
                         > __class__._ti_grid_thumbnailing_threshold
                     )
                     else grid_render_queue
-                ).put((image._source, None, size, self._ti_alpha))
+                ).put((image._source, None))
                 __class__._ti_grid_cache[basename(image._source)] = ...
                 canv = __class__._ti_placeholder.render(size, focus)
             elif canv is ...:  # is the image currently being rendered?
