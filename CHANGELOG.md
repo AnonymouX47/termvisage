@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - cli,tui: Sorting of top-level (command line) entries ([9ea0572]).
 
 ### Added
-- tui: Thumbnail generation (with deduplication) and caching for the image grid ([#13]).
+- tui: Thumbnail generation (with deduplication) and caching for the image grid ([#13], [#16]).
   - config: `thumbnail`, `thumbnail cache` and `thumbnail size` config options.
   - args: `--thumbnail/--no-thumbnail` command-line option.
 - tui: `Force Render` action to the `menu` context ([#13]).
@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - config: Changed the default value of the `max pixels` config option to `0` (disabled).
   - tui: It no longer applies in the `full-grid-image` context.
   - tui: In the `image-grid` context, images with more pixels than *max pixels* (**if non-zero**) are now distinguished by a yellow title and border.
+- tui: Improved grid image rendering performance ([#13], [#16]).
 - tui: Improved image grid cell size adjustment ([#15]).
 
 ### Removed
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [#13]: https://github.com/AnonymouX47/termvisage/pull/13
 [#15]: https://github.com/AnonymouX47/termvisage/pull/15
+[#16]: https://github.com/AnonymouX47/termvisage/pull/16
 [c64f195]: https://github.com/AnonymouX47/termvisage/commit/c64f195a79557fdf5a9323db907a5716a12d6440
 [9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
 
