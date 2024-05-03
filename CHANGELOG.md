@@ -8,8 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Fixed
 - tui: Crash on image grid view ([c64f195]).
-- cli,tui: Sorting of top-level (command line) entries ([9ea0572])
+- cli,tui: Sorting of top-level (command line) entries ([9ea0572]).
 
+### Added
+- tui: Thumbnail generation (with deduplication) and caching for the image grid ([#13]).
+  - config: `thumbnail`, `thumbnail cache` and `thumbnail size` config options.
+  - args: `--thumbnail/--no-thumbnail` command-line option.
+- tui: `Force Render` action to the `menu` context ([#13]).
+
+### Changed
+- cli,tui: Revamped the *max pixels* setting ([#13]).
+  - It is now **opt-in** i.e by default, all images are now rendered regardless of resolution.
+  - config: Changed the default value of the `max pixels` config option to `0` (disabled).
+  - tui: It no longer applies in the `full-grid-image` context.
+  - tui: In the `image-grid` context, images with more pixels than *max pixels* (**if non-zero**) are now distinguished by a yellow title and border.
+
+### Removed
+- args: `--max-pixels-cli` command-line option ([#13]).
+
+[#13]: https://github.com/AnonymouX47/termvisage/pull/13
 [c64f195]: https://github.com/AnonymouX47/termvisage/commit/c64f195a79557fdf5a9323db907a5716a12d6440
 [9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
 

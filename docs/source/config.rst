@@ -130,21 +130,22 @@ These are top-level fields whose values control various settings of the viewer.
    Adjusts the height of the :ref:`notification bar <notif-bar>`.
 
 .. confval:: max pixels
-   :synopsis: The maximum amount of pixels in images to be displayed in the TUI.
+   :synopsis: The maximum pixel-count for images that should be rendered.
    :type: integer
-   :valid: *x* > ``0``
-   :default: ``4194304`` (2 ** 22)
+   :valid: *x* >= ``0``
+   :default: ``0``
 
-   Any image having more pixels than the specified value will be:
+   If zero, all images will be rendered normally, regardless of their resolution.
+   Otherwise, any image having more pixels than the specified value will be:
 
-   * skipped, in CLI mode, if :option:`--max-pixels-cli` is specified.
-   * replaced, in TUI mode, with a placeholder when displayed but can still be forced
-     to display or viewed externally.
+   * **skipped** in CLI mode.
+   * **replaced** in TUI mode (except in the ``full-grid-image``
+     :ref:`context <contexts>`), with a placeholder (filled with exclamation marks)
+     but can be forced to render using the ``Force Render`` :ref:`action <actions>`
+     in :ref:`contexts <contexts>` with a full-sized image view.
 
-   Note that increasing this should not have any effect on general performance (i.e
-   navigation, etc) but the larger an image is, the more the time and memory it'll take
-   to render it. Thus, a large image might delay the rendering of other images to be
-   rendered immediately after it.
+     In the ``image-grid`` :ref:`context <contexts>`, such images have a **yellow**
+     border (when selected) and title.
 
    .. note:: Overridden by :option:`--max-pixels`.
 
@@ -190,6 +191,48 @@ These are top-level fields whose values control various settings of the viewer.
    .. note::
       * Overridden by :option:`--swap-win-size` and :option:`--no-swap-win-size`.
       * Affects *auto* :term:`cell ratio` computation.
+
+.. confval:: thumbnail
+   :synopsis: Enable or disable thumbnailing for the image grid.
+   :type: boolean
+   :valid: ``true``, ``false``
+   :default: ``true``
+
+   If ``true``, thumbnails are generated for some images (based on their resolution),
+   cached on disk and cleaned up upon exit. Otherwise, all images in the grid are
+   rendered directly from the original image files.
+
+   .. note::
+
+      - Overridden by :option:`--thumbnail` and :option:`--no-thumbnail`.
+      - Thumbnails are generated **on demand** i.e a thumbnail will be generated for
+        an image only if its grid cell has come into view at least once.
+      - Thumbnails are **deduplicated** i.e only one thumbnail is cached and used for
+        different images having exactly identical thumbnails.
+
+.. confval:: thumbnail cache
+   :synopsis: The maximum amount of thumbnails that can be cached per time.
+   :type: integer
+   :valid: *x* >= ``0``
+   :default: ``0``
+
+   If ``0``, the cache size is infinite i.e no eviction. Otherwise, older thumbnails
+   will be evicted to accommodate newer ones when the cache is full (i.e the specified
+   size limit is reached).
+
+   .. note:: Unused if :confval:`thumbnail` is ``false`` or :option:`--no-thumbnail`
+      is specified.
+
+.. confval:: thumbnail size
+   :synopsis: Maxiumum thumbnail dimension.
+   :type: integer
+   :valid: ``32`` <= *x* <= ``512``
+   :default: ``256``
+
+   Thumbnails generated will have a maximum of *x* pixels in the long dimension.
+
+   .. note:: Unused if :confval:`thumbnail` is ``false`` or :option:`--no-thumbnail`
+      is specified.
 
 
 Keybindings

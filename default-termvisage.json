@@ -7,11 +7,14 @@
     "grid renderers": 1,
     "log file": "~/.local/state/termvisage/termvisage.log",
     "max notifications": 2,
-    "max pixels": 4194304,
+    "max pixels": 0,
     "multi": true,
     "query timeout": 0.1,
     "style": "auto",
     "swap win size": false,
+    "thumbnail": true,
+    "thumbnail cache": 0,
+    "thumbnail size": 256,
     "keys": {
         "navigation": {
             "Left": [
@@ -81,13 +84,13 @@
             "Switch Pane": [
                 "tab",
                 "\u21b9"
-            ]
-        },
-        "image": {
+            ],
             "Force Render": [
                 "F",
                 "\u21e7F"
-            ],
+            ]
+        },
+        "image": {
             "Maximize": [
                 "f",
                 "f"
@@ -99,6 +102,10 @@
             "Switch Pane": [
                 "tab",
                 "\u21b9"
+            ],
+            "Force Render": [
+                "F",
+                "\u21e7F"
             ]
         },
         "image-grid": {
@@ -124,23 +131,19 @@
                 "esc",
                 "\u238b"
             ],
-            "Force Render": [
-                "F",
-                "\u21e7F"
-            ],
             "Delete": [
                 "d",
                 "d"
+            ],
+            "Force Render": [
+                "F",
+                "\u21e7F"
             ]
         },
         "full-grid-image": {
             "Back": [
                 "esc",
                 "\u238b"
-            ],
-            "Force Render": [
-                "F",
-                "\u21e7F"
             ]
         },
         "confirmation": {

@@ -6,7 +6,7 @@ import logging as _logging
 from math import ceil
 from operator import floordiv, mul, sub
 from os.path import basename
-from typing import List, Optional, Tuple
+from typing import ClassVar, List, Optional, Tuple
 
 import urwid
 from term_image.image import BaseImage, Size
@@ -28,7 +28,12 @@ from .. import logging
 from ..config import config_options, expand_key, navi
 from ..utils import KITTY_DELETE_CURSOR_IMAGES_b
 from . import keys, main as tui_main
-from .render import anim_render_queue, grid_render_queue, image_render_queue
+from .render import (
+    anim_render_queue,
+    grid_render_queue,
+    grid_thumbnail_queue,
+    image_render_queue,
+)
 
 # NOTE: Any new "private" attribute set on any subclass or instance of an urwid class
 # should be prepended with "_ti" to prevent clashes with names used by urwid itself.
@@ -243,7 +248,7 @@ class Image(urwid.Widget):
     _ti_placeholder = urwid.SolidFill(".")
 
     _ti_force_render = False
-    _ti_force_render_contexts = {"image", "full-image", "full-grid-image"}
+    _ti_force_render_contexts = {"menu", "image", "full-image"}
     _ti_forced_anim_size_hash = None
 
     _ti_frame = None
@@ -258,6 +263,8 @@ class Image(urwid.Widget):
     # Set from `.tui.init()`
     _ti_alpha = ""
     _ti_grid_style_spec = ""
+    # # Updated in `._ti_update_grid_thumbnailing_threshold()`
+    _ti_grid_thumbnailing_threshold: ClassVar[int]
 
     def __init__(self, image: BaseImage):
         self._ti_image = image
@@ -270,33 +277,55 @@ class Image(urwid.Widget):
         image = self._ti_image
         image.set_size(Size.AUTO, maxsize=size)
 
-        # Forced render
+        # Forced render / Large images
 
-        if mul(*image.original_size) > tui_main.MAX_PIXELS and not (
-            self._ti_canv
-            and (
-                # will be resized later @ Rendering.
-                self._ti_canv._ti_image_size == image.size
-                # can either be SolidCanvas (faulty) or ImageCanvas
-                if isinstance(self._ti_canv, ImageCanvas)
-                # but faulty shouldn't be resized to allow re-rendering after resize
-                else self._ti_canv.size == size
+        if (
+            # is there a maximum pixel-count and is the image's pixel-count higher?
+            0 < tui_main.MAX_PIXELS < mul(*image.original_size)
+            and context != "full-grid-image"
+            and not (
+                # is the image grid in view? ("full-grid-image" already ruled out)
+                view.original_widget is image_grid_box
+                # is thumbnailing enabled?
+                and tui_main.THUMBNAIL
             )
-            or self._ti_rendering
+            # has the image NOT been force-rendered, with a valid-sized canvas?
+            and not (
+                # has the widget been force-rendered?
+                self._ti_canv
+                # is the force-rendered canvas valid for the current widget render size?
+                and (
+                    # the canvas itself will be resized later at the Rendering stage
+                    # below
+                    self._ti_canv._ti_image_size == image.size
+                    # can either be `SolidCanvas` (faulty) or `ImageCanvas`
+                    if isinstance(self._ti_canv, ImageCanvas)
+                    # a *faulty* canvas shouldn't be resized, to allow re-rendering the
+                    # image after a change in widget size
+                    else self._ti_canv.size == size
+                )
+                # is the image currently being rendered?
+                or self._ti_rendering
+            )
         ):
+            # has the image been requested to be force-rendered?
             if self._ti_force_render:
                 # AnimRendermanager or `.tui.main.animate_image()` deletes
-                # `_force_render` when the animation is done to avoid attribute
+                # `_ti_force_render` when the animation is done to avoid attribute
                 # creation and deletion per frame
-                if image.is_animated and not tui_main.NO_ANIMATION:
+                if image.is_animated and not tui_main.NO_ANIMATION:  # an animation?
+                    # has the animation NOT started?
                     if not (self._ti_frame or self._ti_anim_finished):
                         self._ti_forced_anim_size_hash = hash(image.size)
+                    # has the image render size changed?
                     elif hash(image.size) != self._ti_forced_anim_size_hash:
                         self._ti_force_render = False
                         if context in self._ti_force_render_contexts:
                             keys.enable_actions(context, "Force Render")
                         return __class__._ti_large_image.render(size, focus)
-                else:
+                else:  # a non-animation?
+                    # acknowledge the force-render request and prevent it from being
+                    # re-satisfied.
                     del self._ti_force_render
             else:
                 if context in self._ti_force_render_contexts:
@@ -306,28 +335,39 @@ class Image(urwid.Widget):
         if context in self._ti_force_render_contexts:
             keys.disable_actions(context, "Force Render")
 
-        # Grid cells
+        # Grid images
 
         if (
+            # is the image grid in view? (next two lines)
             view.original_widget is image_grid_box
             and context != "full-grid-image"
-            # Grid render cell width adjusts when _maxcols_ < _cell_width_
+            # Grid render cell width adjusts when `maxcols` < `cell_width`
             # `+2` cos `LineSquare` subtracts the columns for surrounding lines
             and size[0] + 2 == image_grid.cell_width
         ):
             canv = __class__._ti_grid_cache.get(basename(image._source))
-            if not canv:
-                grid_render_queue.put((image._source, size, self._ti_alpha))
+            if not canv:  # is the image not the grid cache?
+                (
+                    grid_thumbnail_queue
+                    if tui_main.THUMBNAIL
+                    and (
+                        mul(*image.original_size)
+                        > __class__._ti_grid_thumbnailing_threshold
+                    )
+                    else grid_render_queue
+                ).put((image._source, None))
                 __class__._ti_grid_cache[basename(image._source)] = ...
                 canv = __class__._ti_placeholder.render(size, focus)
-            elif canv is ...:
+            elif canv is ...:  # is the image currently being rendered?
                 canv = __class__._ti_placeholder.render(size, focus)
             return canv
 
         # Rendering
 
+        # For when the grid render cell width adjusts i.e when `maxcols` < `cell_width`
+        #
+        # is the image grid in view?
         if view.original_widget is image_grid_box and context != "full-grid-image":
-            # When the grid render cell width adjusts; when _maxcols_ < _cell_width_
             try:
                 canv = ImageCanvas(
                     f"{image:1.1{self._ti_alpha}{self._ti_grid_style_spec}}"
@@ -337,9 +377,11 @@ class Image(urwid.Widget):
                 )
             except Exception:
                 canv = __class__._ti_faulty_image.render(size, focus)
+        # is the image currently being animated (i.e an **ongoing** animation)?
         elif self._ti_frame:
             canv, repeat, frame_no = self._ti_frame
-            if canv._ti_image_size != image.size:  # The canvas is always an ImageCanvas
+            # has the image render size changed? (the canvas is always an `ImageCanvas`)
+            if canv._ti_image_size != image.size:
                 canv = (
                     placeholder
                     if (
@@ -354,16 +396,19 @@ class Image(urwid.Widget):
                 getattr(tui_main.ImageClass, "clear", lambda: True)()
             else:
                 canv.size = size
+        # has the image been rendered, with a valid-sized canvas?
         elif self._ti_canv and (
             self._ti_canv._ti_image_size == image.size
             # Can either be SolidCanvas (faulty) or ImageCanvas
             if isinstance(self._ti_canv, ImageCanvas)
-            # but faulty shouldn't be resized to allow re-rendering after resize
+            # a *faulty* canvas shouldn't be resized, to allow re-rendering the
+            # image after a change in widget size
             else self._ti_canv.size == size
         ):
             self._ti_canv.size = size
             canv = self._ti_canv
         else:
+            # is it an unfinished (yet to start or ongoing) animation?
             if (
                 image.is_animated
                 and not tui_main.NO_ANIMATION
@@ -372,9 +417,11 @@ class Image(urwid.Widget):
                 if not self._ti_anim_ongoing:
                     anim_render_queue.put((self, size, self._ti_force_render))
                     self._ti_anim_ongoing = True
+            # is it a non-animation NOT yet being rendered?
             elif not self._ti_rendering:
                 self._ti_rendering = True
                 image_render_queue.put((self, size, self._ti_alpha))
+
             canv = (
                 placeholder
                 if (
@@ -388,6 +435,15 @@ class Image(urwid.Widget):
             ).render(size)
 
         return canv
+
+    @classmethod
+    def _ti_update_grid_thumbnailing_threshold(cls, cell_size: tuple[int, int]) -> None:
+        grid_cell_width = image_grid.cell_width
+        grid_image_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
+        cls._ti_grid_thumbnailing_threshold = max(
+            tui_main.THUMBNAIL_SIZE_PRODUCT,
+            mul(*map(mul, grid_image_size, cell_size)),
+        )
 
 
 class ImageCanvas(urwid.Canvas):
@@ -484,12 +540,14 @@ class LineSquare(WidgetDecoration, WidgetWrap):
     no_cache = ["render", "rows"]
     _sizing = frozenset((urwid.FLOW,))
 
-    def __init__(self, widget, title=""):
+    def __init__(self, widget, title="", title_attr=None):
         title_w = Text(title and f" {title} ", wrap="ellipsis")
         top_w = Columns(
             [
                 (PACK, Text("┌")),
-                Columns([(PACK, AttrMap(title_w, "default")), Divider("─")]),
+                Columns(
+                    [(PACK, AttrMap(title_w, title_attr or "default")), Divider("─")]
+                ),
                 (PACK, Text("┐")),
             ]
         )

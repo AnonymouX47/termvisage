@@ -11,12 +11,15 @@ from typing import Any, Tuple
 
 import urwid
 from term_image import get_cell_ratio
-from term_image.utils import get_terminal_size
+from term_image.image import GraphicsImage
+from term_image.utils import get_cell_size, get_terminal_size
 
 from .. import __version__, logging
 from ..config import context_keys, expand_key
 from . import main
+from .render import resync_grid_rendering
 from .widgets import (
+    Image,
     ImageCanvas,
     bottom_bar,
     confirmation,
@@ -300,8 +303,8 @@ def set_confirmation(
     main.set_context("confirmation")
 
     # `Image` widgets don't support overlay.
-    # Always reset by or "confirmation::Cancel"
-    # but _confirm()_ must reset `view.original_widget` on it's own.
+    # Always reset by "confirmation::Confirm" or "confirmation::Cancel"
+    # but *confirm* must reset `view.original_widget` on it's own.
     _prev_view_widget = view.original_widget
     view.original_widget = urwid.LineBox(
         placeholder, _prev_view_widget.title_widget.text.strip(" "), "left"
@@ -383,17 +386,25 @@ def key_bar_rows():
 
 
 def resize():
-    global _prev_cell_ratio
+    global _prev_cell_ratio, _prev_cell_size
 
-    if main.grid_active.is_set():
+    if issubclass(main.ImageClass, GraphicsImage):
+        cell_size = get_cell_size()
+        # `get_cell_size()` may sometimes return `None` on terminals that don't
+        # implement the `TIOCSWINSZ` ioctl command. Hence, the `cell_size and`.
+        if cell_size and cell_size != _prev_cell_size:
+            _prev_cell_size = cell_size
+            if main.THUMBNAIL:
+                Image._ti_update_grid_thumbnailing_threshold(cell_size)
+            if main.grid_active.is_set():
+                resync_grid_rendering()
+    else:
         cell_ratio = get_cell_ratio()
         if cell_ratio != _prev_cell_ratio:
             _prev_cell_ratio = cell_ratio
-            main.grid_render_queue.put(None)  # Mark the start of a new grid
-            main.grid_change.set()
-            # Wait till GridRenderManager clears the cache
-            while main.grid_change.is_set():
-                pass
+            if main.grid_active.is_set():
+                resync_grid_rendering()
+
     adjust_bottom_bar()
     getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
 
@@ -480,24 +491,22 @@ def maximize():
 def cell_width_dec():
     if image_grid.cell_width > 30:
         image_grid.cell_width -= 2
-        main.grid_render_queue.put(None)  # Mark the start of a new grid
-        main.grid_change.set()
-        # Wait till GridRenderManager clears the cache
-        while main.grid_change.is_set():
-            pass
+        resync_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
+
+    if main.THUMBNAIL:
+        Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
 
 
 @register_key(("image-grid", "Size+"))
 def cell_width_inc():
     if image_grid.cell_width < 50:
         image_grid.cell_width += 2
-        main.grid_render_queue.put(None)  # Mark the start of a new grid
-        main.grid_change.set()
-        # Wait till GridRenderManager clears the cache
-        while main.grid_change.is_set():
-            pass
+        resync_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
+
+    if main.THUMBNAIL:
+        Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
 
 
 @register_key(("image-grid", "Open"))
@@ -527,18 +536,6 @@ def set_image_grid_actions():
         enable_actions("image-grid", "Open", "Size-", "Size+")
     else:
         disable_actions("image-grid", "Open", "Size-", "Size+")
-
-
-# full-grid-image
-@register_key(("full-grid-image", "Force Render"))
-def force_render_maximized_cell():
-    # Will re-render immediately after processing input, since caching has been disabled
-    # for `Image` widgets.
-    image_w = image_box._w.contents[1][0].contents[1][0]
-    if image_w._ti_image.is_animated:
-        main.animate_image(image_w, True)
-    else:
-        image_w._ti_force_render = True
 
 
 # full-image, full-grid-image
@@ -583,7 +580,9 @@ def next_image():
     set_menu_count()
 
 
-@register_key(("image", "Force Render"), ("full-image", "Force Render"))
+@register_key(
+    ("menu", "Force Render"), ("image", "Force Render"), ("full-image", "Force Render")
+)
 def force_render():
     # Will re-render immediately after processing input, since caching has been disabled
     # for `Image` widgets.
@@ -725,12 +724,23 @@ no_globals = {"global", "confirmation", "full-grid-image", "overlay"}
 key_bar._ti_collapsed = True
 expand._ti_shown = True
 
-# Use in the "confirmation" context. Set by `set_confirmation()`
+# Used in the "confirmation" context.
+#
+# Updated by `set_confirmation()`.
 _confirm: tuple[FunctionType, tuple[Any, ...]] | None = None
 _cancel: tuple[FunctionType, tuple[Any, ...]] | None = None
 
 # Used for overlays
 _prev_view_widget: urwid.Widget | None = None
 
-# Used to guard clearing of grid render cache
+# Used to guard grid render refresh upon terminal resize, for text-based styles.
+#
+# Updated from `resize()`.
 _prev_cell_ratio: float = 0.0
+
+# Used to [re]compute the grid thumbnailing threshold.
+# Also used to guard grid render refresh on terminal resize, for graphics-based styles.
+#
+# The default value is for text-based styles, for which this variable is never updated.
+# Updated from `.tui.init()` and `resize()`, for graphics-based styles.
+_prev_cell_size: tuple[int, int] = (1, 2)

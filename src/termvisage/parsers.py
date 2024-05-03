@@ -593,6 +593,16 @@ tui_options.add_argument(
     default=sys.getrecursionlimit() - 50,
     help=f"Maximum recursion depth (default: {sys.getrecursionlimit() - 50})",
 )
+tui_options.add_argument(
+    "--thumbnail",
+    action=BooleanOptionalAction,
+    default=None,
+    help=(
+        "Enable or disable thumbnail generation for the image grid; if enabled, "
+        "thumbnails are cached on disk and cleaned up upon exit "
+        "(default: :confval:`thumbnail` config)"
+    ),
+)
 
 # Performance
 perf_options = parser.add_argument_group("Performance Options")
@@ -601,14 +611,9 @@ perf_options.add_argument(
     type=int,
     metavar="N",
     help=(
-        "Maximum amount of pixels in images to be displayed "
-        "(default: :confval:`max pixels` config) [#]_"
+        "The maximum pixel-count for images that should be rendered "
+        "(default: :confval:`max pixels` config)"
     ),
-)
-perf_options.add_argument(
-    "--max-pixels-cli",
-    action="store_true",
-    help="Apply :option:`--max-pixels` in CLI mode",
 )
 perf_options.add_argument(
     "--multi",

@@ -592,9 +592,9 @@ config_options = {
         "must be an integer between 0 and 5 (both inclusive)",
     ),
     "max pixels": Option(
-        2**22,  # 2048x2048
-        lambda x: isinstance(x, int) and x > 0,
-        "must be an integer greater than zero",
+        0,
+        lambda x: isinstance(x, int) and x >= 0,
+        "must be a non-negative integer",
     ),
     "multi": Option(
         True,
@@ -615,6 +615,21 @@ config_options = {
         False,
         lambda x: isinstance(x, bool),
         "must be a boolean",
+    ),
+    "thumbnail": Option(
+        True,
+        lambda x: isinstance(x, bool),
+        "must be a boolean",
+    ),
+    "thumbnail cache": Option(
+        0,
+        lambda x: isinstance(x, int) and x >= 0,
+        "must be a non-negative integer",
+    ),
+    "thumbnail size": Option(
+        256,
+        lambda x: isinstance(x, int) and 32 <= x <= 512,
+        "must be an integer between 32 and 512 (both inclusive)",
     ),
 }
 config_options = ConfigOptions(config_options)
@@ -647,6 +662,11 @@ _context_keys = {
         "Back": ["backspace", "\u27f5 ", "Return to the previous directory"],
         "Delete": ["d", "d", "Delete selected image"],
         "Switch Pane": ["tab", "\u21b9", "Switch to image pane"],
+        "Force Render": [
+            "F",
+            "\u21e7F",
+            "Force an image, with more pixels than the set maximum, to be displayed",
+        ],
         "Page Up": ["page up", "", "Jump up one page"],
         "Page Down": ["page down", "", "Jump down one page"],
         "Top": ["home", "", "Jump to the top of the list"],
@@ -655,14 +675,14 @@ _context_keys = {
     "image": {
         "Prev": ["left", "", "Move to the previous image"],
         "Next": ["right", "", "Move to the next image"],
+        "Maximize": ["f", "f", "Maximize the current image"],
+        "Delete": ["d", "d", "Delete current image"],
+        "Switch Pane": ["tab", "\u21b9", "Switch to list pane"],
         "Force Render": [
             "F",
             "\u21e7F",
             "Force an image, with more pixels than the set maximum, to be displayed",
         ],
-        "Maximize": ["f", "f", "Maximize the current image"],
-        "Delete": ["d", "d", "Delete current image"],
-        "Switch Pane": ["tab", "\u21b9", "Switch to list pane"],
     },
     "image-grid": {
         "Open": ["enter", "\u23ce", "Maximize the selected image"],
@@ -682,20 +702,15 @@ _context_keys = {
         "Restore": ["esc", "\u238b", "Exit maximized view"],
         "Prev": ["left", "", "Move to the previous image"],
         "Next": ["right", "", "Move to the next image"],
+        "Delete": ["d", "d", "Delete current image"],
         "Force Render": [
             "F",
             "\u21e7F",
             "Force an image, with more pixels than the set maximum, to be displayed",
         ],
-        "Delete": ["d", "d", "Delete current image"],
     },
     "full-grid-image": {
         "Back": ["esc", "\u238b", "Back to grid view"],
-        "Force Render": [
-            "F",
-            "\u21e7F",
-            "Force an image, with more pixels than the set maximum, to be displayed",
-        ],
     },
     "confirmation": {
         "Confirm": ["enter", "\u23ce", ""],
