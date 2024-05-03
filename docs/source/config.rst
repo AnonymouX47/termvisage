@@ -67,7 +67,7 @@ These are top-level fields whose values control various settings of the viewer.
 .. confval:: cell width
    :synopsis: The initial width of (no of columns for) grid cells, in the TUI.
    :type: integer
-   :valid: ``30`` <= *x* <= ``50`` and *x* is even
+   :valid: ``10`` <= *x* <= ``50`` and *x* is even
    :default: ``30``
 
 .. confval:: checkers

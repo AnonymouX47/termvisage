@@ -22,11 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - config: Changed the default value of the `max pixels` config option to `0` (disabled).
   - tui: It no longer applies in the `full-grid-image` context.
   - tui: In the `image-grid` context, images with more pixels than *max pixels* (**if non-zero**) are now distinguished by a yellow title and border.
+- tui: Improved image grid cell size adjustment ([#15]).
 
 ### Removed
 - args: `--max-pixels-cli` command-line option ([#13]).
 
 [#13]: https://github.com/AnonymouX47/termvisage/pull/13
+[#15]: https://github.com/AnonymouX47/termvisage/pull/15
 [c64f195]: https://github.com/AnonymouX47/termvisage/commit/c64f195a79557fdf5a9323db907a5716a12d6440
 [9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
 

@@ -559,8 +559,8 @@ config_options = {
     ),
     "cell width": Option(
         30,
-        lambda x: isinstance(x, int) and 30 <= x <= 50 and not x % 2,
-        "must be an even integer between 30 and 50 (both inclusive)",
+        lambda x: isinstance(x, int) and 10 <= x <= 50 and not x % 2,
+        "must be an even integer between 10 and 50 (both inclusive)",
     ),
     "checkers": Option(
         None,
