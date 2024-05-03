@@ -6,7 +6,6 @@ import logging as _logging
 from collections import defaultdict
 from multiprocessing import Event as mp_Event, Lock as mp_Lock, Queue as mp_Queue
 from os import remove
-from os.path import split
 from queue import Empty, Queue
 from tempfile import mkdtemp, mkstemp
 from threading import Event, Lock
@@ -426,7 +425,8 @@ def manage_grid_renders(n_renderers: int):
     subprocesses to render the cells and handles their proper termination.
     Otherwise, it starts a single new thread to render the cells.
     """
-    from . import main
+    from os.path import basename
+
     from .main import ImageClass, grid_active, quitting, update_screen
     from .widgets import Image, ImageCanvas, image_grid
 
@@ -472,10 +472,18 @@ def manage_grid_renders(n_renderers: int):
     for renderer in renderers:
         renderer.start()
 
-    grid_image_size = grid_path = None  # Silence flake8's F821
+    canvas_size = None  # Silence flake8's F821
     faulty_image = Image._ti_faulty_image
     grid_cache = Image._ti_grid_cache
     in_sync = grid_renderer_in_sync
+
+    # Since waiting for all renderers to finish all active renders during grid
+    # render syncs is too costly, this is used to filter out any images that get
+    # caught up in a renderer during(/across) grid render sync(s).
+    #
+    # Since it doesn't rotate around until 1000, it's *practically* impossible for an
+    # image to remain in a renderer through that many syncs (by whichever means).
+    grid_batch_no = 0
 
     try:
         while True:
@@ -506,9 +514,9 @@ def manage_grid_renders(n_renderers: int):
                 while grid_render_queue.get():
                     pass
 
-                grid_path = main.grid_path
+                grid_batch_no = (grid_batch_no + 1) % 1000
                 grid_cell_width = image_grid.cell_width
-                grid_image_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
+                canvas_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
                 del grid_cell_width
 
             if not in_sync.is_set():
@@ -520,29 +528,23 @@ def manage_grid_renders(n_renderers: int):
                 except Empty:
                     pass
                 else:
-                    grid_render_in.put((*source_and_thumbnail, grid_image_size))
+                    grid_render_in.put(
+                        (grid_batch_no, *source_and_thumbnail, canvas_size)
+                    )
                     notify.start_loading()
 
             if not in_sync.is_set():
                 continue
 
             try:
-                source, thumbnail, render, canvas_size, rendered_size = (
+                batch_no, source, thumbnail, render, rendered_size = (
                     grid_render_out.get(timeout=0.02)
                 )
             except Empty:
                 pass
             else:
-                source_dirname, source_basename = split(source)
-                if (
-                    in_sync.is_set()
-                    # The directory and cell-width checks are to filter out any
-                    # remnants that were caught up in the renderer(s) while syncing
-                    # grid rendering.
-                    and source_dirname == grid_path
-                    and canvas_size == grid_image_size
-                ):
-                    grid_cache[source_basename] = (
+                if batch_no == grid_batch_no and in_sync.is_set():
+                    grid_cache[basename(source)] = (
                         ImageCanvas(
                             render.encode().split(b"\n"), canvas_size, rendered_size
                         )
@@ -561,7 +563,7 @@ def manage_grid_renders(n_renderers: int):
     finally:
         clear_queue(grid_render_in)
         for renderer in renderers:
-            grid_render_in.put((None,) * 3)
+            grid_render_in.put((None,) * 4)
         for renderer in renderers:
             renderer.join()
         clear_queue(grid_render_queue)
@@ -878,7 +880,7 @@ def render_grid_images(
     Intended to be executed in a subprocess or thread.
     """
     while True:
-        source, thumbnail, canvas_size = input.get()
+        batch_no, source, thumbnail, canvas_size = input.get()
 
         if not source:  # Quitting
             break
@@ -894,15 +896,15 @@ def render_grid_images(
             image.set_size(Size.FIT if thumbnail else Size.AUTO, maxsize=canvas_size)
             output.put(
                 (
+                    batch_no,
                     source,
                     thumbnail,
                     f"{image:1.1{alpha}{style_spec}}",
-                    canvas_size,
                     image.rendered_size,
                 )
             )
         except Exception:
-            output.put((source, thumbnail, None, canvas_size, None))
+            output.put((batch_no, source, thumbnail, None, None))
 
     clear_queue(output)
 
