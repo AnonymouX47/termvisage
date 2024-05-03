@@ -31,14 +31,42 @@ def delete_thumbnail(thumbnail: str) -> bool:
 
 
 def resync_grid_rendering() -> None:
+    # NOTE: The order of operations is very crucial in avoiding deadlocks and even
+    # worse, races. See the resync blocks in `manage_grid_renders()` and
+    # `manage_grid_thumbnails()` especially their beginnings and ends.
+
+    # Signal `GridRenderManager` and `GridThumbnailManager` to **start** resync.
+    #
+    # `GridThumbnailManager` waits for `GridRenderManager` to **start** resync
+    # **before** it does because it modifies (clears) shared data. Hence,
+    # `grid_renderer_in_sync` must be cleared **before** `grid_thumbnailer_in_sync`.
+    grid_renderer_in_sync.clear()
     if main.THUMBNAIL:
-        grid_thumbnail_queue.put(None)  # Send the grid delimiter
         grid_thumbnailer_in_sync.clear()
+
+    # Wait for `GridRenderManager` and `GridThumbnailManager` to **start** resync.
+    #
+    # The order within this set of operations is not necessarily important. However,
+    # the order of this set important with respect to the other sets.
+    grid_renderer_in_sync.wait()
+    if main.THUMBNAIL:
         grid_thumbnailer_in_sync.wait()
 
-    grid_render_queue.put(None)  # Send the grid delimiter
-    grid_renderer_in_sync.clear()
-    grid_renderer_in_sync.wait()
+    # Send the batch delimiter, without which each thread cannot **end** resync.
+    #
+    # It is important that `GridThumbnailManager` **starts** resync **before** sending
+    # the delimiter to `GridRenderManager`, in order to ensure `GridThumbnailManager`
+    # doesn't forward any jobs from the **old** batch to `GridRenderManager` **after**
+    # the delimiter.
+    #
+    # It is also equally important that the delimiter is sent to `GridRenderManager`
+    # **before** `GridThumbnailManager` **ends** resync (which it can't do until it
+    # gets its own delimiter), in order to ensure `GridThumbnailManager` doesn't
+    # forward any jobs from the **new** batch to `GridRenderManager` **before** the
+    # delimiter.
+    grid_render_queue.put(None)
+    if main.THUMBNAIL:
+        grid_thumbnail_queue.put(None)
 
 
 def generate_grid_thumbnails(
@@ -446,7 +474,6 @@ def manage_grid_renders(n_renderers: int):
 
     grid_image_size = grid_path = None  # Silence flake8's F821
     faulty_image = Image._ti_faulty_image
-    delimited = False
     grid_cache = Image._ti_grid_cache
     in_sync = grid_renderer_in_sync
 
@@ -461,9 +488,9 @@ def manage_grid_renders(n_renderers: int):
             if quitting.is_set():
                 break
 
-            if delimited or not in_sync.is_set():
+            if not in_sync.is_set():
                 grid_cache.clear()
-                in_sync.set()
+                in_sync.set()  # Signal "starting resync"
 
                 # Purge the in and out queues and update the loading indicator counter
                 for q in (grid_render_in, grid_render_out):
@@ -475,12 +502,9 @@ def manage_grid_renders(n_renderers: int):
                         else:
                             notify.stop_loading()
 
-                if not delimited:
-                    # Purge all items until the grid delimiter
-                    while grid_render_queue.get():
-                        pass
-                else:
-                    delimited = False
+                # Purge all items up **to** the batch delimiter
+                while grid_render_queue.get():
+                    pass
 
                 grid_path = main.grid_path
                 grid_cell_width = image_grid.cell_width
@@ -496,9 +520,6 @@ def manage_grid_renders(n_renderers: int):
                 except Empty:
                     pass
                 else:
-                    if not source_and_thumbnail:
-                        delimited = True
-                        continue
                     grid_render_in.put((*source_and_thumbnail, grid_image_size))
                     notify.start_loading()
 
@@ -635,7 +656,6 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
     generator.start()
     not_generating.set()
 
-    delimited = False
     in_sync = grid_thumbnailer_in_sync
     renderer_in_sync = grid_renderer_in_sync
     thumbnails_to_be_deleted: set[str] = set()
@@ -652,13 +672,18 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             if quitting.is_set():
                 break
 
-            if delimited or not in_sync.is_set():
-                in_sync.set()
+            if not in_sync.is_set():
+                in_sync.set()  # Signal "starting resync"
+
+                # Wait for `GridRenderManager` to **start** resync before modfying
+                # shared data
                 renderer_in_sync.wait()
 
-                with thumbnail_render_lock:
-                    extra_thumbnail_cache.clear()
-                    thumbnails_being_rendered.clear()
+                # `thumbnail_render_lock` is unnecessary here since `GridRenderManager`
+                # will not access these until `GridThumbnailManager` (this thread) ends
+                # resync and starts forwarding jobs from the new batch over.
+                extra_thumbnail_cache.clear()
+                thumbnails_being_rendered.clear()
 
                 # Purge the in queue and update the loading indicator counter
                 while True:
@@ -695,11 +720,9 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                     delete_thumbnail(thumbnail)
                 thumbnails_to_be_deleted.clear()
 
-                if not delimited:
-                    while grid_thumbnail_queue.get():
-                        pass
-                else:
-                    delimited = False
+                # Purge all items up **to** the batch delimiter
+                while grid_thumbnail_queue.get():
+                    pass
 
             if not in_sync.is_set():
                 continue
@@ -725,15 +748,12 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 except Empty:
                     pass
                 else:
-                    if not source_and_thumbnail:
-                        delimited = True
-                        continue
                     if thumbnail := thumbnail_cache.get(
                         source := source_and_thumbnail[0]
                     ):
-                        grid_render_queue.put((source, thumbnail))
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)
+                        grid_render_queue.put((source, thumbnail))
                     else:
                         thumbnail_in.put(source)
                         notify.start_loading()
@@ -747,10 +767,10 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 pass
             else:
                 if in_sync.is_set():
-                    grid_render_queue.put((source, thumbnail))
                     if thumbnail:
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)
+                    grid_render_queue.put((source, thumbnail))
                 if thumbnail:
                     cache_thumbnail(source, thumbnail, deduplicated)
                 notify.stop_loading()
@@ -939,18 +959,22 @@ extra_thumbnail_cache: dict[str, str] = {}
 # Each value contains the sources currently using the thumbnail
 thumbnails_being_rendered: defaultdict[str, set] = defaultdict(set)
 
-# `GridRenderManager` is actually "in sync" initially.
+# `GridRenderManager` and `GridThumbnailManager` are [taken to be] "in sync" at init.
 #
-# Removing these may result in ocassional deadlocks because at init, the thread
-# may detect "out of sync" and try to prep for a new grid but **without a grid
-# delimiter**.
-# The deadlock is unpredictable and timing-dependent, as it only happens when
-# `main.display_images()` signals "out of sync" **after** the thread has responded to
-# the false initial "out of sync". Hence, the thread blocks on trying to get a grid
-# delimiter.
-# When another "out of sync" is signaled (with a grid delimiter), the thread takes
-# the delimiter as for the previous "out of sync" and comes back around to block
-# again since the event will be unset after consuming the delimiter.
+# Otherwise, it may result in ocassional unpredicatable and timing-sensitive deadlocks
+# at init because either or both of the grid manager threads may read a **false**
+# "out of sync" immediately the grid becomes active and go ahead to **start** a resync.
+#
+# The deadlocks happen when `MainThread` (in `.display_images()`) signals "out of sync"
+# **after** the thread(s) has responded to the **false** initial "out of sync". Hence,
+# the thread(s) blocks, waiting for a batch delimiter in order to **end** the resync.
+#
+# When the **real** initial "out of sync" is signaled, `MainThread` waits for both
+# threads to **[re-]start** resync **before** sending any batch delimiter but since
+# the thread(s) is blocking in wait for a batch delimiter, `MainThread` and both
+# grid manager threads (even it it's only one that read the **false** "out of sync",
+# the other still won't get a batch delimiter after **starting** a resync in response
+# to the **real** "out of sync") simply block forever.
 grid_renderer_in_sync.set()
 grid_thumbnailer_in_sync.set()
 
