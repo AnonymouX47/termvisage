@@ -489,7 +489,7 @@ def maximize():
 # image-grid
 @register_key(("image-grid", "Size-"))
 def cell_width_dec():
-    if image_grid.cell_width > 30:
+    if image_grid.cell_width > 10:
         image_grid.cell_width -= 2
         resync_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
