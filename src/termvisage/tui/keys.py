@@ -489,10 +489,16 @@ def maximize():
 # image-grid
 @register_key(("image-grid", "Size-"))
 def cell_width_dec():
+    if image_grid.cell_width == 50:
+        main.enable_actions("image-grid", "Size+")
+
     if image_grid.cell_width > 10:
         image_grid.cell_width -= 2
         resync_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
+
+        if image_grid.cell_width == 10:
+            main.disable_actions("image-grid", "Size-")
 
     if main.THUMBNAIL:
         Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
@@ -500,10 +506,16 @@ def cell_width_dec():
 
 @register_key(("image-grid", "Size+"))
 def cell_width_inc():
+    if image_grid.cell_width == 10:
+        main.enable_actions("image-grid", "Size-")
+
     if image_grid.cell_width < 50:
         image_grid.cell_width += 2
         resync_grid_rendering()
         getattr(main.ImageClass, "clear", lambda: True)()
+
+        if image_grid.cell_width == 50:
+            main.disable_actions("image-grid", "Size+")
 
     if main.THUMBNAIL:
         Image._ti_update_grid_thumbnailing_threshold(_prev_cell_size)
