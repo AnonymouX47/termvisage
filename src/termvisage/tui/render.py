@@ -754,13 +754,11 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
 
             if grid_active.is_set():
                 try:
-                    source_and_thumbnail = grid_thumbnail_queue.get(timeout=0.02)
+                    source = grid_thumbnail_queue.get(timeout=0.02)
                 except Empty:
                     pass
                 else:
-                    if thumbnail := thumbnail_cache.get(
-                        source := source_and_thumbnail[0]
-                    ):
+                    if thumbnail := thumbnail_cache.get(source):
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)
                         grid_render_queue.put((source, thumbnail))
