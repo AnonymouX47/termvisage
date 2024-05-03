@@ -488,11 +488,13 @@ def manage_grid_renders(n_renderers: int):
     try:
         while True:
             while not (
-                grid_active.wait(0.1)
+                quitting.is_set()
+                or grid_active.wait(0.1)
                 or quitting.is_set()
                 or not grid_render_out.empty()
             ):
                 pass
+
             if quitting.is_set():
                 break
 
@@ -519,7 +521,7 @@ def manage_grid_renders(n_renderers: int):
                 canvas_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
                 del grid_cell_width
 
-            if not in_sync.is_set():
+            if quitting.is_set() or not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
@@ -533,7 +535,7 @@ def manage_grid_renders(n_renderers: int):
                     )
                     notify.start_loading()
 
-            if not in_sync.is_set():
+            if quitting.is_set() or not in_sync.is_set():
                 continue
 
             try:
@@ -543,7 +545,11 @@ def manage_grid_renders(n_renderers: int):
             except Empty:
                 pass
             else:
-                if batch_no == grid_batch_no and in_sync.is_set():
+                if (
+                    batch_no == grid_batch_no
+                    and in_sync.is_set()
+                    and not quitting.is_set()
+                ):
                     grid_cache[basename(source)] = (
                         ImageCanvas(
                             render.encode().split(b"\n"), canvas_size, rendered_size
@@ -665,12 +671,14 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
     try:
         while True:
             while not (
-                grid_active.wait(0.1)
+                quitting.is_set()
+                or grid_active.wait(0.1)
                 or quitting.is_set()
                 or not thumbnail_out.empty()
                 or thumbnails_to_be_deleted
             ):
                 pass
+
             if quitting.is_set():
                 break
 
@@ -726,7 +734,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 while grid_thumbnail_queue.get():
                     pass
 
-            if not in_sync.is_set():
+            if quitting.is_set() or not in_sync.is_set():
                 continue
 
             if thumbnails_to_be_deleted:
@@ -741,7 +749,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         delete_thumbnail(thumbnail)
                 thumbnails_to_be_deleted -= thumbnails_to_delete
 
-            if not in_sync.is_set():
+            if quitting.is_set() or not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
@@ -760,7 +768,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         thumbnail_in.put(source)
                         notify.start_loading()
 
-            if not in_sync.is_set():
+            if quitting.is_set() or not in_sync.is_set():
                 continue
 
             try:
@@ -768,7 +776,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             except Empty:
                 pass
             else:
-                if in_sync.is_set():
+                if in_sync.is_set() and not quitting.is_set():
                     if thumbnail:
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)
