@@ -7,7 +7,7 @@
     "grid renderers": 1,
     "log file": "~/.local/state/termvisage/termvisage.log",
     "max notifications": 2,
-    "max pixels": 4194304,
+    "max pixels": 0,
     "multi": true,
     "query timeout": 0.1,
     "style": "auto",
