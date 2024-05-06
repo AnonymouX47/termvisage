@@ -30,6 +30,7 @@ def init(
     ImageClass: type,
 ) -> None:
     """Initializes the TUI"""
+    from ..__main__ import TEMP_DIR
     from . import keys
 
     global active, initialized
@@ -44,7 +45,7 @@ def init(
     main.NO_ANIMATION = args.no_anim
     main.RECURSIVE = args.recursive
     main.SHOW_HIDDEN = args.all
-    main.THUMBNAIL = args.thumbnail
+    main.THUMBNAIL = args.thumbnail and TEMP_DIR
     main.THUMBNAIL_SIZE_PRODUCT = config_options.thumbnail_size**2
     main.ImageClass = ImageClass
     main.loop = Loop(

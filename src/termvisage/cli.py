@@ -13,6 +13,7 @@ from multiprocessing import Event as mp_Event, Queue as mp_Queue, Value
 from operator import mul, setitem
 from os.path import abspath, basename, exists, isdir, isfile, islink, realpath
 from queue import Empty, Queue
+from tempfile import mkdtemp
 from threading import Event, current_thread
 from time import sleep
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
@@ -651,7 +652,7 @@ def main() -> None:
     """CLI execution sub-entry-point"""
     # Importing these (in isort order) at module-level results in circular imports
     # # Prevents circular import for program execution
-    from . import config
+    from . import __main__, config
 
     # # Prevents circular import for docs `autoprogram` (isort order or not)
     from .parsers import parser, style_parsers
@@ -718,6 +719,13 @@ def main() -> None:
                 verbose=True,
             )
             setattr(args, var_name, option.value)
+
+    try:
+        __main__.TEMP_DIR = mkdtemp(prefix="termvisage-")
+    except OSError:
+        logging.log_exception("Failed to create the temporary data directory", logger)
+    else:
+        logger.debug(f"Created the temporary data directory {__main__.TEMP_DIR!r}")
 
     set_query_timeout(args.query_timeout)
     if args.swap_win_size:

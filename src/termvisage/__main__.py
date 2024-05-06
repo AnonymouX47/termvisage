@@ -22,6 +22,19 @@ def main() -> int:
 
     from . import cli, logging, notify, tui
 
+    def cleanup_temp_dir():
+        if not TEMP_DIR:
+            return
+
+        from shutil import rmtree
+
+        try:
+            rmtree(TEMP_DIR)
+        except OSError:
+            logging.log_exception(
+                f"Failed to delete the temporary data directory {TEMP_DIR!r}", logger
+            )
+
     def finish_loading():
         if notify.loading_initialized:
             notify.end_loading()  # End the current phase (may be CLI or TUI)
@@ -58,6 +71,7 @@ def main() -> int:
         cli.interrupted.set()  # Signal interruption to subprocesses and other threads.
         finish_loading()
         finish_multi_logging()
+        cleanup_temp_dir()
         logging.log(
             "Session interrupted",
             logger,
@@ -76,6 +90,7 @@ def main() -> int:
         cli.interrupted.set()  # Signal interruption to subprocesses and other threads.
         finish_loading()
         finish_multi_logging()
+        cleanup_temp_dir()
         if logging.initialized:
             logger.exception("Session terminated due to:")
         logging.log(
@@ -91,6 +106,7 @@ def main() -> int:
     else:
         finish_loading()
         finish_multi_logging()
+        cleanup_temp_dir()
         logger.info(f"Session ended with return-code {exit_code} ({codes[exit_code]})")
         return exit_code
     finally:
@@ -100,6 +116,10 @@ def main() -> int:
         for _, image_w in cli.url_images:
             image_w._ti_image.close()
 
+
+# Session-specific temporary data directory.
+# Updated from `.cli.main()`.
+TEMP_DIR: str | None = None
 
 if __name__ == "__main__":
     sys.exit(main())

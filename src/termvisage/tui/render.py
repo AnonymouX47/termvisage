@@ -7,7 +7,6 @@ from collections import defaultdict
 from multiprocessing import Event as mp_Event, Lock as mp_Lock, Queue as mp_Queue
 from os import remove
 from queue import Empty, Queue
-from tempfile import mkdtemp, mkstemp
 from threading import Event, Lock
 from typing import Union
 
@@ -74,14 +73,17 @@ def generate_grid_thumbnails(
     thumbnail_size: int,
     not_generating: Event | mp_Event,
     deduplication_lock: Lock | mp_Lock,
+    temp_dir: str,
 ) -> None:
     from glob import iglob
     from os import fdopen, mkdir, scandir
-    from shutil import copyfile, rmtree
+    from shutil import copyfile
     from sys import hash_info
+    from tempfile import mkstemp
 
     from PIL.Image import Resampling, open as Image_open
 
+    THUMBNAIL_DIR = temp_dir + "/thumbnails"
     THUMBNAIL_FRAME_SIZE = (thumbnail_size,) * 2
     BOX = Resampling.BOX
     THUMBNAIL_MODES = {"RGB", "RGBA"}
@@ -94,122 +96,104 @@ def generate_grid_thumbnails(
     deduplicated_to_be_deleted: set[str] = set()
 
     try:
-        THUMBNAIL_DIR = (TEMP_DIR := mkdtemp(prefix="termvisage-")) + "/thumbnails"
         mkdir(THUMBNAIL_DIR)
     except OSError:
-        logging.log_exception(
-            "Failed to create thumbnail directory", logger, fatal=True
-        )
+        logging.log_exception("Failed to create the thumbnail directory", logger)
         raise
+    logger.debug(f"Created the thumbnail directory {THUMBNAIL_DIR!r}")
 
-    logging.log(
-        f"Created thumbnail directory {THUMBNAIL_DIR!r}",
-        logger,
-        _logging.DEBUG,
-        direct=False,
-    )
-
-    try:
-        while True:
-            not_generating.set()
-            try:
-                if not (source := input.get()):
-                    break  # Quitting
-            finally:
-                not_generating.clear()
-
-            if deduplicated_to_be_deleted:
-                # Retain only the files that still exist;
-                # remove files that have been deleted.
-                deduplicated_to_be_deleted.intersection_update(
-                    entry.path for entry in scandir(THUMBNAIL_DIR)
-                )
-
-            # Make source image into a thumbnail
-            try:
-                img = Image_open(source)
-                has_transparency = img.has_transparency_data
-                if img.mode not in THUMBNAIL_MODES:
-                    with img:
-                        img = img.convert("RGBA" if has_transparency else "RGB")
-                img.thumbnail(THUMBNAIL_FRAME_SIZE, BOX)
-            except Exception:
-                output.put((source, None, None))
-                logging.log_exception(
-                    f"Failed to generate thumbnail for {source!r}", logger
-                )
-                continue
-
-            img_bytes = img.tobytes()
-            # The hash is interpreted as an unsigned integer, represented in hex and
-            # zero-extended to fill up the platform-specific hash integer width.
-            img_hash = f"{hash(img_bytes) & UINT_HASH_WIDTH_MAX:0{HEX_HASH_WIDTH}x}"
-
-            # Create thumbnail file
-            try:
-                thumbnail_fd, thumbnail = mkstemp("", f"{img_hash}-", THUMBNAIL_DIR)
-            except Exception:
-                output.put((source, None, None))
-                logging.log_exception(
-                    f"Failed to create thumbnail file for {source!r}", logger
-                )
-                del img_bytes  # Possibly relatively large
-                img.close()
-                continue
-
-            # Deduplication
-            deduplicated = None
-            with deduplication_lock:
-                for other_thumbnail in iglob(
-                    f"{THUMBNAIL_DIR}/{img_hash}-*", root_dir=THUMBNAIL_DIR
-                ):
-                    if (
-                        other_thumbnail == thumbnail
-                        or other_thumbnail in deduplicated_to_be_deleted
-                    ):
-                        continue
-
-                    with Image_open(other_thumbnail) as other_img:
-                        if other_img.tobytes() != img_bytes:
-                            continue
-
-                    try:
-                        copyfile(other_thumbnail, thumbnail)
-                    except Exception:
-                        logging.log_exception(
-                            f"Failed to deduplicate {other_thumbnail!r} for "
-                            "{source!r}",
-                            logger,
-                        )
-                    else:
-                        deduplicated_to_be_deleted.add(deduplicated := other_thumbnail)
-
-                    break
-
-            del img_bytes  # Possibly relatively large
-
-            # Save thumbnail, if deduplication didn't work out
-            if not deduplicated:
-                with img, fdopen(thumbnail_fd, "wb") as thumbnail_file:
-                    try:
-                        img.save(thumbnail_file, "PNG")
-                    except Exception:
-                        output.put((source, None, None))
-                        thumbnail_file.close()  # Close before deleting the file
-                        delete_thumbnail(thumbnail)
-                        logging.log_exception(
-                            f"Failed to save thumbnail for {source!r}", logger
-                        )
-                        continue
-
-            output.put((source, thumbnail, deduplicated))
-    finally:
+    while True:
+        not_generating.set()
         try:
-            rmtree(TEMP_DIR, ignore_errors=True)
-        except OSError:
-            logging.log_exception(
-                f"Failed to delete thumbnail directory {THUMBNAIL_DIR!r}", logger
+            if not (source := input.get()):
+                break  # Quitting
+        finally:
+            not_generating.clear()
+
+        if deduplicated_to_be_deleted:
+            # Retain only the files that still exist;
+            # remove files that have been deleted.
+            deduplicated_to_be_deleted.intersection_update(
+                entry.path for entry in scandir(THUMBNAIL_DIR)
             )
+
+        # Make source image into a thumbnail
+        try:
+            img = Image_open(source)
+            has_transparency = img.has_transparency_data
+            if img.mode not in THUMBNAIL_MODES:
+                with img:
+                    img = img.convert("RGBA" if has_transparency else "RGB")
+            img.thumbnail(THUMBNAIL_FRAME_SIZE, BOX)
+        except Exception:
+            output.put((source, None, None))
+            logging.log_exception(
+                f"Failed to generate thumbnail for {source!r}", logger
+            )
+            continue
+
+        img_bytes = img.tobytes()
+        # The hash is interpreted as an unsigned integer, represented in hex and
+        # zero-extended to fill up the platform-specific hash integer width.
+        img_hash = f"{hash(img_bytes) & UINT_HASH_WIDTH_MAX:0{HEX_HASH_WIDTH}x}"
+
+        # Create thumbnail file
+        try:
+            thumbnail_fd, thumbnail = mkstemp("", f"{img_hash}-", THUMBNAIL_DIR)
+        except Exception:
+            output.put((source, None, None))
+            logging.log_exception(
+                f"Failed to create thumbnail file for {source!r}", logger
+            )
+            del img_bytes  # Possibly relatively large
+            img.close()
+            continue
+
+        # Deduplication
+        deduplicated = None
+        with deduplication_lock:
+            for other_thumbnail in iglob(
+                f"{THUMBNAIL_DIR}/{img_hash}-*", root_dir=THUMBNAIL_DIR
+            ):
+                if (
+                    other_thumbnail == thumbnail
+                    or other_thumbnail in deduplicated_to_be_deleted
+                ):
+                    continue
+
+                with Image_open(other_thumbnail) as other_img:
+                    if other_img.tobytes() != img_bytes:
+                        continue
+
+                try:
+                    copyfile(other_thumbnail, thumbnail)
+                except Exception:
+                    logging.log_exception(
+                        f"Failed to deduplicate {other_thumbnail!r} for {source!r}",
+                        logger,
+                    )
+                else:
+                    deduplicated_to_be_deleted.add(deduplicated := other_thumbnail)
+
+                break
+
+        del img_bytes  # Possibly relatively large
+
+        # Save thumbnail, if deduplication didn't work out
+        if not deduplicated:
+            with img, fdopen(thumbnail_fd, "wb") as thumbnail_file:
+                try:
+                    img.save(thumbnail_file, "PNG")
+                except Exception:
+                    output.put((source, None, None))
+                    thumbnail_file.close()  # Close before deleting the file
+                    delete_thumbnail(thumbnail)
+                    logging.log_exception(
+                        f"Failed to save thumbnail for {source!r}", logger
+                    )
+                    continue
+
+        output.put((source, thumbnail, deduplicated))
 
     clear_queue(output)
 
@@ -576,6 +560,7 @@ def manage_grid_renders(n_renderers: int):
 
 
 def manage_grid_thumbnails(thumbnail_size: int) -> None:
+    from ..__main__ import TEMP_DIR
     from .main import grid_active, quitting
 
     # NOTE:
@@ -657,6 +642,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             thumbnail_size,
             not_generating,
             deduplication_lock,
+            TEMP_DIR,
         ),
         name="GridThumbnailer",
         redirect_notifs=True,
