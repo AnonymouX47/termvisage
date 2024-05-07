@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - tui: Crash on image grid view ([c64f195]).
 - cli,tui: Sorting of top-level (command line) entries ([9ea0572]).
+- Deadlock upon interruption of the main process when multiprocessing is enabled ([b90ceef]).
 
 ### Added
 - tui: Thumbnail generation (with deduplication) and caching for the image grid ([#13], [#16]).
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - tui: In the `image-grid` context, images with more pixels than *max pixels* (**if non-zero**) are now distinguished by a yellow title and border.
 - tui: Improved grid image rendering performance ([#13], [#16]).
 - tui: Improved image grid cell size adjustment ([#15]).
+- Exit properly and faster upon interruption ([b90ceef]).
 
 ### Removed
 - args: `--max-pixels-cli` command-line option ([#13]).
@@ -33,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#16]: https://github.com/AnonymouX47/termvisage/pull/16
 [c64f195]: https://github.com/AnonymouX47/termvisage/commit/c64f195a79557fdf5a9323db907a5716a12d6440
 [9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
+[b90ceef]: https://github.com/AnonymouX47/termvisage/commit/b90ceefdd35a23eacb0e7199ea018776e79d7a14
 
 
 ## [0.1.0] - 2023-06-03
