@@ -165,7 +165,7 @@ def load_config(config_file: str) -> None:
                     f"(got: {value_repr} of type {value_type_name!r})."
                 )
                 option_repr = "null" if option.value is None else repr(option.value)
-                info(f"Using former value: {option_repr}.")
+                info(f"Using former or default value: {option_repr}.")
     if keys:
         prev_context_keys = deepcopy(context_keys)
 
