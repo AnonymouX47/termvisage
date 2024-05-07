@@ -41,6 +41,9 @@ Options
 
 These are top-level fields whose values control various settings of the viewer.
 
+anim cache
+``````````
+
 .. confval:: anim cache
    :synopsis: The maximum frame count of an image for which frames will be cached during
      animation.
@@ -51,6 +54,9 @@ These are top-level fields whose values control various settings of the viewer.
    .. note::
       Overridden by :option:`--anim-cache`, :option:`--cache-all-anim`
       and :option:`--cache-no-anim`.
+
+cell ratio
+``````````
 
 .. confval:: cell ratio
    :synopsis: The :term:`cell ratio`.
@@ -64,11 +70,17 @@ These are top-level fields whose values control various settings of the viewer.
 
    .. note:: Overridden by :option:`-C` and :option:`--auto-cell-ratio`.
 
+cell width
+``````````
+
 .. confval:: cell width
    :synopsis: The initial width of (no of columns for) grid cells, in the TUI.
    :type: integer
    :valid: ``10`` <= *x* <= ``50`` and *x* is even
    :default: ``30``
+
+checkers
+````````
 
 .. confval:: checkers
    :synopsis: Maximum number of subprocesses for checking directory sources.
@@ -81,11 +93,17 @@ These are top-level fields whose values control various settings of the viewer.
 
    If less than ``2``, directory sources are checked within the main process.
 
+getters
+```````
+
 .. confval:: getters
    :synopsis: Number of threads for downloading images from URL sources.
    :type: integer
    :valid: *x* > ``0``
    :default: ``4``
+
+grid renderers
+``````````````
 
 .. confval:: grid renderers
    :synopsis: Number of subprocesses for rendering grid cells.
@@ -94,6 +112,9 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``1``
 
    If ``0`` (zero), grid cells are rendered by a thread of the main process.
+
+log file
+````````
 
 .. confval:: log file
    :synopsis: The file to which logs are written.
@@ -121,6 +142,9 @@ These are top-level fields whose values control various settings of the viewer.
 
    .. seealso:: :ref:`logging`
 
+max notifications
+`````````````````
+
 .. confval:: max notifications
    :synopsis: The maximum number of TUI notifications that can be shown at a time.
    :type: integer
@@ -128,6 +152,9 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``2``
 
    Adjusts the height of the :ref:`notification bar <notif-bar>`.
+
+max pixels
+``````````
 
 .. confval:: max pixels
    :synopsis: The maximum pixel-count for images that should be rendered.
@@ -149,6 +176,9 @@ These are top-level fields whose values control various settings of the viewer.
 
    .. note:: Overridden by :option:`--max-pixels`.
 
+multi
+`````
+
 .. confval:: multi
    :synopsis: Enable (if supported) or disable multiprocessing.
    :type: boolean
@@ -160,6 +190,9 @@ These are top-level fields whose values control various settings of the viewer.
 
    .. note:: Overridden by :option:`--multi` and :option:`--no-multi`.
 
+query timeout
+`````````````
+
 .. confval:: query timeout
    :synopsis: Timeout (in seconds) for all terminal queries.
    :type: float
@@ -167,6 +200,9 @@ These are top-level fields whose values control various settings of the viewer.
    :default: ``0.1``
 
    .. note:: Overridden by :option:`--query-timeout`.
+
+style
+`````
 
 .. confval:: style
    :synopsis: Image :term:`render style`.
@@ -178,6 +214,9 @@ These are top-level fields whose values control various settings of the viewer.
    :option:`-S`, the style is used regardless of whether it's supported or not.
 
    .. note:: Overridden by :option:`-S`.
+
+swap win size
+`````````````
 
 .. confval:: swap win size
    :synopsis: A workaround for some terminal emulators (e.g older VTE-based ones) that
@@ -191,6 +230,9 @@ These are top-level fields whose values control various settings of the viewer.
    .. note::
       * Overridden by :option:`--swap-win-size` and :option:`--no-swap-win-size`.
       * Affects *auto* :term:`cell ratio` computation.
+
+thumbnail
+`````````
 
 .. confval:: thumbnail
    :synopsis: Enable or disable thumbnailing for the image grid.
@@ -210,6 +252,9 @@ These are top-level fields whose values control various settings of the viewer.
       - Thumbnails are **deduplicated** i.e only one thumbnail is cached and used for
         different images having exactly identical thumbnails.
 
+thumbnail cache
+```````````````
+
 .. confval:: thumbnail cache
    :synopsis: The maximum amount of thumbnails that can be cached per time.
    :type: integer
@@ -222,6 +267,9 @@ These are top-level fields whose values control various settings of the viewer.
 
    .. note:: Unused if :confval:`thumbnail` is ``false`` or :option:`--no-thumbnail`
       is specified.
+
+thumbnail size
+``````````````
 
 .. confval:: thumbnail size
    :synopsis: Maxiumum thumbnail dimension.
