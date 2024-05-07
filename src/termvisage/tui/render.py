@@ -255,6 +255,7 @@ def manage_anim_renders() -> None:
             ANIM_CACHED,
         ),
         name="FrameRenderer",
+        daemon=True,
         redirect_notifs=True,
     )
     renderer.start()
@@ -342,6 +343,7 @@ def manage_image_renders():
             image_style_specs.get(ImageClass.style, ""),
         ),
         name="ImageRenderer",
+        daemon=True,
         redirect_notifs=True,
     )
     renderer.start()
@@ -449,6 +451,7 @@ def manage_grid_renders(n_renderers: int):
                 grid_style_specs.get(ImageClass.style, ""),
             ),
             name="GridRenderer" + f"-{n}" * multi,
+            daemon=True,
             redirect_notifs=True,
         )
         for n in range(n_renderers if multi else 1)
@@ -645,6 +648,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             TEMP_DIR,
         ),
         name="GridThumbnailer",
+        daemon=True,
         redirect_notifs=True,
     )
     generator.start()

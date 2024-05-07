@@ -7,13 +7,12 @@ import os
 import sys
 import warnings
 from logging.handlers import RotatingFileHandler
-from multiprocessing import Event as mp_Event
-from threading import Event, Thread
+from threading import Event, Thread, current_thread
 from typing import Optional
 
 from term_image.widget import UrwidImageScreen
 
-from . import cli, notify
+from . import __main__, cli, notify
 
 
 def init_log(
@@ -89,15 +88,16 @@ def init_log(
             MULTI = True
 
     if MULTI:
+        from . import logging_multi
         from .logging_multi import process_multi_logs
 
         process_multi_logs.started = Event()
-        Thread(target=process_multi_logs, name="MultiLogger").start()
+        logging_multi.multi_logger = Thread(
+            target=process_multi_logs, name="MultiLogger"
+        )
+        logging_multi.multi_logger.start()
         process_multi_logs.started.wait()
         del process_multi_logs.started
-
-        # Inherited by instances of `.logging_multi.Process`
-        cli.interrupted = mp_Event()
 
     initialized = True
 
@@ -183,7 +183,8 @@ def _log_warning(msg, catg, fname, lineno, f=None, line=None):
 
 def _filter(record: logging.LogRecord) -> None:
     return (
-        record.name.partition(".")[0] not in _disallowed_modules
+        (not __main__.interrupted or current_thread() is __main__.MAIN_THREAD)
+        and record.name.partition(".")[0] not in _disallowed_modules
         # Workaround for urwid screen logs
         and not record.name.startswith(_urwid_screen_logger_name)
     )

@@ -14,7 +14,7 @@ from operator import mul, setitem
 from os.path import abspath, basename, exists, isdir, isfile, islink, realpath
 from queue import Empty, Queue
 from tempfile import mkdtemp
-from threading import Event, current_thread
+from threading import current_thread
 from time import sleep
 from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
 from urllib.parse import urlparse
@@ -42,7 +42,7 @@ from .exit_codes import FAILURE, INVALID_ARG, NO_VALID_SOURCE, SUCCESS
 from .logging import Thread, init_log, log, log_exception
 from .logging_multi import Process
 from .tui.widgets import Image
-from .utils import CSI, clear_queue
+from .utils import CSI
 
 try:
     import fcntl  # noqa: F401
@@ -160,8 +160,6 @@ def check_dir(
     empty = True
     content = {}
     for entry in entries:
-        if interrupted and interrupted.is_set():
-            break
         if not SHOW_HIDDEN and entry.name.startswith("."):
             continue
         try:
@@ -400,6 +398,7 @@ def manage_checkers(
                     free_checkers,
                     globals_,
                 ),
+                daemon=True,
             )
             for n in range(n_checkers)
         ]
@@ -418,8 +417,7 @@ def manage_checkers(
             setitem(checks_in_progress, *progress_queue.get())
 
             while not (
-                interrupted.is_set()  # MainThread has been interrupted
-                or not any(checks_in_progress)  # All checkers are dead
+                not any(checks_in_progress)  # All checkers are dead
                 # All checks are done
                 or (
                     # No check in progress
@@ -459,12 +457,6 @@ def manage_checkers(
 
                 sleep(0.01)  # Allow queue sizes to be updated
         finally:
-            if interrupted.is_set():
-                clear_queue(dir_queue)
-                clear_queue(content_queue)
-                clear_queue(progress_queue)
-                return
-
             if not any(checks_in_progress):
                 log(
                     "All checkers were terminated, checking directory sources failed!",
@@ -490,7 +482,7 @@ def manage_checkers(
         current_thread.name = "Checker"
 
         _, links, source, _depth = dir_queue.get()
-        while not interrupted.is_set() and source:
+        while source:
             log(f"Checking {source!r}", logger, verbose=True)
             if islink(source):
                 links.append((source, realpath(source)))
@@ -504,12 +496,9 @@ def manage_checkers(
                     source = abspath(source)
                     contents[source] = result
                     images.append((source, ...))
-                elif not interrupted.is_set() and result is None:
+                elif result is None:
                     log(f"{source!r} is empty", logger, verbose=True)
             _, links, source, _depth = dir_queue.get()
-
-        if interrupted.is_set():
-            clear_queue(dir_queue)
 
 
 def update_contents(
@@ -555,7 +544,7 @@ def get_urls(
 ) -> None:
     """Processes URL sources from a/some separate thread(s)"""
     source = url_queue.get()
-    while not interrupted.is_set() and source:
+    while source:
         log(f"Getting image from {source!r}", logger, verbose=True)
         try:
             images.append((basename(source), Image(ImageClass.from_url(source))))
@@ -572,9 +561,6 @@ def get_urls(
             log(f"Done getting {source!r}", logger, verbose=True)
         source = url_queue.get()
 
-    if interrupted.is_set():
-        clear_queue(url_queue)
-
 
 def open_files(
     file_queue: Queue,
@@ -582,7 +568,7 @@ def open_files(
     ImageClass: type,
 ) -> None:
     source = file_queue.get()
-    while not interrupted.is_set() and source:
+    while source:
         log(f"Opening {source!r}", logger, verbose=True)
         try:
             images.append((source, Image(ImageClass.from_file(source))))
@@ -593,9 +579,6 @@ def open_files(
         except Exception:
             log_exception(f"Opening {source!r} failed", logger, direct=True)
         source = file_queue.get()
-
-    if interrupted.is_set():
-        clear_queue(file_queue)
 
 
 def check_arg(
@@ -826,6 +809,7 @@ def main() -> None:
             target=get_urls,
             args=(url_queue, url_images, ImageClass),
             name=f"Getter-{n}",
+            daemon=True,
         )
         for n in range(1, config_options.getters + 1)
     ]
@@ -836,6 +820,7 @@ def main() -> None:
         target=open_files,
         args=(file_queue, file_images, ImageClass),
         name="Opener",
+        daemon=True,
     )
     opener_started = False
 
@@ -857,6 +842,7 @@ def main() -> None:
             target=manage_checkers,
             args=(n_checkers, dir_queue, contents, dir_images),
             name="CheckManager",
+            daemon=True,
         )
     checkers_started = False
 
@@ -903,23 +889,13 @@ def main() -> None:
         else:
             dir_queue.put((None,) * 4)
 
-    interrupt = None
-    while True:
-        try:
-            if getters_started:
-                for getter in getters:
-                    getter.join()
-            if opener_started:
-                opener.join()
-            if checkers_started:
-                check_manager.join()
-            break
-        except KeyboardInterrupt as e:  # Ensure logs are in correct order
-            if not interrupt:  # keep the first
-                interrupted.set()  # Signal interruption to other threads
-                interrupt = e
-    if interrupt:
-        raise interrupt from None
+    if getters_started:
+        for getter in getters:
+            getter.join()
+    if opener_started:
+        opener.join()
+    if checkers_started:
+        check_manager.join()
 
     notify.stop_loading()
     notify.loading_interrupted.set()
@@ -1065,10 +1041,6 @@ def main() -> None:
 
 
 logger = _logging.getLogger(__name__)
-
-# Initially set from within `.__main__.main()`
-# Will be updated from `.logging.init_log()` if multiprocessing is enabled
-interrupted: Event | mp_Event | None = None
 
 # Used by `check_dir()`
 _depth: int

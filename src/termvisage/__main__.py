@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging as _logging
 import multiprocessing
 import sys
-from threading import Event
+from threading import Thread, main_thread
 
 from term_image.utils import write_tty
 
@@ -21,6 +21,8 @@ def main() -> int:
     autocomplete(parser)
 
     from . import cli, logging, notify, tui
+
+    global MAIN_THREAD, interrupted
 
     def cleanup_temp_dir():
         if not TEMP_DIR:
@@ -47,28 +49,31 @@ def main() -> int:
 
     def finish_multi_logging():
         if logging.initialized and logging.MULTI:
-            from .logging_multi import child_processes, log_queue
+            from .logging_multi import child_processes, log_queue, multi_logger
 
-            for process in child_processes:
-                process.join()
+            if not interrupted:
+                for process in child_processes:
+                    process.join()
+
             log_queue.put((None,) * 2)  # End of logs
-            log_queue.join()
+            multi_logger.join()
 
     # 1. `PIL.Image.open()` seems to cause forked child processes to block when called
     # in both the parent and the child.
     # 2. Unifies things across multiple platforms.
     multiprocessing.set_start_method("spawn")
 
+    MAIN_THREAD = main_thread()
+
     logger = _logging.getLogger("termvisage")
     logger.setLevel(_logging.INFO)
 
-    cli.interrupted = Event()
     try:
         write_tty(b"\033[22;2t")  # Save window title
         write_tty(b"\033]2;TermVisage\033\\")  # Set window title
         exit_code = cli.main()
     except KeyboardInterrupt:
-        cli.interrupted.set()  # Signal interruption to subprocesses and other threads.
+        interrupted = True
         finish_loading()
         finish_multi_logging()
         cleanup_temp_dir()
@@ -87,7 +92,7 @@ def main() -> int:
             raise
         return INTERRUPTED
     except Exception as e:
-        cli.interrupted.set()  # Signal interruption to subprocesses and other threads.
+        interrupted = True
         finish_loading()
         finish_multi_logging()
         cleanup_temp_dir()
@@ -120,6 +125,13 @@ def main() -> int:
 # Session-specific temporary data directory.
 # Updated from `.cli.main()`.
 TEMP_DIR: str | None = None
+
+# The main thread of the main process.
+# Set from `main()`.
+MAIN_THREAD: Thread
+
+# Process interruption flag.
+interrupted: bool = False
 
 if __name__ == "__main__":
     sys.exit(main())

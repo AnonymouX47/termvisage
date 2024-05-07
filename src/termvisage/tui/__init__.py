@@ -92,7 +92,8 @@ def init(
     if main.THUMBNAIL:
         Image._ti_update_grid_thumbnailing_threshold(keys._prev_cell_size)
 
-    # daemon, to avoid having to check if the main process has been interrupted
+    # daemon, to avoid blocking exit upon interruption of the main process or having
+    # to check, in each thread, if the main process has been interrupted.
     menu_scanner = logging.Thread(target=scan_dir_menu, name="MenuScanner", daemon=True)
     grid_scanner = logging.Thread(target=scan_dir_grid, name="GridScanner", daemon=True)
     grid_render_manager = logging.Thread(

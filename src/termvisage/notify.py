@@ -5,12 +5,12 @@ from __future__ import annotations
 import logging as _logging
 from queue import Queue
 from sys import stderr, stdout
-from threading import Event
+from threading import Event, current_thread
 from typing import Any, Tuple, Union
 
 import urwid
 
-from . import cli, logging, tui
+from . import __main__, cli, logging, tui
 from .config import config_options
 from .tui import main, widgets
 from .utils import COLOR_RESET, CSI
@@ -139,7 +139,9 @@ def notify(
 ) -> None:
     """Displays a message in the TUI's notification bar or to STDOUT/STDERR."""
     if (
-        (logging.QUIET if logging.initialized else cli.args.quiet)
+        __main__.interrupted
+        and current_thread() is not __main__.MAIN_THREAD
+        or (logging.QUIET if logging.initialized else cli.args.quiet)
         and level < CRITICAL
         or verbose
         and not (
@@ -178,7 +180,7 @@ def start_loading() -> None:
     """Signals the start of a progressive operation."""
     global _n_loading
 
-    if not (logging.QUIET or cli.interrupted.is_set() or main.quitting.is_set()):
+    if not (logging.QUIET or __main__.interrupted or main.quitting.is_set()):
         _n_loading += 1
         _loading.set()
 

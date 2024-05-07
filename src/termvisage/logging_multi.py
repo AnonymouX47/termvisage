@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging as _logging
 import os
-from multiprocessing import JoinableQueue, Process
+from multiprocessing import Process, Queue as mp_Queue
 from traceback import format_exception
 
 from term_image import (
@@ -25,7 +25,7 @@ def process_multi_logs() -> None:
     global log_queue
 
     PID = os.getpid()
-    log_queue = JoinableQueue()
+    log_queue = mp_Queue()
     process_multi_logs.started.set()  # See `.logging.init_log()`
 
     record_type, record = log_queue.get()
@@ -35,9 +35,7 @@ def process_multi_logs() -> None:
             _logger.handle(record)
         else:
             notify.notify(*record[0], **record[1])
-        log_queue.task_done()
         record_type, record = log_queue.get()
-    log_queue.task_done()
 
 
 class Process(Process):
@@ -62,7 +60,6 @@ class Process(Process):
             "logging_level": _logging.getLogger().getEffectiveLevel(),
             "redirect_notifs": redirect_notifs,
         }
-        self._main_process_interrupted = cli.interrupted
         self._tui_is_initialized = tui.initialized
         if self._tui_is_initialized:
             self._ImageClass = tui.main.ImageClass
@@ -100,14 +97,9 @@ class Process(Process):
 
             super().run()
         except KeyboardInterrupt:
-            # Log only if the main process was not interrupted
-            if not self._main_process_interrupted.wait(0.1):
-                logging.log(
-                    "Interrupted" if logging.DEBUG else f"{self.name} was interrupted",
-                    _logger,
-                    _logging.ERROR,
-                    direct=False,
-                )
+            _logger.error(
+                "Interrupted" if logging.DEBUG else f"{self.name} was interrupted"
+            )
         except Exception:
             logging.log_exception(
                 "Aborted" if logging.DEBUG else f"{self.name} was aborted", _logger
@@ -143,7 +135,7 @@ class RedirectHandler(_logging.Handler):
     `handle()` method of a logger with a different handler.
     """
 
-    def __init__(self, log_queue: JoinableQueue, *args, **kwargs) -> None:
+    def __init__(self, log_queue: mp_Queue, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._log_queue = log_queue
 
@@ -168,4 +160,7 @@ exported_style_attrs = {
 }
 
 # Set from `process_multi_logs()` in the MultiLogger thread, only in the main process
-log_queue: JoinableQueue
+log_queue: mp_Queue
+
+# Set from `.logging.init_log()`.
+multi_logger: logging.Thread
