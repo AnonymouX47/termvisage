@@ -14,7 +14,7 @@ from term_image.image import Size
 
 from .. import logging, notify
 from ..logging_multi import Process
-from ..utils import clear_queue
+from ..utils import clear_queue, clear_queue_and_stop_loading
 from . import main
 
 
@@ -489,15 +489,8 @@ def manage_grid_renders(n_renderers: int):
                 grid_cache.clear()
                 in_sync.set()  # Signal "starting resync"
 
-                # Purge the in and out queues and update the loading indicator counter
-                for q in (grid_render_in, grid_render_out):
-                    while True:
-                        try:
-                            q.get(timeout=0.005)
-                        except Empty:
-                            break
-                        else:
-                            notify.stop_loading()
+                for queue in (grid_render_in, grid_render_out):
+                    clear_queue_and_stop_loading(queue)
 
                 # Purge all items up **to** the batch delimiter
                 while grid_render_queue.get():
@@ -685,14 +678,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 extra_thumbnail_cache.clear()
                 thumbnails_being_rendered.clear()
 
-                # Purge the in queue and update the loading indicator counter
-                while True:
-                    try:
-                        thumbnail_in.get(timeout=0.005)
-                    except Empty:
-                        break
-                    else:
-                        notify.stop_loading()
+                clear_queue_and_stop_loading(thumbnail_in)
 
                 # Wait for the thumbnail being generated, if any
                 not_generating.wait()
