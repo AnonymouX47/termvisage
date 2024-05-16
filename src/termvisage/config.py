@@ -251,8 +251,7 @@ def reconfigure_tui(
                     except KeyError:  # e.g navigation keys in "image-grid"
                         pass
 
-    expand_or_collapse = expand.original_widget.text[0]
-    expand.original_widget.set_text(f"{expand_or_collapse} [{expand_key[1]}]")
+    expand.set_text(f"{expand.text[0]} [{expand_key[1]}]")
 
     if not args.quiet:
         if pile.contents[-1][0] is notif_bar:

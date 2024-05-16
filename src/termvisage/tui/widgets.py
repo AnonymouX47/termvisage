@@ -635,9 +635,9 @@ pile = urwid.Pile([viewer])
 
 info_bar = urwid.Text("")
 
-key_bar = urwid.Filler(urwid.Text(""))
-expand = urwid.Filler(urwid.Text(f"\u25B2 [{expand_key[1]}]", align="right"), "middle")
-bottom_bar = urwid.Columns([key_bar, (len(expand.original_widget.text), expand)], 2)
+key_bar = urwid.Text("")
+expand = urwid.Text(f"\u25B2 [{expand_key[1]}]", align="right")
+bottom_bar = urwid.Columns([urwid.Filler(key_bar), (urwid.PACK, expand)], 2)
 
 main = urwid.Pile([pile, (1, bottom_bar)], 0)
 

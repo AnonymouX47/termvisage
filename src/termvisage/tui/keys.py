@@ -236,7 +236,7 @@ def display_context_keys(context: str) -> None:
     )
 
     # The underscores and blocks (U+2588) are to prevent wrapping amidst keys
-    key_bar.original_widget.set_text(
+    key_bar.set_text(
         [
             [
                 ("key" if enabled else "disabled key", action.replace(" ", "\u2800")),
@@ -333,7 +333,7 @@ def quit():
 def expand_collapse_keys():
     if expand._ti_shown:
         if key_bar._ti_collapsed and key_bar_rows() > 1:
-            expand.original_widget.set_text(f"\u25BC [{expand_key[1]}]")
+            expand.set_text(f"\u25BC [{expand_key[1]}]")
             main_widget.contents[-1] = (
                 bottom_bar,
                 ("given", key_bar_rows()),
@@ -341,7 +341,7 @@ def expand_collapse_keys():
             key_bar._ti_collapsed = False
             getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
         elif not key_bar._ti_collapsed:
-            expand.original_widget.set_text(f"\u25B2 [{expand_key[1]}]")
+            expand.set_text(f"\u25B2 [{expand_key[1]}]")
             main_widget.contents[-1] = (bottom_bar, ("given", 1))
             key_bar._ti_collapsed = True
             getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
@@ -361,9 +361,7 @@ def adjust_bottom_bar():
             bottom_bar.contents.pop()
             expand._ti_shown = False
     elif rows > 1:
-        bottom_bar.contents.append(
-            (expand, ("given", len(expand.original_widget.text), False))
-        )
+        bottom_bar.contents.append((expand, ("pack", None, False)))
         expand._ti_shown = True
 
     if not key_bar._ti_collapsed:
