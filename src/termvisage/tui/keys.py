@@ -354,33 +354,28 @@ def help():
 
 
 def adjust_bottom_bar():
-    cols = get_terminal_size()[0]
-    rows = key_bar.original_widget.rows((cols,))
+    needed_rows = key_bar.rows((get_terminal_size()[0],))
     if expand._ti_shown:
-        if rows == 1:
+        if needed_rows == 1:
             bottom_bar.contents.pop()
             expand._ti_shown = False
-    elif rows > 1:
+    elif needed_rows > 1:
         bottom_bar.contents.append((expand, ("pack", None, False)))
         expand._ti_shown = True
 
     if not key_bar._ti_collapsed:
-        new_rows = key_bar_rows()
-        if main_widget.contents[-1][1][1] != new_rows:
+        if main_widget.contents[-1][1][1] != (rows := key_bar_rows()):
+            main_widget.contents[-1] = (bottom_bar, ("given", rows))
             getattr(main.ImageClass, "clear", lambda: True)()
-        main_widget.contents[-1] = (
-            bottom_bar,
-            ("given", new_rows),
-        )
+
+
+def key_bar_cols():
+    # Consider columns occupied by the expand key and the divider
+    return get_terminal_size()[0] - (expand.pack()[0] + 2) * expand._ti_shown
 
 
 def key_bar_rows():
-    # Consider columns occupied by the expand key and the divider
-    cols = (
-        get_terminal_size()[0]
-        - (len(expand.original_widget.text) + 2) * expand._ti_shown
-    )
-    return key_bar.original_widget.rows((cols,))
+    return key_bar.rows((key_bar_cols(),))
 
 
 def resize():
