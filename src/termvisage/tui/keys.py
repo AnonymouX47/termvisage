@@ -239,9 +239,11 @@ def display_context_keys(context: str) -> None:
     key_bar.set_text(
         [
             [
-                ("key" if enabled else "disabled key", action.replace(" ", "\u2800")),
-                ("key", "\u2800"),
-                ("key" if enabled else "disabled key", f"[{symbol}]"),
+                ("key" if enabled else "disabled key", f"\u2800{symbol}\u2800"),
+                (
+                    "action" if enabled else "disabled action",
+                    "\u2800" + action.replace(" ", "\u2800"),
+                ),
                 " ",
             ]
             for action, (_, symbol, _, visible, enabled) in actions
