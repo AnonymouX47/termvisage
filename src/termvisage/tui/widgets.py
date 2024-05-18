@@ -25,7 +25,7 @@ from urwid import (
 )
 
 from .. import logging
-from ..config import config_options, expand_key, navi
+from ..config import config_options, navi
 from ..utils import KITTY_DELETE_CURSOR_IMAGES_b
 from . import keys, main as tui_main
 from .render import (
@@ -636,7 +636,8 @@ pile = urwid.Pile([viewer])
 info_bar = urwid.Text("")
 
 action_bar = urwid.Text("")
-expand = urwid.Text(f"\u25B2 [{expand_key[1]}]", align="right")
+# See `.tui.keys.update_footer_expand_collapse_icon()` and `.tui.Loop.start()`.
+expand = urwid.Text("")
 footer = urwid.Columns([urwid.Filler(action_bar), (urwid.PACK, expand)], 2)
 
 main = urwid.Pile([pile, (1, footer)], 0)

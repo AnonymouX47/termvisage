@@ -318,6 +318,16 @@ def set_confirmation(
     getattr(main.ImageClass, "clear", lambda: True)()
 
 
+def update_footer_expand_collapse_icon():
+    expand.set_text(
+        [
+            "\u25B2" if action_bar._ti_collapsed else "\u25BC",
+            " ",
+            ("key", f" {expand_key[1]} "),
+        ]
+    )
+
+
 # Context Actions
 
 # {<context>: {<key>: [<func>, <state>], ...}, ...}
@@ -335,12 +345,12 @@ def quit():
 def expand_collapse_keys():
     if expand._ti_shown:
         if action_bar._ti_collapsed and action_bar_rows() > 1:
-            expand.set_text(f"\u25BC [{expand_key[1]}]")
+            update_footer_expand_collapse_icon()
             main_widget.contents[-1] = (footer, ("given", action_bar_rows()))
             action_bar._ti_collapsed = False
             getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
         elif not action_bar._ti_collapsed:
-            expand.set_text(f"\u25B2 [{expand_key[1]}]")
+            update_footer_expand_collapse_icon()
             main_widget.contents[-1] = (footer, ("given", 1))
             action_bar._ti_collapsed = True
             getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()

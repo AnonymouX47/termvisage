@@ -17,7 +17,7 @@ from .. import logging, notify
 from ..config import config_options
 from ..utils import CSI
 from . import main, render
-from .keys import adjust_footer
+from .keys import adjust_footer, update_footer_expand_collapse_icon
 from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
 from .widgets import Image, info_bar, main as main_widget
 
@@ -178,7 +178,8 @@ def init(
 
 class Loop(urwid.MainLoop):
     def start(self):
-        adjust_footer()  # Properly set expand key visibility at initialization
+        update_footer_expand_collapse_icon()
+        adjust_footer()
         return super().start()
 
     def process_input(self, keys):

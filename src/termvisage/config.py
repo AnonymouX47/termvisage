@@ -232,8 +232,8 @@ def reconfigure_tui(
     keybindings.
     """
     from .cli import args
-    from .tui.keys import change_key
-    from .tui.widgets import expand, image_grid, notif_bar, pile
+    from .tui.keys import change_key, update_footer_expand_collapse_icon
+    from .tui.widgets import image_grid, notif_bar, pile
 
     command = urwid.command_map._command_defaults.copy()
     urwid.command_map._command = {
@@ -251,7 +251,7 @@ def reconfigure_tui(
                     except KeyError:  # e.g navigation keys in "image-grid"
                         pass
 
-    expand.set_text(f"{expand.text[0]} [{expand_key[1]}]")
+    update_footer_expand_collapse_icon()
 
     if not args.quiet:
         if pile.contents[-1][0] is notif_bar:
