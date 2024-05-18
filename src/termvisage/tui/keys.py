@@ -21,14 +21,14 @@ from .render import resync_grid_rendering
 from .widgets import (
     Image,
     ImageCanvas,
-    bottom_bar,
+    action_bar,
     confirmation,
     confirmation_overlay,
     expand,
+    footer,
     image_box,
     image_grid,
     image_grid_box,
-    key_bar,
     main as main_widget,
     menu,
     menu_box,
@@ -236,7 +236,7 @@ def display_context_keys(context: str) -> None:
     )
 
     # The underscores and blocks (U+2588) are to prevent wrapping amidst keys
-    key_bar.set_text(
+    action_bar.set_text(
         [
             [
                 ("key" if enabled else "disabled key", f"\u2800{symbol}\u2800"),
@@ -250,7 +250,7 @@ def display_context_keys(context: str) -> None:
             if visible
         ]
     )
-    adjust_bottom_bar()
+    adjust_footer()
 
 
 def register_key(*args: Tuple[str, str]) -> FunctionType:
@@ -331,21 +331,18 @@ def quit():
     raise urwid.ExitMainLoop()
 
 
-@register_key(("global", "Key Bar"))
+@register_key(("global", "Expand/Collapse Footer"))
 def expand_collapse_keys():
     if expand._ti_shown:
-        if key_bar._ti_collapsed and key_bar_rows() > 1:
+        if action_bar._ti_collapsed and action_bar_rows() > 1:
             expand.set_text(f"\u25BC [{expand_key[1]}]")
-            main_widget.contents[-1] = (
-                bottom_bar,
-                ("given", key_bar_rows()),
-            )
-            key_bar._ti_collapsed = False
+            main_widget.contents[-1] = (footer, ("given", action_bar_rows()))
+            action_bar._ti_collapsed = False
             getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
-        elif not key_bar._ti_collapsed:
+        elif not action_bar._ti_collapsed:
             expand.set_text(f"\u25B2 [{expand_key[1]}]")
-            main_widget.contents[-1] = (bottom_bar, ("given", 1))
-            key_bar._ti_collapsed = True
+            main_widget.contents[-1] = (footer, ("given", 1))
+            action_bar._ti_collapsed = True
             getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
 
 
@@ -355,29 +352,29 @@ def help():
     getattr(main.ImageClass, "clear", lambda: True)()
 
 
-def adjust_bottom_bar():
-    needed_rows = key_bar.rows((get_terminal_size()[0],))
+def adjust_footer():
+    needed_rows = action_bar.rows((get_terminal_size()[0],))
     if expand._ti_shown:
         if needed_rows == 1:
-            bottom_bar.contents.pop()
+            footer.contents.pop()
             expand._ti_shown = False
     elif needed_rows > 1:
-        bottom_bar.contents.append((expand, ("pack", None, False)))
+        footer.contents.append((expand, ("pack", None, False)))
         expand._ti_shown = True
 
-    if not key_bar._ti_collapsed:
-        if main_widget.contents[-1][1][1] != (rows := key_bar_rows()):
-            main_widget.contents[-1] = (bottom_bar, ("given", rows))
+    if not action_bar._ti_collapsed:
+        if main_widget.contents[-1][1][1] != (rows := action_bar_rows()):
+            main_widget.contents[-1] = (footer, ("given", rows))
             getattr(main.ImageClass, "clear", lambda: True)()
 
 
-def key_bar_cols():
+def action_bar_cols():
     # Consider columns occupied by the expand key and the divider
     return get_terminal_size()[0] - (expand.pack()[0] + 2) * expand._ti_shown
 
 
-def key_bar_rows():
-    return key_bar.rows((key_bar_cols(),))
+def action_bar_rows():
+    return action_bar.rows((action_bar_cols(),))
 
 
 def resize():
@@ -400,7 +397,7 @@ def resize():
             if main.grid_active.is_set():
                 resync_grid_rendering()
 
-    adjust_bottom_bar()
+    adjust_footer()
     getattr(main.ImageClass, "clear", lambda: True)() or ImageCanvas.change()
 
 
@@ -728,7 +725,7 @@ def close():
 
 logger = _logging.getLogger(__name__)
 no_globals = {"global", "confirmation", "full-grid-image", "overlay"}
-key_bar._ti_collapsed = True
+action_bar._ti_collapsed = True
 expand._ti_shown = True
 
 # Used in the "confirmation" context.

@@ -17,7 +17,7 @@ from .. import logging, notify
 from ..config import config_options
 from ..utils import CSI
 from . import main, render
-from .keys import adjust_bottom_bar
+from .keys import adjust_footer
 from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
 from .widgets import Image, info_bar, main as main_widget
 
@@ -178,13 +178,13 @@ def init(
 
 class Loop(urwid.MainLoop):
     def start(self):
-        adjust_bottom_bar()  # Properly set expand key visibility at initialization
+        adjust_footer()  # Properly set expand key visibility at initialization
         return super().start()
 
     def process_input(self, keys):
         if "window resize" in keys:
             # "window resize" never reaches `.unhandled_input()`.
-            # Adjust the bottom bar and clear grid cache.
+            # Adjust the footer and clear grid cache.
             keys.append("resized")
         return super().process_input(keys)
 

@@ -126,7 +126,7 @@ def init_config() -> None:
         for action in keyset.values():
             action[3:] = (True, True)  # "shown", "enabled"
     context_keys["global"]["Config"][3] = False  # Till the config menu is implemented
-    expand_key[3] = False  # "Key bar" action should be hidden
+    expand_key[3] = False  # "Expand/Collapse Footer" action should be hidden
 
     reconfigure_tui(_context_keys)
 
@@ -652,7 +652,7 @@ _context_keys = {
         "Config": ["C", "\u21e7C", "Open configuration menu"],
         "Help": ["f1", "F1", "Show this help menu"],
         "Quit": ["q", "q", "Exit TermVisage"],
-        "Key Bar": [".", ".", "Expand/Collapse key bar"],
+        "Expand/Collapse Footer": [".", ".", "Expand/Collapse the footer"],
     },
     "menu": {
         "Open": ["enter", "\u23ce", "Open the selected item"],
@@ -734,4 +734,4 @@ context_navs = {
 }
 update_context_nav(_context_keys, _nav)  # Update symbols
 context_keys = deepcopy(_context_keys)
-expand_key = context_keys["global"]["Key Bar"]
+expand_key = context_keys["global"]["Expand/Collapse Footer"]

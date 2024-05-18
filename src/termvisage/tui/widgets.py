@@ -635,11 +635,11 @@ pile = urwid.Pile([viewer])
 
 info_bar = urwid.Text("")
 
-key_bar = urwid.Text("")
+action_bar = urwid.Text("")
 expand = urwid.Text(f"\u25B2 [{expand_key[1]}]", align="right")
-bottom_bar = urwid.Columns([urwid.Filler(key_bar), (urwid.PACK, expand)], 2)
+footer = urwid.Columns([urwid.Filler(action_bar), (urwid.PACK, expand)], 2)
 
-main = urwid.Pile([pile, (1, bottom_bar)], 0)
+main = urwid.Pile([pile, (1, footer)], 0)
 
 confirmation = urwid.Text("", "center")
 confirmation_overlay = urwid.Overlay(

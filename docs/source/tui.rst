@@ -49,15 +49,15 @@ The following are the key components that make up the UI.
 
 * **Notification Bar**:
 
-  * Immediately above the *Action/Key Bar*.
+  * Immediately above the *footer*.
   * Notifications about various events are displayed here.
   * Hidden in full image views.
   * Hidden in all views, in QUIET mode (:option:`-q`).
 
-* **Action/Key Bar**:
+* **Footer**:
 
-  * Contains a list of :ref:`actions <actions>` in the current :ref:`context <contexts>`.
-  * Each action has the symbol of the assigned key beside its name.
+  * Displays the :ref:`actions <actions>` available in the current :ref:`context <contexts>`.
+  * Each action has its name beside the symbol for the assigned key.
   * If the actions are too much to be listed on one line, the bar can be expanded/collapsed using the key indicated at the far right.
 
 * **Overlays**:
@@ -68,10 +68,10 @@ The following are the key components that make up the UI.
 * **Info Bar**:
 
   * Used for debugging.
-  * This is a 1-line bar immediately above the action/key bar.
+  * This is a 1-line bar immediately above the *footer*.
   * Only shows (in all views) when :option:`--debug` is specified.
 
-Full/Maximized image views consist of only the *view* and *action/key bar* components.
+Full/Maximized image views consist of only the *view* and *footer* components.
 
 
 .. _contexts:
@@ -88,7 +88,7 @@ The active context might change due to one of these:
 * Type of menu entry selected.
 * An overlay is shown.
 
-The active context determines which actions are available and displayed in the *action/key bar* at the bottom of the UI.
+The active context determines which actions are available and displayed in the *footer* at the bottom of the UI.
 
 The following are the contexts available:
 
@@ -122,7 +122,7 @@ An action has the following defining properties:
 * **key**: The key/combination used to trigger the action.
 * **symbol**: A string used to represent the *key*.
 * **description**: A brief description of what the action does.
-* **visibility**: Determines if the action is displayed in the *action/key bar* or not.
+* **visibility**: Determines if the action is displayed in the *footer* or not.
 * **state**: Determines if the action is enabled or not.
 
   * If an action is disabled, pressing its *key* will trigger the terminal bell.
