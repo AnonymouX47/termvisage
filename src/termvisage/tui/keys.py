@@ -48,7 +48,7 @@ def disable_actions(context: str, *actions: str) -> None:
         keyset[action][4] = False
         keys[context][keyset[action][0]][1] = False
     if context == main.get_context() or context == "global":
-        display_context_keys(context)
+        action_bar.update(context)
 
 
 def enable_actions(context: str, *actions: str) -> None:
@@ -57,7 +57,7 @@ def enable_actions(context: str, *actions: str) -> None:
         keyset[action][4] = True
         keys[context][keyset[action][0]][1] = True
     if context == main.get_context() or context == "global":
-        display_context_keys(context)
+        action_bar.update(context)
 
 
 def hide_actions(context: str, *actions: str) -> None:
@@ -223,34 +223,6 @@ def display_context_help(context: str) -> None:
     view.original_widget = urwid.LineBox(
         placeholder, _prev_view_widget.title_widget.text.strip(" "), "left"
     )
-
-
-def display_context_keys(context: str) -> None:
-    """Updates the Key/Action bar with the actions in the given context.
-
-    Includes "global" actions for all contexts except those in `no_globals`.
-    """
-    actions = (
-        *context_keys[context].items(),
-        *(() if context in no_globals else context_keys["global"].items()),
-    )
-
-    # The underscores and blocks (U+2588) are to prevent wrapping amidst keys
-    action_bar.set_text(
-        [
-            [
-                ("key" if enabled else "disabled key", f"\u2800{symbol}\u2800"),
-                (
-                    "action" if enabled else "disabled action",
-                    "\u2800" + action.replace(" ", "\u2800"),
-                ),
-                " ",
-            ]
-            for action, (_, symbol, _, visible, enabled) in actions
-            if visible
-        ]
-    )
-    adjust_footer()
 
 
 def register_key(*args: Tuple[str, str]) -> FunctionType:

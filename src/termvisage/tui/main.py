@@ -20,7 +20,6 @@ from .. import logging, notify, tui
 from ..config import context_keys, expand_key
 from .keys import (
     disable_actions,
-    display_context_keys,
     enable_actions,
     keys,
     menu_nav,
@@ -36,6 +35,7 @@ from .widgets import (
     ImageCanvas,
     LineSquare,
     MenuEntry,
+    action_bar,
     image_box,
     image_grid,
     image_grid_box,
@@ -601,7 +601,7 @@ def set_context(new_context) -> None:
     _prev_contexts[1:] = _prev_contexts[:2]  # Right-shift older contexts
     _prev_contexts[0] = _context
     _context = new_context
-    display_context_keys(new_context)
+    action_bar.update(new_context)
     if DEBUG:
         info_bar.set_text(f"{new_context!r} {_prev_contexts} {info_bar.text}")
 
@@ -613,7 +613,7 @@ def set_prev_context(n: int = 1) -> None:
     if DEBUG:
         info_bar.set_text(f"{_prev_contexts} {info_bar.text}")
     _context = _prev_contexts[n - 1]
-    display_context_keys(_context)
+    action_bar.update(_context)
     _prev_contexts[:n] = []
     _prev_contexts.extend(["menu"] * n)
     if DEBUG:
