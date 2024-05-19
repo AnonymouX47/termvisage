@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging as _logging
+from collections.abc import Callable
 from math import ceil
 from operator import floordiv, mul, sub
 from os.path import basename
@@ -37,6 +38,46 @@ from .render import (
 
 # NOTE: Any new "private" attribute set on any subclass or instance of an urwid class
 # should be prepended with "_ti" to prevent clashes with names used by urwid itself.
+
+
+class Action(urwid.WidgetWrap):
+    _ti_enabled: bool
+    _ti_func: Callable[[], None] | None
+
+    def __init__(
+        self, name: str, symbol: str, enabled: bool, func: Callable[[], None] | None
+    ) -> None:
+        super().__init__(
+            Text(
+                [
+                    ("key" if enabled else "disabled key", f" {symbol} "),
+                    ("action" if enabled else "disabled action", f" {name}"),
+                ],
+                wrap="clip",
+            )
+        )
+        self._ti_enabled = enabled
+        self._ti_func = func
+
+    def mouse_event(
+        self,
+        size: tuple[int, int],
+        event: str,
+        button: int,
+        col: int,
+        row: int,
+        focus: bool,
+    ) -> bool:
+        if event == "mouse press" and button == 1:
+            if not self._ti_enabled:
+                print("\a", end="", flush=True)
+                return False
+
+            if self._ti_func:
+                self._ti_func()
+                return True
+
+        return False
 
 
 class ActionBar(urwid.WidgetWrap):
@@ -78,9 +119,7 @@ class ActionBar(urwid.WidgetWrap):
                     more_actions = False
 
             if row:
-                rows.append(
-                    (row[0][1] if len(row) == 1 else Columns(row, 1), ("pack", None))
-                )
+                rows.append((Columns(row, 1), ("pack", None)))
             # This is only for the sake of completeness, should never occur with
             # the way the widget is used in this project.
             else:
@@ -117,21 +156,24 @@ class ActionBar(urwid.WidgetWrap):
 
         Includes "global" actions for all contexts except those in `.keys.no_globals`.
         """
-        actions = (
-            *context_keys[context].items(),
-            *(() if context in keys.no_globals else context_keys["global"].items()),
-        )
         self._ti_actions = [
-            Text(
-                [
-                    ("key" if enabled else "disabled key", f" {symbol} "),
-                    ("action" if enabled else "disabled action", f" {action}"),
-                ],
-                wrap="clip",
+            Action(
+                action,
+                symbol,
+                enabled,
+                None if key in navi else (keys.keys[context].get(key) or (None,))[0],
             )
-            for action, (_, symbol, _, visible, enabled) in actions
+            for action, (key, symbol, _, visible, enabled)  # fmt: skip
+            in context_keys[context].items()
             if visible
         ]
+        if context not in keys.no_globals:
+            self._ti_actions += [
+                Action(action, symbol, enabled, keys.keys["global"][key][0])
+                for action, (key, symbol, _, visible, enabled)  # fmt: skip
+                in context_keys["global"].items()
+                if visible
+            ]
         keys.adjust_footer()
         self._invalidate()
 
