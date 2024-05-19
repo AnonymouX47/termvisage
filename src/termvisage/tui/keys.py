@@ -47,6 +47,7 @@ def disable_actions(context: str, *actions: str) -> None:
     for action in actions:
         keyset[action][4] = False
         keys[context][keyset[action][0]][1] = False
+    if context == main.get_context() or context == "global":
         display_context_keys(context)
 
 
@@ -55,6 +56,7 @@ def enable_actions(context: str, *actions: str) -> None:
     for action in actions:
         keyset[action][4] = True
         keys[context][keyset[action][0]][1] = True
+    if context == main.get_context() or context == "global":
         display_context_keys(context)
 
 
@@ -62,7 +64,6 @@ def hide_actions(context: str, *actions: str) -> None:
     keyset = context_keys[context]
     for action in actions:
         keyset[action][3] = False
-        display_context_keys(context)
     disable_actions(context, *actions)
 
 
@@ -70,7 +71,6 @@ def show_actions(context: str, *actions: str) -> None:
     keyset = context_keys[context]
     for action in actions:
         keyset[action][3] = True
-        display_context_keys(context)
     enable_actions(context, *actions)
 
 
