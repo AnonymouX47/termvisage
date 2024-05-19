@@ -203,7 +203,7 @@ palette = [
     ("unfocused box", "", "", "", "#7f7f7f", ""),
     ("focused box", "default"),
     ("green fg", "", "", "", "#00ff00", ""),
-    ("key", "reverse"),
+    ("key", "reverse bold"),
     ("action", "default"),
     ("disabled key", "", "", "", "#8f8f8f,italics,standout", ""),
     ("disabled action", "", "", "", "#8f8f8f,italics", ""),
