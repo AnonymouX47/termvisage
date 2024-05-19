@@ -58,6 +58,7 @@ The following are the key components that make up the UI.
 
   * Displays the :ref:`actions <actions>` available in the current :ref:`context <contexts>`.
   * Each action has its name beside the symbol for the assigned key.
+  * Clicking on a **non-navigation** action with the left mouse button triggers the action.
   * If the actions are too much to be listed on one line, the bar can be expanded/collapsed using the key indicated at the far right.
 
 * **Overlays**:
@@ -125,7 +126,7 @@ An action has the following defining properties:
 * **visibility**: Determines if the action is displayed in the *footer* or not.
 * **state**: Determines if the action is enabled or not.
 
-  * If an action is disabled, pressing its *key* will trigger the terminal bell.
+  * If an action is **disabled**, pressing its *key* (or clicking on it in the footer, for **non-naviagation** actions) will trigger the terminal bell.
 
 .. tip::
 
