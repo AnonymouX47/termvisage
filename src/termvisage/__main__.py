@@ -68,9 +68,9 @@ def main() -> int:
     logger = _logging.getLogger("termvisage")
     logger.setLevel(_logging.INFO)
 
+    write_tty(b"\033[22;2t")  # Save window title
+    write_tty(b"\033]2;TermVisage\033\\")  # Set window title
     try:
-        write_tty(b"\033[22;2t")  # Save window title
-        write_tty(b"\033]2;TermVisage\033\\")  # Set window title
         exit_code = cli.main()
     except KeyboardInterrupt:
         interrupted = True
