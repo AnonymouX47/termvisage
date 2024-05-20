@@ -543,9 +543,7 @@ class LineSquare(WidgetDecoration, WidgetWrap):
         top_w = Columns(
             [
                 (PACK, Text("┌")),
-                Columns(
-                    [(PACK, AttrMap(title_w, title_attr or "default")), Divider("─")]
-                ),
+                Columns([(PACK, AttrMap(title_w, title_attr)), Divider("─")]),
                 (PACK, Text("┐")),
             ]
         )
