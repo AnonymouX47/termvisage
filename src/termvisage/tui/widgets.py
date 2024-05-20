@@ -597,6 +597,24 @@ class MenuListBox(urwid.ListBox):
         ret = super().keypress(size, key)
         return key if key in navi else ret
 
+    def mouse_event(
+        self,
+        size: tuple[int, int],
+        event: str,
+        button: int,
+        col: int,
+        row: int,
+        focus: bool,
+    ) -> bool:
+        if not focus:
+            return True
+
+        super().mouse_event(size, event, button, col, row, focus)
+        keys.menu_nav()
+
+        # Allow the event to be further handled by `.tui.main.process_input()`.
+        return False
+
     def render(self, size: Tuple[int, int], focus: bool = False):
         self._ti_height = size[1]  # Used by MenuScanner
         return super().render(size, focus)

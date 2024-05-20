@@ -23,7 +23,6 @@ from .keys import (
     display_context_keys,
     enable_actions,
     keys,
-    menu_nav,
     no_globals,
     set_image_grid_actions,
     set_image_view_actions,
@@ -345,22 +344,18 @@ def process_input(key: str) -> bool:
         # change context if the pane in focus changed.
         if _context in {"image", "image-grid"} and viewer.focus_position == 0:
             set_context("menu")
-            menu_nav()
             found = True
-        elif _context == "menu":
-            if viewer.focus_position == 1:
-                if not context_keys["menu"]["Switch Pane"][4]:
-                    # Set focus back to the menu if "menu::Switch Pane" is disabled
-                    viewer.focus_position = 0
+        elif _context == "menu" and viewer.focus_position == 1:
+            if not context_keys["menu"]["Switch Pane"][4]:
+                # Set focus back to the menu if "menu::Switch Pane" is disabled
+                viewer.focus_position = 0
+            else:
+                if view.original_widget is image_box:
+                    set_context("image")
+                    set_image_view_actions()
                 else:
-                    if view.original_widget is image_box:
-                        set_context("image")
-                        set_image_view_actions()
-                    else:
-                        set_context("image-grid")
-                        set_image_grid_actions()
-            else:  # Update image view
-                menu_nav()
+                    set_context("image-grid")
+                    set_image_grid_actions()
             found = True
 
     else:
