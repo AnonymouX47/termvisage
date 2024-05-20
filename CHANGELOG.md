@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - config: `thumbnail`, `thumbnail cache` and `thumbnail size` config options.
   - args: `--thumbnail/--no-thumbnail` command-line option.
 - tui: `Force Render` action to the `menu` context ([#13]).
+- tui: Mouse scroll event handling for the image list (menu) ([2354639]).
 
 ### Changed
 - cli,tui: Revamped the *max pixels* setting ([#13]).
@@ -36,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [c64f195]: https://github.com/AnonymouX47/termvisage/commit/c64f195a79557fdf5a9323db907a5716a12d6440
 [9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
 [b90ceef]: https://github.com/AnonymouX47/termvisage/commit/b90ceefdd35a23eacb0e7199ea018776e79d7a14
+[2354639]: https://github.com/AnonymouX47/termvisage/commit/235463981bad139ae93eeeec1079449d7d40dacf
 
 
 ## [0.1.0] - 2023-06-03
