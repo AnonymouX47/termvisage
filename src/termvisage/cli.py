@@ -38,11 +38,11 @@ from term_image.utils import get_terminal_name_version, get_terminal_size, write
 
 from . import logging, notify, tui
 from .config import config_options, init_config
+from .ctlseqs import ERASE_IN_LINE_LEFT_b
 from .exit_codes import FAILURE, INVALID_ARG, NO_VALID_SOURCE, SUCCESS
 from .logging import Thread, init_log, log, log_exception
 from .logging_multi import Process
 from .tui.widgets import Image
-from .utils import CSI
 
 try:
     import fcntl  # noqa: F401
@@ -742,7 +742,7 @@ def main() -> None:
         try:
             ImageClass(None)
         except StyleError:  # Instantiation isn't permitted
-            write_tty(f"{CSI}1K\r".encode())  # Erase emitted APCs
+            write_tty(ERASE_IN_LINE_LEFT_b + b"\r")  # Erase any emitted APCs
             log(
                 f"The '{ImageClass}' render style is not supported in the current "
                 "terminal! To use it anyways, add '--force-style'.",
@@ -752,7 +752,6 @@ def main() -> None:
             return FAILURE
         except TypeError:  # Instantiation is permitted
             if not ImageClass.is_supported():
-                write_tty(f"{CSI}1K\r".encode())  # Erase emitted APCs
                 log(
                     f"The '{ImageClass}' render style might not be fully supported in "
                     "the current terminal... using it anyways.",
@@ -762,7 +761,7 @@ def main() -> None:
 
     # Some APCs (e.g kitty's) used for render style support detection get emitted on
     # some non-supporting terminal emulators
-    write_tty(f"{CSI}1K\r".encode())  # Erase emitted APCs
+    write_tty(ERASE_IN_LINE_LEFT_b + b"\r")  # Erase any emitted APCs
 
     log(f"Using '{ImageClass}' render style", logger, verbose=True)
     style_parser = style_parsers.get(ImageClass.style)

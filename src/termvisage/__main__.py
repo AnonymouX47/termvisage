@@ -9,6 +9,7 @@ from threading import Thread, main_thread
 
 from term_image.utils import write_tty
 
+from .ctlseqs import RESTORE_WINDOW_TITLE_b, SAVE_WINDOW_TITLE_b, SET_WINDOW_TITLE_b
 from .exit_codes import FAILURE, INTERRUPTED, codes
 
 
@@ -68,8 +69,8 @@ def main() -> int:
     logger = _logging.getLogger("termvisage")
     logger.setLevel(_logging.INFO)
 
-    write_tty(b"\033[22;2t")  # Save window title
-    write_tty(b"\033]2;TermVisage\033\\")  # Set window title
+    write_tty(SAVE_WINDOW_TITLE_b)
+    write_tty(SET_WINDOW_TITLE_b % b"TermVisage")
     try:
         exit_code = cli.main()
     except KeyboardInterrupt:
@@ -115,7 +116,7 @@ def main() -> int:
         logger.info(f"Session ended with return-code {exit_code} ({codes[exit_code]})")
         return exit_code
     finally:
-        write_tty(b"\033[23;2t")  # Restore window title
+        write_tty(RESTORE_WINDOW_TITLE_b)
         # Explicit cleanup is necessary since the top-level `Image` widgets
         # will still hold references to the `BaseImage` instances
         for _, image_w in cli.url_images:

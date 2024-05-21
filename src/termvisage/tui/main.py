@@ -18,6 +18,7 @@ from term_image.image import BaseImage
 
 from .. import logging, notify, tui
 from ..config import context_keys, expand_key
+from ..ctlseqs import BEL
 from .keys import (
     disable_actions,
     display_context_keys,
@@ -337,7 +338,7 @@ def process_input(key: str) -> bool:
             or key in {"resized", expand_key[0]}
         ):
             func, state = keys["global"][key]
-            func() if state else print("\a", end="", flush=True)
+            func() if state else print(BEL, end="", flush=True)
             found = True
 
     elif key[0] == "mouse press":  # strings also support subscription
@@ -363,7 +364,7 @@ def process_input(key: str) -> bool:
         if state:
             func()
         elif state is False:
-            print("\a", end="", flush=True)
+            print(BEL, end="", flush=True)
         found = state is not None
 
     return bool(found)

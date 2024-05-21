@@ -26,7 +26,7 @@ from urwid import (
 
 from .. import logging
 from ..config import config_options, expand_key, navi
-from ..utils import KITTY_DELETE_CURSOR_IMAGES_b
+from ..ctlseqs import KITTY_DELETE_CURSOR_IMAGES_b, KITTY_START_b
 from . import keys, main as tui_main
 from .render import (
     anim_render_queue,
@@ -505,7 +505,7 @@ class ImageCanvas(urwid.Canvas):
         for line in self.lines[-min(0, pad_up) : min(0, pad_down) or len(self.lines)]:
             yield [
                 fill_left,
-                *(delete * line.startswith(b"\033_G")),
+                *(delete * line.startswith(KITTY_START_b)),
                 (None, "U", line),
                 fill_right,
                 disguise,
