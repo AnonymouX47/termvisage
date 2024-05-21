@@ -32,11 +32,3 @@ def clear_queue_and_stop_loading(queue: Queue | mp_Queue):
             break
         else:
             stop_loading()
-
-
-# Constants for escape sequences
-ESC = "\033"
-CSI = f"{ESC}["
-COLOR_RESET = f"{CSI}m"
-KITTY_DELETE_CURSOR_IMAGES = f"{ESC}_Ga=d,d=C;{ESC}\\"
-KITTY_DELETE_CURSOR_IMAGES_b = KITTY_DELETE_CURSOR_IMAGES.encode()

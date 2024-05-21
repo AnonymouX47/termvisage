@@ -11,7 +11,7 @@ from typing import ClassVar, List, Optional, Tuple
 
 import urwid
 from term_image.image import BaseImage, Size
-from term_image.utils import get_terminal_name_version
+from term_image.utils import get_terminal_name_version, write_tty
 from urwid import (
     PACK,
     AttrMap,
@@ -27,7 +27,7 @@ from urwid import (
 
 from .. import logging
 from ..config import config_options, context_keys, navi
-from ..utils import KITTY_DELETE_CURSOR_IMAGES_b
+from ..ctlseqs import BEL_b, KITTY_DELETE_CURSOR_IMAGES_b, KITTY_START_b
 from . import keys, main as tui_main
 from .render import (
     anim_render_queue,
@@ -70,7 +70,7 @@ class Action(urwid.WidgetWrap):
     ) -> bool:
         if event == "mouse press" and button == 1:
             if not self._ti_enabled:
-                print("\a", end="", flush=True)
+                write_tty(BEL_b)
                 return False
 
             if self._ti_func:
@@ -644,7 +644,7 @@ class ImageCanvas(urwid.Canvas):
         for line in self.lines[-min(0, pad_up) : min(0, pad_down) or len(self.lines)]:
             yield [
                 fill_left,
-                *(delete * line.startswith(b"\033_G")),
+                *(delete * line.startswith(KITTY_START_b)),
                 (None, "U", line),
                 fill_right,
                 disguise,
@@ -682,9 +682,7 @@ class LineSquare(WidgetDecoration, WidgetWrap):
         top_w = Columns(
             [
                 (PACK, Text("┌")),
-                Columns(
-                    [(PACK, AttrMap(title_w, title_attr or "default")), Divider("─")]
-                ),
+                Columns([(PACK, AttrMap(title_w, title_attr)), Divider("─")]),
                 (PACK, Text("┐")),
             ]
         )
@@ -737,6 +735,24 @@ class MenuListBox(urwid.ListBox):
             size = (size[0], 1)
         ret = super().keypress(size, key)
         return key if key in navi else ret
+
+    def mouse_event(
+        self,
+        size: tuple[int, int],
+        event: str,
+        button: int,
+        col: int,
+        row: int,
+        focus: bool,
+    ) -> bool:
+        if not focus:
+            return True
+
+        super().mouse_event(size, event, button, col, row, focus)
+        keys.menu_nav()
+
+        # Allow the event to be further handled by `.tui.main.process_input()`.
+        return False
 
     def render(self, size: Tuple[int, int], focus: bool = False):
         self._ti_height = size[1]  # Used by MenuScanner

@@ -12,8 +12,8 @@ import urwid
 
 from . import __main__, cli, logging, tui
 from .config import config_options
+from .ctlseqs import SGR_BLUE, SGR_DEFAULT, SGR_RED, SGR_YELLOW
 from .tui import main, widgets
-from .utils import COLOR_RESET, CSI
 
 DEBUG = INFO = 0
 WARNING = 1
@@ -154,11 +154,11 @@ def notify(
 
     if not tui.active:
         print(
-            (f"{CSI}34m{context}:{COLOR_RESET} " if context else "")
+            (f"{SGR_BLUE}{context}:{SGR_DEFAULT} " if context else "")
             + (
-                f"{CSI}31m{msg}{COLOR_RESET}"
+                f"{SGR_RED}{msg}{SGR_DEFAULT}"
                 if level >= ERROR
-                else f"{CSI}33m{msg}{COLOR_RESET}" if level == WARNING else msg
+                else f"{SGR_YELLOW}{msg}{SGR_DEFAULT}" if level == WARNING else msg
             ),
             file=stderr if level >= WARNING else stdout,
         )
