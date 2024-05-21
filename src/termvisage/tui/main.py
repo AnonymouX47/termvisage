@@ -15,10 +15,11 @@ from typing import Callable, Dict, Generator, Iterable, List, Optional, Tuple, U
 import PIL
 import urwid
 from term_image.image import BaseImage
+from term_image.utils import write_tty
 
 from .. import logging, notify, tui
 from ..config import context_keys, expand_key
-from ..ctlseqs import BEL
+from ..ctlseqs import BEL_b
 from .keys import (
     disable_actions,
     display_context_keys,
@@ -338,7 +339,7 @@ def process_input(key: str) -> bool:
             or key in {"resized", expand_key[0]}
         ):
             func, state = keys["global"][key]
-            func() if state else print(BEL, end="", flush=True)
+            func() if state else write_tty(BEL_b)
             found = True
 
     elif key[0] == "mouse press":  # strings also support subscription
@@ -364,7 +365,7 @@ def process_input(key: str) -> bool:
         if state:
             func()
         elif state is False:
-            print(BEL, end="", flush=True)
+            write_tty(BEL_b)
         found = state is not None
 
     return bool(found)
