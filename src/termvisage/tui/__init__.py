@@ -10,12 +10,11 @@ from typing import Any, Dict, Iterable, Iterator, Tuple, Union
 
 import urwid
 from term_image.image import GraphicsImage
-from term_image.utils import get_cell_size, lock_tty, write_tty
+from term_image.utils import get_cell_size, lock_tty
 from term_image.widget import UrwidImageScreen
 
 from .. import logging, notify
 from ..config import config_options
-from ..utils import CSI
 from . import main, render
 from .keys import adjust_bottom_bar
 from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
@@ -150,7 +149,6 @@ def init(
     anim_render_manager.start()
 
     try:
-        write_tty(f"{CSI}?1049h".encode())  # Switch to the alternate buffer
         next(main.displayer)
         main.loop.run()
         if main.THUMBNAIL:
@@ -169,8 +167,6 @@ def init(
         anim_render_manager.join()
         raise
     finally:
-        # urwid fails to restore the normal buffer on some terminals
-        write_tty(f"{CSI}?1049l".encode())  # Switch back to the normal buffer
         main.displayer.close()
         active = False
         os.close(main.update_pipe)
