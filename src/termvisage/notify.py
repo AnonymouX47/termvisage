@@ -164,8 +164,6 @@ def notify(
             ),
             file=stderr if level >= WARNING else stdout,
         )
-        if loading:
-            start_loading()
     else:
         if config_options.max_notifications:
             add_notification(
@@ -176,6 +174,9 @@ def notify(
                     (msg, ("warning", msg), ("error", msg))[level],
                 ]
             )
+
+    if loading:
+        start_loading()
 
 
 def start_loading() -> None:
