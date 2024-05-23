@@ -96,10 +96,13 @@ def strip_markup(string: str) -> str:
 
 
 # NOTE: Parser epilog, group descriptions and argument help may contain reStructuredText
-# markup.
-# Ensure any markup used is stripped by `strip_markup()`.
+# markup but ensure any markup used is stripped by `strip_markup()`.
 
+
+# Basic Parser
+#
 # Main parser subset with only arguments/options for basic usage (for `--help`)
+# ======================================================================================
 
 basic_parser = ArgumentParser(
     prog="termvisage",
@@ -107,7 +110,7 @@ basic_parser = ArgumentParser(
     formatter_class=RawDescriptionHelpFormatter,
     description="Display/Browse images in a terminal",
     epilog="""
-``--`` should be used to separate positional arguments that begin with an ``-`` \
+``--`` should be used to separate positional arguments that begin with a ``-`` \
 from options/flags, to avoid ambiguity.
 For example, ``$ termvisage [options] -- -image.jpg --image.png``.
 """,
@@ -117,7 +120,7 @@ For example, ``$ termvisage [options] -- -image.jpg --image.png``.
 basic_parser.add_argument(
     "sources",
     nargs="*",
-    metavar="source",
+    metavar="SOURCE",
     help="Image file path(s), directory path(s) and/or image URL(s)",
 )
 
@@ -184,6 +187,7 @@ basic_parser.add_argument(
 
 
 # Main Parser
+# ======================================================================================
 
 parser = ArgumentParser(
     prog="termvisage",
@@ -191,7 +195,7 @@ parser = ArgumentParser(
     description="Display/Browse images in a terminal",
     epilog=""" \
 
-``--`` should be used to separate positional arguments that begin with an ``-`` \
+``--`` should be used to separate positional arguments that begin with a ``-`` \
 from options/flags, to avoid ambiguity.
 For example, ``$ termvisage [options] -- -image.jpg --image.png``.
 
@@ -209,10 +213,10 @@ positional_args = parser.add_argument_group("Positional Arguments")
 positional_args.add_argument(
     "sources",
     nargs="*",
-    metavar="source",
+    metavar="SOURCE",
     help=(
-        "Image file path(s), directory path(s) and/or image URL(s). "
-        "If no source is provided, the current working directory is used."
+        "Image file path(s), directory path(s) and/or image URL(s); "
+        "if none is specified, the current working directory is used"
     ),
 )
 
@@ -390,7 +394,7 @@ alpha_options.add_argument(
     metavar="N",
     default=40 / 255,
     help=(
-        "Alpha ratio above which pixels are taken as opaque (0 <= x < 1), "
+        "Alpha ratio above which pixels are taken as opaque (0 <= *N* < 1), "
         f"for text-based :term:`render styles` (default: {40 / 255:f})"
     ),
 )
@@ -450,7 +454,7 @@ cli_options.add_argument(
     ),
 )
 
-# Sizing
+# # Sizing
 _sizing_options = parser.add_argument_group(
     "Sizing Options (CLI-only)",
     "These apply to all images and are mutually exclusive [#]_",
@@ -687,6 +691,7 @@ log_options.add_argument(
 
 
 # Style-specific Parsers
+# ======================================================================================
 
 kitty_parser = ArgumentParser(add_help=False)
 kitty_options = kitty_parser.add_argument_group(
@@ -731,7 +736,7 @@ iterm2_options.add_argument(
     dest="native",
     help=(
         "Use the protocol's animation support; animations will not be skipped "
-        "[CLI-only]"
+        "**[CLI-only]**"
     ),
 )
 iterm2_options.add_argument(
@@ -766,8 +771,8 @@ iterm2_options.add_argument(
     default=ITerm2Image.jpeg_quality,
     type=int,
     help=(
-        "JPEG compression status and quality; ``< 0`` -> disabled, ``0 <= x <= 95`` -> "
-        f"quality (default: {ITerm2Image.jpeg_quality}) [#]_"
+        "JPEG compression status and quality; ``< 0`` -> disabled, ``0 <= *N* <= 95`` "
+        "-> quality (default: {ITerm2Image.jpeg_quality}) [#]_"
     ),
 )
 iterm2_options.add_argument(
@@ -786,7 +791,16 @@ for style_parser in style_parsers.values():
     parser._action_groups.extend(style_parser._action_groups)
     parser._mutually_exclusive_groups.extend(style_parser._mutually_exclusive_groups)
 
-# Setup reST markup to be Striped from epilog, group descriptions and argument help.
+
+# Help Text Customization
+# ======================================================================================
+
+# Strip/Transform reST markup from:
+#
+# - parser epilog
+# - argument group descriptions
+# - argument help strings
+#
 # Anything patched here must be unpatched in the docs config script.
 ArgumentParser.epilog = property(lambda self: strip_markup(vars(self)["epilog"]))
 Action.help = property(lambda self: strip_markup(vars(self)["help"]))
