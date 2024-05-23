@@ -58,29 +58,19 @@ SAVE_WINDOW_TITLE_b: bytes
 
 SGR = f"{CSI}{Pt}m"
 SGR_FG_8 = SGR % f"3{Ps}"
-SGR_SHORT = SGR % Ps
 
 SGR_b: bytes
 SGR_FG_8_b: bytes
-SGR_SHORT_b: bytes
 
-SGR_BLUE = SGR_FG_8 % 4
-SGR_BOLD = SGR_SHORT % 1
-SGR_DEFAULT = SGR % ""
-SGR_ITALIC = SGR_SHORT % 3
-SGR_NOT_BOLD_FAINT = SGR_SHORT % 22
-SGR_NOT_ITALIC = SGR_SHORT % 23
-SGR_RED = SGR_FG_8 % 1
-SGR_YELLOW = SGR_FG_8 % 3
+SGR_FG_BLUE = SGR_FG_8 % 4
+SGR_FG_DEFAULT = SGR_FG_8 % 9
+SGR_FG_RED = SGR_FG_8 % 1
+SGR_FG_YELLOW = SGR_FG_8 % 3
 
-SGR_BLUE_b: bytes
-SGR_BOLD_b: bytes
-SGR_DEFAULT_b: bytes
-SGR_ITALIC_b: bytes
-SGR_NOT_BOLD_FAINT_b: bytes
-SGR_NOT_ITALIC_b: bytes
-SGR_RED_b: bytes
-SGR_YELLOW_b: bytes
+SGR_FG_BLUE_b: bytes
+SGR_FG_DEFAULT_b: bytes
+SGR_FG_RED_b: bytes
+SGR_FG_YELLOW_b: bytes
 
 # Operating System Commands
 # ======================================================================================

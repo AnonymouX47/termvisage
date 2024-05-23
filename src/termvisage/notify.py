@@ -12,7 +12,7 @@ import urwid
 
 from . import __main__, cli, logging, tui
 from .config import config_options
-from .ctlseqs import SGR_BLUE, SGR_DEFAULT, SGR_RED, SGR_YELLOW
+from .ctlseqs import SGR_FG_BLUE, SGR_FG_DEFAULT, SGR_FG_RED, SGR_FG_YELLOW
 from .tui import main, widgets
 
 DEBUG = INFO = 0
@@ -154,11 +154,13 @@ def notify(
 
     if not tui.active:
         print(
-            (f"{SGR_BLUE}{context}:{SGR_DEFAULT} " if context else "")
+            (f"{SGR_FG_BLUE}{context}:{SGR_FG_DEFAULT} " if context else "")
             + (
-                f"{SGR_RED}{msg}{SGR_DEFAULT}"
+                f"{SGR_FG_RED}{msg}{SGR_FG_DEFAULT}"
                 if level >= ERROR
-                else f"{SGR_YELLOW}{msg}{SGR_DEFAULT}" if level == WARNING else msg
+                else f"{SGR_FG_YELLOW}{msg}{SGR_FG_DEFAULT}"
+                if level == WARNING
+                else msg  # fmt: skip
             ),
             file=stderr if level >= WARNING else stdout,
         )
