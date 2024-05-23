@@ -486,17 +486,16 @@ def manage_checkers(
             log(f"Checking {source!r}", logger, verbose=True)
             if islink(source):
                 links.append((source, realpath(source)))
-            result = False
             try:
                 result = check_dir(source, os.getcwd(), _links=links)
             except Exception:
                 log_exception(f"Checking {source!r} failed", logger, direct=True)
-            finally:
+            else:
                 if result:
                     source = abspath(source)
                     contents[source] = result
                     images.append((source, ...))
-                elif result is None:
+                else:
                     log(f"{source!r} is empty", logger, verbose=True)
             _, links, source, _depth = dir_queue.get()
 
