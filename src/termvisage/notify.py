@@ -152,7 +152,17 @@ def notify(
     ):
         return
 
-    if not tui.active:
+    if tui.active:
+        if config_options.max_notifications:
+            add_notification(
+                [
+                    ("notif context", f"{context}: " if context else ""),
+                    # CRITICAL-level notifications should never be displayed in the TUI,
+                    # since the program shouldn't recover from the cause.
+                    (msg, ("warning", msg), ("error", msg))[level],
+                ]
+            )
+    else:
         print(
             (f"{SGR_FG_BLUE}{context}:{SGR_FG_DEFAULT} " if context else "")
             + (
@@ -164,16 +174,6 @@ def notify(
             ),
             file=stderr if level >= WARNING else stdout,
         )
-    else:
-        if config_options.max_notifications:
-            add_notification(
-                [
-                    ("notif context", f"{context}: " if context else ""),
-                    # CRITICAL-level notifications should never be displayed in the TUI,
-                    # since the program shouldn't recover from the cause.
-                    (msg, ("warning", msg), ("error", msg))[level],
-                ]
-            )
 
     if loading:
         start_loading()
