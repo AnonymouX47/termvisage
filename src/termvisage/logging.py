@@ -47,7 +47,7 @@ def init_log(
         "({process}) ({asctime}) [{levelname}] "
         + ("{processName}: {threadName}: " if debug else "")
         + "{name}: "
-        + ("{funcName}: " if debug and stacklevel_is_available else "")
+        + ("{funcName}: " if debug else "")
         + "{message}"
     )
     logging.basicConfig(
@@ -62,11 +62,6 @@ def init_log(
 
     _logger.info("Starting a new session")
     _logger.info(f"Logging level set to {logging.getLevelName(level)}")
-
-    if debug and not stacklevel_is_available:
-        warnings.warn(
-            "Please upgrade to Python 3.8 or later to get more detailed logs."
-        )
 
     if not QUIET:
         notify.loading_indicator = Thread(target=notify.load, name="LoadingIndicator")
@@ -119,7 +114,7 @@ def log(
 
     if verbose:
         if VERBOSE:
-            logger.log(level, msg, **_kwargs)
+            logger.log(level, msg, **_log_kwargs)
             notify.notify(
                 msg,
                 getattr(notify, logging.getLevelName(level)),
@@ -127,10 +122,10 @@ def log(
                 loading=loading,
             )
         elif VERBOSE_LOG:
-            logger.log(level, msg, **_kwargs)
+            logger.log(level, msg, **_log_kwargs)
     else:
         if file:
-            logger.log(level, msg, **_kwargs)
+            logger.log(level, msg, **_log_kwargs)
         if direct:
             notify.notify(
                 msg,
@@ -154,15 +149,15 @@ def log_exception(
     i.e from (also possibly in a nested context) within an except or finally clause.
     """
     if DEBUG:
-        logger.exception(f"{msg} due to:", **_kwargs_exc)
+        logger.exception(f"{msg} due to:", **_log_exc_kwargs)
     elif VERBOSE or VERBOSE_LOG:
         exc_type, exc, _ = sys.exc_info()
         logger.error(
             f"{msg} due to: ({exc_type.__module__}.{exc_type.__qualname__}) {exc}",
-            **_kwargs,
+            **_log_kwargs,
         )
     else:
-        logger.error(msg, **_kwargs)
+        logger.error(msg, **_log_kwargs)
 
     if VERBOSE and direct:
         notify.notify(msg, notify.CRITICAL if fatal else notify.ERROR, context)
@@ -174,7 +169,9 @@ def _log_warning(msg, catg, fname, lineno, f=None, line=None):
 
     Intended to replace `warnings.showwarning()`.
     """
-    _logger.warning(warnings.formatwarning(msg, catg, fname, lineno, line), **_kwargs)
+    _logger.warning(
+        warnings.formatwarning(msg, catg, fname, lineno, line), **_log_kwargs
+    )
     notify.notify(
         "Please view the logs for some warning(s).",
         level=notify.WARNING,
@@ -218,15 +215,10 @@ _disallowed_modules = frozenset({"PIL", "urllib3", "urwid"})
 _urwid_screen_logger_name = f"{UrwidImageScreen.__module__}.UrwidImageScreen"
 
 initialized = False
-# the _stacklevel_ parameter was added in Python 3.8
-stacklevel_is_available = sys.version_info[:3] >= (3, 8, 0)
-if stacklevel_is_available:
-    # > log > logger.log > _log
-    _kwargs = {"stacklevel": 2}
-    # > exception-handler > log_exception > logger.exception > _log
-    _kwargs_exc = {"stacklevel": 3}
-else:
-    _kwargs = _kwargs_exc = {}
+# > log > logger.log > _log
+_log_kwargs = {"stacklevel": 2}
+# > exception-handler > log_exception > logger.exception > _log
+_log_exc_kwargs = {"stacklevel": 3}
 
 # Set from within `init_log()`
 DEBUG: bool
