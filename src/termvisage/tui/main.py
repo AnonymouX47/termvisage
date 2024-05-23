@@ -678,7 +678,7 @@ def update_screen():
 
 
 logger = _logging.getLogger(__name__)
-quitting = Event()
+quitting = False
 
 # For grid scanning/display
 grid_acknowledge = Event()

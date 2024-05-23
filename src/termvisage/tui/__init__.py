@@ -160,7 +160,7 @@ def init(
         anim_render_manager.join()
         logging.log("Exited TUI normally", logger, direct=False)
     except Exception:
-        main.quitting.set()
+        main.quitting = True
         render.image_render_queue.put((None,) * 3)
         image_render_manager.join()
         render.anim_render_queue.put((None,) * 3)

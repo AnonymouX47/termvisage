@@ -413,7 +413,7 @@ def manage_grid_renders(n_renderers: int):
     """
     from os.path import basename
 
-    from .main import ImageClass, grid_active, quitting, update_screen
+    from .main import ImageClass, grid_active, update_screen
     from .widgets import Image, ImageCanvas, image_grid
 
     # NOTE:
@@ -475,14 +475,14 @@ def manage_grid_renders(n_renderers: int):
     try:
         while True:
             while not (
-                quitting.is_set()
+                main.quitting
                 or grid_active.wait(0.1)
-                or quitting.is_set()
+                or main.quitting
                 or not grid_render_out.empty()
             ):
                 pass
 
-            if quitting.is_set():
+            if main.quitting:
                 break
 
             if not in_sync.is_set():
@@ -501,7 +501,7 @@ def manage_grid_renders(n_renderers: int):
                 canvas_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
                 del grid_cell_width
 
-            if quitting.is_set() or not in_sync.is_set():
+            if main.quitting or not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
@@ -515,7 +515,7 @@ def manage_grid_renders(n_renderers: int):
                     )
                     notify.start_loading()
 
-            if quitting.is_set() or not in_sync.is_set():
+            if main.quitting or not in_sync.is_set():
                 continue
 
             try:
@@ -525,11 +525,7 @@ def manage_grid_renders(n_renderers: int):
             except Empty:
                 pass
             else:
-                if (
-                    batch_no == grid_batch_no
-                    and in_sync.is_set()
-                    and not quitting.is_set()
-                ):
+                if batch_no == grid_batch_no and in_sync.is_set() and not main.quitting:
                     grid_cache[basename(source)] = (
                         ImageCanvas(
                             render.encode().split(b"\n"), canvas_size, rendered_size
@@ -557,7 +553,7 @@ def manage_grid_renders(n_renderers: int):
 
 def manage_grid_thumbnails(thumbnail_size: int) -> None:
     from ..__main__ import TEMP_DIR
-    from .main import grid_active, quitting
+    from .main import grid_active
 
     # NOTE:
     # Always keep in mind that every directory entry is rendered only once per grid
@@ -654,15 +650,15 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
     try:
         while True:
             while not (
-                quitting.is_set()
+                main.quitting
                 or grid_active.wait(0.1)
-                or quitting.is_set()
+                or main.quitting
                 or not thumbnail_out.empty()
                 or thumbnails_to_be_deleted
             ):
                 pass
 
-            if quitting.is_set():
+            if main.quitting:
                 break
 
             if not in_sync.is_set():
@@ -710,7 +706,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 while grid_thumbnail_queue.get():
                     pass
 
-            if quitting.is_set() or not in_sync.is_set():
+            if main.quitting or not in_sync.is_set():
                 continue
 
             if thumbnails_to_be_deleted:
@@ -725,7 +721,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         delete_thumbnail(thumbnail)
                 thumbnails_to_be_deleted -= thumbnails_to_delete
 
-            if quitting.is_set() or not in_sync.is_set():
+            if main.quitting or not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
@@ -742,7 +738,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         thumbnail_in.put(source)
                         notify.start_loading()
 
-            if quitting.is_set() or not in_sync.is_set():
+            if main.quitting or not in_sync.is_set():
                 continue
 
             try:
@@ -750,7 +746,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             except Empty:
                 pass
             else:
-                if in_sync.is_set() and not quitting.is_set():
+                if in_sync.is_set() and not main.quitting:
                     if thumbnail:
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)

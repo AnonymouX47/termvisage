@@ -312,7 +312,7 @@ keys = {context: {} for context in context_keys}
 # global
 @register_key(("global", "Quit"))
 def quit():
-    main.quitting.set()
+    main.quitting = True
     raise urwid.ExitMainLoop()
 
 

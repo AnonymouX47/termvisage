@@ -182,7 +182,7 @@ def start_loading() -> None:
     """Signals the start of a progressive operation."""
     global _n_loading
 
-    if not (logging.QUIET or __main__.interrupted or main.quitting.is_set()):
+    if not (logging.QUIET or __main__.interrupted or main.quitting):
         _n_loading += 1
         _loading.set()
 
