@@ -201,6 +201,15 @@ query timeout
 
    .. note:: Overridden by :option:`--query-timeout`.
 
+show footer
+```````````
+
+.. confval:: show footer
+   :synopsis: Show or hide the footer in the TUI.
+   :type: boolean
+   :valid: ``true``, ``false``
+   :default: ``true``
+
 style
 `````
 

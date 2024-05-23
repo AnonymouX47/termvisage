@@ -10,6 +10,7 @@
     "max pixels": 0,
     "multi": true,
     "query timeout": 0.1,
+    "show footer": true,
     "style": "auto",
     "swap win size": false,
     "thumbnail": true,
@@ -63,7 +64,7 @@
                 "q",
                 "q"
             ],
-            "Key Bar": [
+            "Expand/Collapse Footer": [
                 ".",
                 "."
             ]

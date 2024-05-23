@@ -16,7 +16,7 @@ from term_image.widget import UrwidImageScreen
 from .. import logging, notify
 from ..config import config_options
 from . import main, render
-from .keys import adjust_bottom_bar
+from .keys import adjust_footer, update_footer_expand_collapse_icon
 from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
 from .widgets import Image, info_bar, main as main_widget
 
@@ -36,7 +36,7 @@ def init(
 
     if args.debug:
         main_widget.contents.insert(
-            -1, (urwid.AttrMap(urwid.Filler(info_bar), "reverse"), ("given", 1))
+            1, (urwid.AttrMap(urwid.Filler(info_bar), "reverse"), ("given", 1))
         )
 
     main.DEBUG = args.debug
@@ -174,13 +174,14 @@ def init(
 
 class Loop(urwid.MainLoop):
     def start(self):
-        adjust_bottom_bar()  # Properly set expand key visibility at initialization
+        update_footer_expand_collapse_icon()
+        adjust_footer()
         return super().start()
 
     def process_input(self, keys):
         if "window resize" in keys:
             # "window resize" never reaches `.unhandled_input()`.
-            # Adjust the bottom bar and clear grid cache.
+            # Adjust the footer and clear grid cache.
             keys.append("resized")
         return super().process_input(keys)
 
@@ -198,8 +199,10 @@ palette = [
     ("unfocused box", "", "", "", "#7f7f7f", ""),
     ("focused box", "default"),
     ("green fg", "", "", "", "#00ff00", ""),
-    ("key", "", "", "", "", "#5588ff"),
-    ("disabled key", "", "", "", "#7f7f7f", "#5588ff"),
+    ("key", "reverse bold"),
+    ("action", "default"),
+    ("disabled key", "", "", "", "#8f8f8f,italics,standout", ""),
+    ("disabled action", "", "", "", "#8f8f8f,italics", ""),
     ("error", "", "", "", "bold", "#ff0000"),
     ("warning", "", "", "", "#ff0000,bold", ""),
     ("notif context", "", "", "", "#0000ff,bold", ""),

@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - args: `--thumbnail/--no-thumbnail` command-line option.
 - tui: `Force Render` action to the `menu` context ([#13]).
 - tui: Mouse scroll event handling for the image list (menu) ([2354639]).
+- tui: Left mouse click handling for non-navigation actions (in the footer) ([#19]).
+- tui,config: `show footer` config option to control the TUI footer visibility ([#19]).
 
 ### Changed
 - cli,tui: Revamped the *max pixels* setting ([#13]).
@@ -27,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - tui: Improved grid image rendering performance ([#13], [#16]).
 - tui: Improved image grid cell size adjustment ([#15]).
 - Exit properly and faster upon interruption ([b90ceef]).
+- tui: Redesigned the footer, action bar and actions ([#19]).
 
 ### Removed
 - args: `--max-pixels-cli` command-line option ([#13]).
@@ -34,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#13]: https://github.com/AnonymouX47/termvisage/pull/13
 [#15]: https://github.com/AnonymouX47/termvisage/pull/15
 [#16]: https://github.com/AnonymouX47/termvisage/pull/16
+[#19]: https://github.com/AnonymouX47/termvisage/pull/19
 [c64f195]: https://github.com/AnonymouX47/termvisage/commit/c64f195a79557fdf5a9323db907a5716a12d6440
 [9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
 [b90ceef]: https://github.com/AnonymouX47/termvisage/commit/b90ceefdd35a23eacb0e7199ea018776e79d7a14

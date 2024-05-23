@@ -126,7 +126,7 @@ def init_config() -> None:
         for action in keyset.values():
             action[3:] = (True, True)  # "shown", "enabled"
     context_keys["global"]["Config"][3] = False  # Till the config menu is implemented
-    expand_key[3] = False  # "Key bar" action should be hidden
+    expand_key[3] = False  # "Expand/Collapse Footer" action should be hidden
 
     reconfigure_tui(_context_keys)
 
@@ -232,8 +232,8 @@ def reconfigure_tui(
     keybindings.
     """
     from .cli import args
-    from .tui.keys import change_key
-    from .tui.widgets import expand, image_grid, notif_bar, pile
+    from .tui.keys import change_key, keys, update_footer_expand_collapse_icon
+    from .tui.widgets import footer, image_grid, main, notif_bar, pile
 
     command = urwid.command_map._command_defaults.copy()
     urwid.command_map._command = {
@@ -251,8 +251,16 @@ def reconfigure_tui(
                     except KeyError:  # e.g navigation keys in "image-grid"
                         pass
 
-    expand_or_collapse = expand.original_widget.text[0]
-    expand.original_widget.set_text(f"{expand_or_collapse} [{expand_key[1]}]")
+    if main.contents[-1][0] is footer:
+        if not config_options.show_footer:
+            main.contents.pop()
+            # Disable "global::Expand/Collapse Footer" action
+            expand_key[4] = keys["global"][expand_key[0]][1] = False
+    elif config_options.show_footer:
+        main.contents.append((footer, ("given", 1)))
+        # Enable "global::Expand/Collapse Footer" action
+        expand_key[4] = keys["global"][expand_key[0]][1] = True
+    update_footer_expand_collapse_icon()
 
     if not args.quiet:
         if pile.contents[-1][0] is notif_bar:
@@ -606,6 +614,11 @@ config_options = {
         lambda x: isinstance(x, float) and x > 0.0,
         "must be a float greater than zero",
     ),
+    "show footer": Option(
+        True,
+        lambda x: isinstance(x, bool),
+        "must be a boolean",
+    ),
     "style": Option(
         "auto",
         lambda x: x in {"auto", "block", "iterm2", "kitty"},
@@ -653,7 +666,7 @@ _context_keys = {
         "Config": ["C", "\u21e7C", "Open configuration menu"],
         "Help": ["f1", "F1", "Show this help menu"],
         "Quit": ["q", "q", "Exit TermVisage"],
-        "Key Bar": [".", ".", "Expand/Collapse key bar"],
+        "Expand/Collapse Footer": [".", ".", "Expand/Collapse the footer"],
     },
     "menu": {
         "Open": ["enter", "\u23ce", "Open the selected item"],
@@ -735,4 +748,4 @@ context_navs = {
 }
 update_context_nav(_context_keys, _nav)  # Update symbols
 context_keys = deepcopy(_context_keys)
-expand_key = context_keys["global"]["Key Bar"]
+expand_key = context_keys["global"]["Expand/Collapse Footer"]

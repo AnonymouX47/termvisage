@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging as _logging
+from collections.abc import Callable
 from math import ceil
 from operator import floordiv, mul, sub
 from os.path import basename
@@ -10,7 +11,7 @@ from typing import ClassVar, List, Optional, Tuple
 
 import urwid
 from term_image.image import BaseImage, Size
-from term_image.utils import get_terminal_name_version
+from term_image.utils import get_terminal_name_version, write_tty
 from urwid import (
     PACK,
     AttrMap,
@@ -25,8 +26,8 @@ from urwid import (
 )
 
 from .. import logging
-from ..config import config_options, expand_key, navi
-from ..ctlseqs import KITTY_DELETE_CURSOR_IMAGES_b, KITTY_START_b
+from ..config import config_options, context_keys, navi
+from ..ctlseqs import BEL_b, KITTY_DELETE_CURSOR_IMAGES_b, KITTY_START_b
 from . import keys, main as tui_main
 from .render import (
     anim_render_queue,
@@ -37,6 +38,147 @@ from .render import (
 
 # NOTE: Any new "private" attribute set on any subclass or instance of an urwid class
 # should be prepended with "_ti" to prevent clashes with names used by urwid itself.
+
+
+class Action(urwid.WidgetWrap):
+    _ti_enabled: bool
+    _ti_func: Callable[[], None] | None
+
+    def __init__(
+        self, name: str, symbol: str, enabled: bool, func: Callable[[], None] | None
+    ) -> None:
+        super().__init__(
+            Text(
+                [
+                    ("key" if enabled else "disabled key", f" {symbol} "),
+                    ("action" if enabled else "disabled action", f" {name}"),
+                ],
+                wrap="clip",
+            )
+        )
+        self._ti_enabled = enabled
+        self._ti_func = func
+
+    def mouse_event(
+        self,
+        size: tuple[int, int],
+        event: str,
+        button: int,
+        col: int,
+        row: int,
+        focus: bool,
+    ) -> bool:
+        if event == "mouse press" and button == 1:
+            if not self._ti_enabled:
+                write_tty(BEL_b)
+                return False
+
+            if self._ti_func:
+                self._ti_func()
+                return True
+
+        return False
+
+
+class ActionBar(urwid.WidgetWrap):
+    _ti_actions: list[Text]
+
+    def __init__(self) -> None:
+        super().__init__(Pile([]))
+        self._ti_actions = []
+
+    def render(self, size: tuple[int, int], focus: bool = False) -> Canvas:
+        if widget_is_box := len(size) == 2:
+            maxcol, maxrow = size
+        else:
+            (maxcol,) = size
+            more_actions = True
+
+            def flow_iter() -> bool:
+                return more_actions
+
+        rows = []
+        action_widgets = iter(self._ti_actions)
+        action_w = next(action_widgets)
+        action_width = action_w.pack()[0]
+
+        for _ in range(maxrow) if widget_is_box else iter(flow_iter, False):
+            row = [(PACK, action_w)]
+            row_width = action_width
+
+            for action_w in action_widgets:
+                action_width = action_w.pack()[0]
+                # `Columns(..., dividechars=1)`. Hence, the `+ bool(row)`.
+                if row and row_width + bool(row) + action_width > maxcol:
+                    break
+                # `Columns(..., dividechars=1)`. Hence, the `+ bool(row)`.
+                row_width += action_width + bool(row)
+                row.append((PACK, action_w))
+            else:  # no more actions?
+                if not widget_is_box:
+                    more_actions = False
+
+            if row:
+                rows.append((Columns(row, 1), ("pack", None)))
+            # This is only for the sake of completeness, should never occur with
+            # the way the widget is used in this project.
+            else:
+                rows.append((Divider(), ("pack", None)))
+
+        self._w.contents[:] = rows
+
+        return self._w.render(size, focus)
+
+    def rows(self, size: tuple[int, int], focus: bool = False) -> int:
+        (maxcol,) = size
+        n_rows = 1
+        n_actions_on_row = row_width = 0
+
+        for action_w in self._ti_actions:
+            action_width = action_w.pack()[0]
+            if n_actions_on_row and (
+                # `Columns(..., dividechars=1)`. Hence, the `+ bool(n_actions_on_row)`.
+                row_width + bool(n_actions_on_row) + action_width
+                > maxcol
+            ):
+                n_rows += 1
+                n_actions_on_row = 1
+                row_width = action_width
+            else:
+                # `Columns(..., dividechars=1)`. Hence, the `+ bool(n_actions_on_row)`.
+                row_width += action_width + bool(n_actions_on_row)
+                n_actions_on_row += 1
+
+        return n_rows
+
+    def update(self, context: str) -> None:
+        """Updates the action bar with the actions in the given context.
+
+        Includes "global" actions for all contexts except those in `.keys.no_globals`.
+        """
+        if not config_options.show_footer:
+            return
+
+        self._ti_actions = [
+            Action(
+                action,
+                symbol,
+                enabled,
+                None if key in navi else (keys.keys[context].get(key) or (None,))[0],
+            )
+            for action, (key, symbol, _, visible, enabled)  # fmt: skip
+            in context_keys[context].items()
+            if visible
+        ]
+        if context not in keys.no_globals:
+            self._ti_actions += [
+                Action(action, symbol, enabled, keys.keys["global"][key][0])
+                for action, (key, symbol, _, visible, enabled)  # fmt: skip
+                in context_keys["global"].items()
+                if visible
+            ]
+        keys.adjust_footer()
+        self._invalidate()
 
 
 class GridListBox(urwid.ListBox):
@@ -651,11 +793,12 @@ pile = urwid.Pile([viewer])
 
 info_bar = urwid.Text("")
 
-key_bar = urwid.Filler(urwid.Text(""))
-expand = urwid.Filler(urwid.Text(f"\u25B2 [{expand_key[1]}]", align="right"), "middle")
-bottom_bar = urwid.Columns([key_bar, (len(expand.original_widget.text), expand)], 2)
+action_bar = ActionBar()
+# See `.tui.keys.update_footer_expand_collapse_icon()` and `.tui.Loop.start()`.
+expand = urwid.Text("")
+footer = urwid.Columns([action_bar, (PACK, expand)], 2, box_columns=[0])
 
-main = urwid.Pile([pile, (1, bottom_bar)], 0)
+main = urwid.Pile([pile, (1, footer)], 0)
 
 confirmation = urwid.Text("", "center")
 confirmation_overlay = urwid.Overlay(
