@@ -232,8 +232,8 @@ def reconfigure_tui(
     keybindings.
     """
     from .cli import args
-    from .tui.keys import change_key, update_footer_expand_collapse_icon
-    from .tui.widgets import image_grid, notif_bar, pile
+    from .tui.keys import change_key, keys, update_footer_expand_collapse_icon
+    from .tui.widgets import footer, image_grid, main, notif_bar, pile
 
     command = urwid.command_map._command_defaults.copy()
     urwid.command_map._command = {
@@ -251,6 +251,15 @@ def reconfigure_tui(
                     except KeyError:  # e.g navigation keys in "image-grid"
                         pass
 
+    if main.contents[-1][0] is footer:
+        if not config_options.show_footer:
+            main.contents.pop()
+            # Disable "global::Expand/Collapse Footer" action
+            expand_key[4] = keys["global"][expand_key[0]][1] = False
+    elif config_options.show_footer:
+        main.contents.append((footer, ("given", 1)))
+        # Enable "global::Expand/Collapse Footer" action
+        expand_key[4] = keys["global"][expand_key[0]][1] = True
     update_footer_expand_collapse_icon()
 
     if not args.quiet:

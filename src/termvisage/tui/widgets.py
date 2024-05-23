@@ -156,6 +156,9 @@ class ActionBar(urwid.WidgetWrap):
 
         Includes "global" actions for all contexts except those in `.keys.no_globals`.
         """
+        if not config_options.show_footer:
+            return
+
         self._ti_actions = [
             Action(
                 action,

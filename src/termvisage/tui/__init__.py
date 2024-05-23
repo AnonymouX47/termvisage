@@ -36,7 +36,7 @@ def init(
 
     if args.debug:
         main_widget.contents.insert(
-            -1, (urwid.AttrMap(urwid.Filler(info_bar), "reverse"), ("given", 1))
+            1, (urwid.AttrMap(urwid.Filler(info_bar), "reverse"), ("given", 1))
         )
 
     main.DEBUG = args.debug

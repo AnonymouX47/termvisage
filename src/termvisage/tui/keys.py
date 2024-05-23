@@ -15,7 +15,7 @@ from term_image.image import GraphicsImage
 from term_image.utils import get_cell_size, get_terminal_size
 
 from .. import __version__, logging
-from ..config import context_keys, expand_key
+from ..config import config_options, context_keys, expand_key
 from . import main
 from .render import resync_grid_rendering
 from .widgets import (
@@ -291,6 +291,9 @@ def set_confirmation(
 
 
 def update_footer_expand_collapse_icon():
+    if not config_options.show_footer:
+        return
+
     expand.set_text(
         [
             "\u25B2" if action_bar._ti_collapsed else "\u25BC",
@@ -335,6 +338,9 @@ def help():
 
 
 def adjust_footer():
+    if not config_options.show_footer:
+        return
+
     needed_rows = action_bar.rows((get_terminal_size()[0],))
     if expand._ti_shown:
         if needed_rows == 1:
