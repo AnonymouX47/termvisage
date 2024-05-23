@@ -605,6 +605,11 @@ config_options = {
         lambda x: isinstance(x, float) and x > 0.0,
         "must be a float greater than zero",
     ),
+    "show footer": Option(
+        True,
+        lambda x: isinstance(x, bool),
+        "must be a boolean",
+    ),
     "style": Option(
         "auto",
         lambda x: x in {"auto", "block", "iterm2", "kitty"},
