@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import logging as _logging
 from queue import Queue
 from sys import stderr, stdout
@@ -10,7 +11,7 @@ from typing import Any, Tuple, Union
 
 import urwid
 
-from . import __main__, cli, logging, tui
+from . import __main__, logging, tui
 from .config import config_options
 from .ctlseqs import SGR_FG_BLUE, SGR_FG_DEFAULT, SGR_FG_RED, SGR_FG_YELLOW
 from .tui import main, widgets
@@ -41,9 +42,21 @@ def end_loading() -> None:
     """Signals the end of all progressive operations for the current mode."""
     global _n_loading
 
-    if not logging.QUIET:
+    if not QUIET:
         _n_loading = -1
         _loading.set()
+
+
+def init_notify(args: argparse.Namespace) -> None:
+    global QUIET, VERBOSE, initialized, loading_indicator
+
+    QUIET, VERBOSE = args.quiet, args.verbose or args.debug
+
+    if not QUIET:
+        loading_indicator = logging.Thread(target=load, name="LoadingIndicator")
+        loading_indicator.start()
+
+    initialized = True
 
 
 def is_loading() -> bool:
@@ -60,10 +73,9 @@ def load() -> None:
     from .tui.main import update_screen
     from .tui.widgets import loading
 
-    global _n_loading, loading_initialized
+    global _n_loading
 
     stream = stdout if stdout.isatty() else stderr
-    loading_initialized = True
 
     # CLI Phase
 
@@ -139,16 +151,9 @@ def notify(
 ) -> None:
     """Displays a message in the TUI's notification bar or to STDOUT/STDERR."""
     if (
-        __main__.interrupted
-        and current_thread() is not __main__.MAIN_THREAD
-        or (logging.QUIET if logging.initialized else cli.args.quiet)
-        and level < CRITICAL
-        or verbose
-        and not (
-            logging.VERBOSE
-            if logging.initialized
-            else cli.args.verbose or cli.args.debug
-        )
+        (__main__.interrupted and current_thread() is not __main__.MAIN_THREAD)
+        or (QUIET and level < CRITICAL)
+        or (verbose and not VERBOSE)
     ):
         return
 
@@ -183,7 +188,7 @@ def start_loading() -> None:
     """Signals the start of a progressive operation."""
     global _n_loading
 
-    if not (logging.QUIET or __main__.interrupted or main.quitting):
+    if not (QUIET or __main__.interrupted or main.quitting):
         _n_loading += 1
         _loading.set()
 
@@ -192,7 +197,7 @@ def stop_loading() -> None:
     """Signals the end of a progressive operation."""
     global _n_loading
 
-    if not logging.QUIET:
+    if not QUIET:
         _n_loading -= 1
 
 
@@ -202,9 +207,13 @@ _alarms = Queue(5)  # Max value for "max notifications" is 5
 
 _loading = Event()
 _n_loading = 0
-loading_initialized = False
+initialized = False
 # Used to implement an interruptible loading mechanism.
 loading_interrupted = Event()
 
-# Set from `.logging.init_log()`.
+# Set from `init_notify()`.
 loading_indicator: logging.Thread
+
+# Set from `init_notify()`.
+QUIET: bool
+VERBOSE: bool

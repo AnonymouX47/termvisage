@@ -39,7 +39,7 @@ def main() -> int:
             )
 
     def finish_loading():
-        if notify.loading_initialized:
+        if notify.initialized and not notify.QUIET:
             notify.end_loading()  # End the current phase (may be CLI or TUI)
             notify.loading_interrupted.set()
             if not tui.initialized:
@@ -83,11 +83,9 @@ def main() -> int:
             logger,
             _logging.CRITICAL,
             file=logging.initialized,
-            # If the TUI was not initialized, write to console only if verbosity is
-            # enabled
-            direct=bool(
-                tui.initialized or cli.args and (cli.args.verbose or cli.args.debug)
-            ),
+            # If the TUI was not initialized, write to console only if notification
+            # is initialized and verbosity is enabled.
+            direct=tui.initialized or notify.initialized and notify.VERBOSE,
         )
         if cli.args and cli.args.debug:
             raise

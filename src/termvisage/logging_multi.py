@@ -124,8 +124,11 @@ class Process(Process):
         _logger.setLevel(min(self._logging_details["logging_level"], _logging.INFO))
 
         # Notifications
-        if self._logging_details["redirect_notifs"] and not logging.QUIET:
+        notify.QUIET = logging.QUIET
+        notify.VERBOSE = logging.VERBOSE
+        if self._logging_details["redirect_notifs"] and not notify.QUIET:
             notify.notify = self._notif_redirector
+        notify.initialized = True
 
 
 class RedirectHandler(_logging.Handler):

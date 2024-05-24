@@ -63,10 +63,6 @@ def init_log(
     _logger.info("Starting a new session")
     _logger.info(f"Logging level set to {logging.getLevelName(level)}")
 
-    if not QUIET:
-        notify.loading_indicator = Thread(target=notify.load, name="LoadingIndicator")
-        notify.loading_indicator.start()
-
     if (
         not multi
         or cli.args.cli

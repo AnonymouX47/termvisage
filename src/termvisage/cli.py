@@ -652,6 +652,8 @@ def main() -> None:
     if force_cli_mode:
         args.cli = True
 
+    notify.init_notify(args)
+
     config.user_config_file = args.config
     if args.no_config:
         config.xdg_config_file = None
