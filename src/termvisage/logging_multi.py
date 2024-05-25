@@ -107,12 +107,27 @@ class Process(Process):
         else:
             _logger.debug("Exiting")
 
-    def _notif_redirector(self, *args, loading: bool = False, **kwargs):
-        self._log_queue.put((NOTIF, (args, kwargs)))
+    def _redirect_notif(
+        self,
+        msg: str,
+        # Cannot access `notify.INFO` as `.notify` would/might be partially initialized.
+        level: int | None = None,
+        *args,
+        verbose: bool = False,
+        loading: bool = False,  # Not passed across
+        **kwargs,
+    ):
+        if level is None:
+            level = notify.INFO
+
+        if notify.QUIET and level < notify.CRITICAL or verbose and not notify.VERBOSE:
+            return
+
+        self._log_queue.put(
+            (NOTIF, ((msg, level, *args), {"verbose": verbose, **kwargs}))
+        )
 
     def _redirect_logs(self) -> None:
-        logging.initialized = True
-
         # Logs
         vars(logging).update(self._logging_details["constants"])
         logger = _logging.getLogger()
@@ -123,11 +138,13 @@ class Process(Process):
         # # Warnings and session-level logs
         _logger.setLevel(min(self._logging_details["logging_level"], _logging.INFO))
 
+        logging.initialized = True
+
         # Notifications
         notify.QUIET = logging.QUIET
         notify.VERBOSE = logging.VERBOSE
         if self._logging_details["redirect_notifs"] and not notify.QUIET:
-            notify.notify = self._notif_redirector
+            notify.notify = self._redirect_notif
         notify.initialized = True
 
 
