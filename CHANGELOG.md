@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - tui: Improved image grid cell size adjustment ([#15]).
 - Exit properly and faster upon interruption ([b90ceef]).
 - tui: Redesigned the footer, action bar and actions ([#19]).
+- tui: Changed the default symbol for `esc` key from `⎋` (U+238B) to `ESC` ([21b16f3]).
 
 ### Removed
 - args: `--max-pixels-cli` command-line option ([#13]).
@@ -42,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [9ea0572]: https://github.com/AnonymouX47/termvisage/commit/9ea0572e6db35984a4ae0af1691edfd179e5d393
 [b90ceef]: https://github.com/AnonymouX47/termvisage/commit/b90ceefdd35a23eacb0e7199ea018776e79d7a14
 [2354639]: https://github.com/AnonymouX47/termvisage/commit/235463981bad139ae93eeeec1079449d7d40dacf
+[21b16f3]: https://github.com/AnonymouX47/termvisage/commit/21b16f3278b912765fb80d729a1f197b82517b9f
 
 
 ## [0.1.0] - 2023-06-03
