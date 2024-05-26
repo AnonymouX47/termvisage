@@ -712,7 +712,7 @@ _context_keys = {
         "Bottom": ["end", "", "Jump to the bottom of the grid"],
     },
     "full-image": {
-        "Restore": ["esc", "\u238b", "Exit maximized view"],
+        "Restore": ["esc", "ESC", "Exit maximized view"],
         "Prev": ["left", "", "Move to the previous image"],
         "Next": ["right", "", "Move to the next image"],
         "Delete": ["d", "d", "Delete current image"],
@@ -723,14 +723,14 @@ _context_keys = {
         ],
     },
     "full-grid-image": {
-        "Back": ["esc", "\u238b", "Back to grid view"],
+        "Back": ["esc", "ESC", "Back to grid view"],
     },
     "confirmation": {
         "Confirm": ["enter", "\u23ce", ""],
-        "Cancel": ["esc", "\u238b", ""],
+        "Cancel": ["esc", "ESC", ""],
     },
     "overlay": {
-        "Close": ["esc", "\u238b", ""],
+        "Close": ["esc", "ESC", ""],
         "Up": ["up", "", "Scroll up"],
         "Down": ["down", "", "Scroll down"],
         "Page Up": ["page up", "", "Scroll up one page"],
