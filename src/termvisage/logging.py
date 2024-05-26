@@ -12,7 +12,7 @@ from typing import Optional
 
 from term_image.widget import UrwidImageScreen
 
-from . import __main__, cli, notify
+from . import __main__, notify
 
 
 def init_log(
@@ -25,6 +25,8 @@ def init_log(
     verbose_log: bool,
 ) -> None:
     """Initialize application event logging"""
+    from .cli import args
+
     global DEBUG, MULTI, QUIET, VERBOSE, VERBOSE_LOG, initialized
 
     logfile = os.path.expanduser(logfile)
@@ -65,7 +67,7 @@ def init_log(
 
     if (
         not multi
-        or cli.args.cli
+        or args.cli
         or (os.cpu_count() or 0) <= 2  # Avoid affecting overall system performance
         or sys.platform in {"win32", "cygwin"}
     ):
@@ -83,7 +85,7 @@ def init_log(
         from .logging_multi import process_multi_logs
 
         process_multi_logs.started = Event()
-        logging_multi.multi_logger = Thread(
+        logging_multi.multi_logger = LoggingThread(
             target=process_multi_logs, name="MultiLogger"
         )
         logging_multi.multi_logger.start()
@@ -183,7 +185,7 @@ def _filter(record: logging.LogRecord) -> None:
     )
 
 
-class Thread(Thread):
+class LoggingThread(Thread):
     """A thread with integration into the logging system"""
 
     def __init__(self, *args, **kwargs):

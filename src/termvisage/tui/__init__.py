@@ -13,7 +13,7 @@ from term_image.image import GraphicsImage
 from term_image.utils import get_cell_size, lock_tty
 from term_image.widget import UrwidImageScreen
 
-from .. import logging, notify
+from .. import notify
 from ..config import config_options
 from . import main, render
 from .keys import adjust_footer, update_footer_expand_collapse_icon
@@ -30,6 +30,7 @@ def init(
 ) -> None:
     """Initializes the TUI"""
     from ..__main__ import TEMP_DIR
+    from ..logging import LoggingThread, log
     from . import keys
 
     global active, initialized
@@ -93,27 +94,27 @@ def init(
 
     # daemon, to avoid blocking exit upon interruption of the main process or having
     # to check, in each thread, if the main process has been interrupted.
-    menu_scanner = logging.Thread(target=scan_dir_menu, name="MenuScanner", daemon=True)
-    grid_scanner = logging.Thread(target=scan_dir_grid, name="GridScanner", daemon=True)
-    grid_render_manager = logging.Thread(
+    menu_scanner = LoggingThread(target=scan_dir_menu, name="MenuScanner", daemon=True)
+    grid_scanner = LoggingThread(target=scan_dir_grid, name="GridScanner", daemon=True)
+    grid_render_manager = LoggingThread(
         target=render.manage_grid_renders,
         args=(config_options.grid_renderers,),
         name="GridRenderManager",
         daemon=True,
     )
     if main.THUMBNAIL:
-        grid_thumbnail_manager = logging.Thread(
+        grid_thumbnail_manager = LoggingThread(
             target=render.manage_grid_thumbnails,
             args=(config_options.thumbnail_size,),
             name="GridThumbnailManager",
             daemon=True,
         )
-    image_render_manager = logging.Thread(
+    image_render_manager = LoggingThread(
         target=render.manage_image_renders,
         name="ImageRenderManager",
         daemon=True,
     )
-    anim_render_manager = logging.Thread(
+    anim_render_manager = LoggingThread(
         target=render.manage_anim_renders,
         name="AnimRenderManager",
         daemon=True,
@@ -124,7 +125,7 @@ def init(
     main.loop.screen.set_terminal_properties(2**24)
 
     logger = _logging.getLogger(__name__)
-    logging.log("Launching the TUI", logger, direct=False)
+    log("Launching the TUI", logger, direct=False)
     main.set_context("menu")
 
     # End the CLI phase of loading indication and enter the TUI phase.
@@ -158,7 +159,7 @@ def init(
         image_render_manager.join()
         render.anim_render_queue.put((None,) * 3)
         anim_render_manager.join()
-        logging.log("Exited TUI normally", logger, direct=False)
+        log("Exited TUI normally", logger, direct=False)
     except Exception:
         main.quitting = True
         render.image_render_queue.put((None,) * 3)

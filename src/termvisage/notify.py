@@ -53,7 +53,7 @@ def init_notify(args: argparse.Namespace) -> None:
     QUIET, VERBOSE = args.quiet, args.verbose or args.debug
 
     if not QUIET:
-        loading_indicator = logging.Thread(target=load, name="LoadingIndicator")
+        loading_indicator = logging.LoggingThread(target=load, name="LoadingIndicator")
         loading_indicator.start()
 
     initialized = True
@@ -212,7 +212,7 @@ initialized = False
 loading_interrupted = Event()
 
 # Set from `init_notify()`.
-loading_indicator: logging.Thread
+loading_indicator: logging.LoggingThread
 
 # Set from `init_notify()`.
 QUIET: bool

@@ -13,7 +13,6 @@ from typing import Union
 from term_image.image import Size
 
 from .. import logging, notify
-from ..logging_multi import Process
 from ..utils import clear_queue, clear_queue_and_stop_loading
 from . import main
 
@@ -199,6 +198,7 @@ def generate_grid_thumbnails(
 
 
 def manage_anim_renders() -> None:
+    from ..logging_multi import LoggingProcess
     from .main import ImageClass, update_screen
     from .widgets import ImageCanvas, image_box
 
@@ -243,7 +243,7 @@ def manage_anim_renders() -> None:
     frame_render_in = (mp_Queue if logging.MULTI else Queue)()
     frame_render_out = (mp_Queue if logging.MULTI else Queue)(20)
     ready = (mp_Event if logging.MULTI else Event)()
-    renderer = (Process if logging.MULTI else logging.Thread)(
+    renderer = (LoggingProcess if logging.MULTI else logging.LoggingThread)(
         target=render_frames,
         args=(
             frame_render_in,
@@ -321,6 +321,7 @@ def manage_anim_renders() -> None:
 
 
 def manage_image_renders():
+    from ..logging_multi import LoggingProcess
     from .main import ImageClass, update_screen
     from .widgets import Image, ImageCanvas, image_box
 
@@ -334,7 +335,7 @@ def manage_image_renders():
     multi = logging.MULTI
     image_render_in = (mp_Queue if multi else Queue)()
     image_render_out = (mp_Queue if multi else Queue)()
-    renderer = (Process if multi else logging.Thread)(
+    renderer = (LoggingProcess if multi else logging.LoggingThread)(
         target=render_images,
         args=(
             image_render_in,
@@ -413,6 +414,7 @@ def manage_grid_renders(n_renderers: int):
     """
     from os.path import basename
 
+    from ..logging_multi import LoggingProcess
     from .main import ImageClass, grid_active, update_screen
     from .widgets import Image, ImageCanvas, image_grid
 
@@ -441,7 +443,7 @@ def manage_grid_renders(n_renderers: int):
     grid_render_in = (mp_Queue if multi else Queue)()
     grid_render_out = (mp_Queue if multi else Queue)()
     renderers = [
-        (Process if multi else logging.Thread)(
+        (LoggingProcess if multi else logging.LoggingThread)(
             target=render_grid_images,
             args=(
                 grid_render_in,
@@ -553,6 +555,7 @@ def manage_grid_renders(n_renderers: int):
 
 def manage_grid_thumbnails(thumbnail_size: int) -> None:
     from ..__main__ import TEMP_DIR
+    from ..logging_multi import LoggingProcess
     from .main import grid_active
 
     # NOTE:
@@ -626,7 +629,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
     thumbnail_out = (mp_Queue if multi else Queue)()
     not_generating = (mp_Event if multi else Event)()
     deduplication_lock = (mp_Lock if multi else Lock)()
-    generator = (Process if multi else logging.Thread)(
+    generator = (LoggingProcess if multi else logging.LoggingThread)(
         target=generate_grid_thumbnails,
         args=(
             thumbnail_in,

@@ -14,7 +14,7 @@ from term_image import (
     set_query_timeout,
 )
 
-from . import cli, logging, notify, tui
+from . import logging, notify
 
 
 def process_multi_logs() -> None:
@@ -38,7 +38,7 @@ def process_multi_logs() -> None:
         record_type, record = log_queue.get()
 
 
-class Process(Process):
+class LoggingProcess(Process):
     """A process with integration into the logging system
 
     Sets up the logging system to redirect all logs (and optionally notifications)
@@ -51,7 +51,11 @@ class Process(Process):
     """
 
     def __init__(self, *args, redirect_notifs: bool = False, **kwargs):
+        from . import tui
+        from .cli import args as cli_args
+
         super().__init__(*args, **kwargs)
+
         self._log_queue = log_queue
         self._logging_details = {
             "constants": {
@@ -61,17 +65,19 @@ class Process(Process):
             "redirect_notifs": redirect_notifs,
         }
         self._tui_is_initialized = tui.initialized
+
         if self._tui_is_initialized:
             self._ImageClass = tui.main.ImageClass
             self._supported = self._ImageClass._supported
             self._forced_support = self._ImageClass.forced_support
-            self._cell_ratio = cli.args.cell_ratio
-            self._query_timeout = cli.args.query_timeout
-            self._swap_win_size = cli.args.swap_win_size
+            self._cell_ratio = cli_args.cell_ratio
+            self._query_timeout = cli_args.query_timeout
+            self._swap_win_size = cli_args.swap_win_size
             self._style_attrs = [
                 (attr, getattr(self._ImageClass, attr))
                 for attr in exported_style_attrs.get(self._ImageClass.style, ())
             ]
+
         child_processes.append(self)
 
     def run(self):
@@ -183,4 +189,4 @@ exported_style_attrs = {
 log_queue: mp_Queue
 
 # Set from `.logging.init_log()`.
-multi_logger: logging.Thread
+multi_logger: logging.LoggingThread

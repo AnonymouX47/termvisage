@@ -40,8 +40,7 @@ from . import logging, notify, tui
 from .config import config_options, init_config
 from .ctlseqs import ERASE_IN_LINE_LEFT_b
 from .exit_codes import FAILURE, INVALID_ARG, NO_VALID_SOURCE, SUCCESS
-from .logging import Thread, init_log, log, log_exception
-from .logging_multi import Process
+from .logging import LoggingThread, init_log, log, log_exception
 from .tui.widgets import Image
 
 try:
@@ -334,6 +333,8 @@ def manage_checkers(
     serially in the current thread of execution, after all file sources have been
     processed.
     """
+    from .logging_multi import LoggingProcess
+
     global _depth
 
     def process_result(
@@ -385,7 +386,7 @@ def manage_checkers(
         }
 
         checkers = [
-            Process(
+            LoggingProcess(
                 name=f"Checker-{n}",
                 target=check_dirs,
                 args=(
@@ -707,7 +708,7 @@ def main() -> None:
     try:
         __main__.TEMP_DIR = mkdtemp(prefix="termvisage-")
     except OSError:
-        logging.log_exception("Failed to create the temporary data directory", logger)
+        log_exception("Failed to create the temporary data directory", logger)
     else:
         logger.debug(f"Created the temporary data directory {__main__.TEMP_DIR!r}")
 
@@ -805,7 +806,7 @@ def main() -> None:
 
     url_queue = Queue()
     getters = [
-        Thread(
+        LoggingThread(
             target=get_urls,
             args=(url_queue, url_images, ImageClass),
             name=f"Getter-{n}",
@@ -816,7 +817,7 @@ def main() -> None:
     getters_started = False
 
     file_queue = Queue()
-    opener = Thread(
+    opener = LoggingThread(
         target=open_files,
         args=(file_queue, file_images, ImageClass),
         name="Opener",
@@ -838,7 +839,7 @@ def main() -> None:
             )
         dir_queue = mp_Queue() if logging.MULTI and n_checkers > 1 else Queue()
         dir_queue.sources_finished = False
-        check_manager = Thread(
+        check_manager = LoggingThread(
             target=manage_checkers,
             args=(n_checkers, dir_queue, contents, dir_images),
             name="CheckManager",
