@@ -31,7 +31,7 @@ uninstall:
 
 check: check-code
 
-py_files := *.py src/ docs/source/conf.py
+py_files := src/ docs/source/conf.py
 
 ## Code Checks
 
@@ -66,8 +66,7 @@ clean-docs:
 
 # Packaging
 
-build:
-	python -m pip install --upgrade pip
+build: pip
 	python -m pip install --upgrade build
 	python -m build
 

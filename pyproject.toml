@@ -1,8 +1,79 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+# See:
+# - https://setuptools.pypa.io/en/latest/history.html#v66-1-0
+# - https://github.com/pypa/setuptools/issues/3779
+requires = ["setuptools >= 66.1"]
 build-backend = "setuptools.build_meta"
+
+[project]
+dynamic = ["version"]
+name = "termvisage"
+description = "Display and browse images in the terminal"
+requires-python = ">=3.8"
+dependencies = [
+    "argcomplete>=2,<4",
+    "Pillow>=10.1,<11",
+    "term-image>=0.6,<0.7",
+    "urwid>=2.1,<3",
+]
+authors = [
+    {name = "Toluwaleke Ogundipe", email = "anonymoux47@gmail.com"},
+]
+license = {text = "MIT License"}
+readme = "README.md"
+keywords = [
+    "image",
+    "terminal",
+    "viewer",
+    "PIL",
+    "Pillow",
+    "console",
+    "xterm",
+    "cli",
+    "tui",
+    "ANSI",
+    "ASCII-Art",
+    "kitty",
+    "iterm2",
+    "sixel",
+    "graphics",
+]
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Operating System :: Android",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Multimedia :: Graphics :: Viewers",
+    "Topic :: Terminals :: Terminal Emulators/X Terminals",
+    "Topic :: Utilities",
+]
+
+[project.scripts]
+termvisage = "termvisage.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/AnonymouX47/termvisage"
+Documentation = "https://termvisage.readthedocs.io/"
+Source = "https://github.com/AnonymouX47/termvisage"
+Repository = "https://github.com/AnonymouX47/termvisage.git"
+Issues = "https://github.com/AnonymouX47/termvisage/issues"
+Changelog = "https://github.com/AnonymouX47/termvisage/blob/main/CHANGELOG.md"
+Funding = "https://github.com/AnonymouX47/termvisage#sponsor-this-project"
 
 [tool.isort]
 py_version = "auto"
 profile = "black"
 combine_as_imports = true
+
+[tool.setuptools.dynamic]
+version = {attr = "termvisage.version_info"}
