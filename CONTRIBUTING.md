@@ -210,7 +210,7 @@ For a more detailed explanation with examples see the guide at https://cbea.ms/g
 **1.** Install/upgrade the required dependencies for core development:
 
 ```shell
-make install-req
+make req
 ```
 OR
 ```shell
@@ -220,7 +220,7 @@ pip install --upgrade -r requirements.txt
 **2.** Install the package in *develop*/*editable* mode:
 
 ```shell
-make install
+make install-dev
 ```
 OR
 ```shell
@@ -233,7 +233,7 @@ This way, the package is always available within the virtual environment.
 **3.** Install the required dependencies for building the documentation:
 
 ```shell
-make install-req-docs
+make req-doc
 ```
 OR
 ```shell
