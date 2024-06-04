@@ -114,7 +114,8 @@ basic_parser = ArgumentParser(
 from options/flags, to avoid ambiguity.
 For example, ``$ termvisage [options] -- -image.jpg --image.png``.
 """,
-    add_help=False,
+    add_help=False,  # `-h` is used for HEIGHT
+    allow_abbrev=False,
 )
 
 basic_parser.add_argument(
@@ -206,6 +207,7 @@ See https://termvisage.readthedocs.io/en/stable/cli.html for the complete CLI \
 description.
 """,
     add_help=False,  # `-h` is used for HEIGHT
+    allow_abbrev=False,
 )
 
 # Positional
@@ -693,7 +695,7 @@ log_options.add_argument(
 # Style-specific Parsers
 # ======================================================================================
 
-kitty_parser = ArgumentParser(add_help=False)
+kitty_parser = ArgumentParser(add_help=False, allow_abbrev=False)
 kitty_options = kitty_parser.add_argument_group(
     "Kitty Style Options",
     "These options apply only when the *kitty* :term:`render style` is used",
@@ -724,7 +726,7 @@ kitty_options.add_argument(
     ),
 )
 
-iterm2_parser = ArgumentParser(add_help=False)
+iterm2_parser = ArgumentParser(add_help=False, allow_abbrev=False)
 iterm2_options = iterm2_parser.add_argument_group(
     "iTerm2 Style Options",
     "These options apply only when the *iterm2* :term:`render style` is used",
