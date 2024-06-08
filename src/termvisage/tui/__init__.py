@@ -2,23 +2,15 @@
 
 from __future__ import annotations
 
-import argparse
 import logging as _logging
 import os
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, Iterator, Tuple, Union
 
-import urwid
-from term_image.image import GraphicsImage
-from term_image.utils import get_cell_size, lock_tty
-from term_image.widget import UrwidImageScreen
+if TYPE_CHECKING:
+    import argparse
 
-from .. import notify
-from ..config import config_options
-from . import main, render
-from .keys import adjust_footer, update_footer_expand_collapse_icon
-from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
-from .widgets import Image, info_bar, main as main_widget
+    from .widgets import Image
 
 
 def init(
@@ -29,11 +21,35 @@ def init(
     ImageClass: type,
 ) -> None:
     """Initializes the TUI"""
+
+    import urwid
+    from term_image.image import GraphicsImage
+    from term_image.utils import get_cell_size, lock_tty
+    from term_image.widget import UrwidImageScreen
+
+    from .. import notify
     from ..__main__ import TEMP_DIR
+    from ..config import config_options
     from ..logging import LoggingThread, log
-    from . import keys
+    from . import keys, main, render
+    from .keys import adjust_footer, update_footer_expand_collapse_icon
+    from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
+    from .widgets import Image, info_bar, main as main_widget
 
     global active, initialized
+
+    class Loop(urwid.MainLoop):
+        def start(self):
+            update_footer_expand_collapse_icon()
+            adjust_footer()
+            return super().start()
+
+        def process_input(self, keys):
+            if "window resize" in keys:
+                # "window resize" never reaches `.unhandled_input()`.
+                # Adjust the footer and clear grid cache.
+                keys.append("resized")
+            return super().process_input(keys)
 
     if args.debug:
         main_widget.contents.insert(
@@ -171,20 +187,6 @@ def init(
         main.displayer.close()
         active = False
         os.close(main.update_pipe)
-
-
-class Loop(urwid.MainLoop):
-    def start(self):
-        update_footer_expand_collapse_icon()
-        adjust_footer()
-        return super().start()
-
-    def process_input(self, keys):
-        if "window resize" in keys:
-            # "window resize" never reaches `.unhandled_input()`.
-            # Adjust the footer and clear grid cache.
-            keys.append("resized")
-        return super().process_input(keys)
 
 
 active = initialized = False
