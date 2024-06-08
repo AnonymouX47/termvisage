@@ -83,6 +83,8 @@ pipx upgrade termvisage
 
 **NOTE:** [`pip`](https://pip.pypa.io/en/stable/) can also be used but `pipx` is recommended.
 
+See the [installation docs](https://termvisage.readthedocs.io/en/stable/installation.html) for info about optional features and more.
+
 
 ## Features
 

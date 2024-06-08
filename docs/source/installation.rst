@@ -35,6 +35,22 @@ and upgraded with:
 .. note:: `pip <https://pip.pypa.io/en/stable/>`_ can also be used but ``pipx`` is recommended.
 
 
+Optional Features / Extras
+--------------------------
+
+The package provides some optional features available via `installation extras
+<https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-extras>`_:
+
+Command Line Completion
+^^^^^^^^^^^^^^^^^^^^^^^
+
+This is provided via the ``completions`` extra, as in:
+
+.. code-block:: shell
+
+   pipx install "termvisage[completions]"
+
+
 Supported Terminal Emulators
 ----------------------------
 
