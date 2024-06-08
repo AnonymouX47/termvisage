@@ -660,21 +660,7 @@ def main() -> None:
         config.xdg_config_file = None
     init_config()
 
-    # `check_arg()` requires logging.
-    init_log(
-        (
-            args.log_file
-            # If the argument is invalid, the error will be emitted later.
-            if args.log_file and config_options["log file"].is_valid(args.log_file)
-            else config_options.log_file
-        ),
-        getattr(_logging, args.log_level),
-        args.debug,
-        config_options.multi if args.multi is None else args.multi,
-        args.quiet,
-        args.verbose,
-        args.verbose_log,
-    )
+    init_log(args)  # `check_arg()` requires logging
 
     for arg_details in ARG_CHECKS:
         if not check_arg(*arg_details):

@@ -8,48 +8,53 @@ import sys
 import warnings
 from logging.handlers import RotatingFileHandler
 from threading import Event, Thread, current_thread
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from term_image.widget import UrwidImageScreen
 
 from . import __main__, notify
 
+if TYPE_CHECKING:
+    import argparse
 
-def init_log(
-    logfile: str,
-    level: int,
-    debug: bool,
-    multi: bool,
-    quiet: bool,
-    verbose: bool,
-    verbose_log: bool,
-) -> None:
+
+def init_log(args: argparse.Namespace) -> None:
     """Initialize application event logging"""
-    from .cli import args
+    from .config import config_options
 
     global DEBUG, MULTI, QUIET, VERBOSE, VERBOSE_LOG, initialized
 
-    logfile = os.path.expanduser(logfile)
-    os.makedirs(os.path.dirname(logfile) or ".", exist_ok=True)
+    log_file = os.path.expanduser(
+        args.log_file
+        # If the argument is invalid, the error will be emitted by the CLI.
+        if args.log_file and config_options["log file"].is_valid(args.log_file)
+        else config_options.log_file
+    )
+    os.makedirs(os.path.dirname(log_file) or ".", exist_ok=True)
+
     handler = RotatingFileHandler(
-        logfile,
+        log_file,
         maxBytes=2**20,  # 1 MiB
         backupCount=1,
     )
     handler.addFilter(_filter)
 
-    QUIET, VERBOSE, VERBOSE_LOG = quiet, verbose or debug, verbose_log
-    DEBUG = debug = debug or level == logging.DEBUG
-    if debug:
+    level = getattr(logging, args.log_level)
+    DEBUG = args.debug or level == logging.DEBUG
+    QUIET = args.quiet
+    VERBOSE = args.verbose or args.debug
+    VERBOSE_LOG = args.verbose_log
+
+    if DEBUG:
         level = logging.DEBUG
     elif VERBOSE or VERBOSE_LOG:
         level = logging.INFO
 
     FORMAT = (
         "({process}) ({asctime}) [{levelname}] "
-        + ("{processName}: {threadName}: " if debug else "")
+        + ("{processName}: {threadName}: " if DEBUG else "")
         + "{name}: "
-        + ("{funcName}: " if debug else "")
+        + ("{funcName}: " if DEBUG else "")
         + "{message}"
     )
     logging.basicConfig(
@@ -59,14 +64,14 @@ def init_log(
         level=level,
     )
 
-    if debug:
+    if DEBUG:
         _logger.setLevel(logging.DEBUG)
 
     _logger.info("Starting a new session")
     _logger.info(f"Logging level set to {logging.getLevelName(level)}")
 
     if (
-        not multi
+        not (config_options.multi if args.multi is None else args.multi)
         or args.cli
         or (os.cpu_count() or 0) <= 2  # Avoid affecting overall system performance
         or sys.platform in {"win32", "cygwin"}
