@@ -15,11 +15,14 @@ from .exit_codes import FAILURE, INTERRUPTED, codes
 
 def main() -> int:
     """CLI execution entry-point"""
-    from argcomplete import autocomplete
+    try:
+        from argcomplete import autocomplete
+    except ImportError:
+        pass
+    else:
+        from .parsers import parser
 
-    from .parsers import parser
-
-    autocomplete(parser)
+        autocomplete(parser)
 
     from . import cli, logging, notify, tui
 

@@ -9,7 +9,12 @@ from term_image.image import ITerm2Image, Size
 from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
 
-COMPLETIONS = """Follow the appropriate instructions for your shell:
+COMPLETIONS = """First and foremost, ensure you've installed `termvisage` with the \
+`completions` extra e.g via
+
+    pipx install "termvisage[completions]"
+
+If that has been done, follow the appropriate instructions for your shell:
 
 Bash or Zsh:
     Add the following to your shell's config file:
