@@ -19,9 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - tui: Mouse scroll event handling for the image list (menu) ([2354639]).
 - tui: Left mouse click handling for non-navigation actions (in the footer) ([#19]).
 - tui,config: `show footer` config option to control the TUI footer visibility ([#19]).
+- `completions` package installation extra, to install `argcomplete` for shell completions ([1890ab8]).
 
 ### Changed
-- cli,tui: Revamped the *max pixels* setting ([#13]).
+- config,tui: Revamped the *max pixels* setting ([#13]).
   - It is now **opt-in** i.e by default, all images are now rendered regardless of resolution.
   - config: Changed the default value of the `max pixels` config option to `0` (disabled).
   - tui: It no longer applies in the `full-grid-image` context.
@@ -31,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exit properly and faster upon interruption ([b90ceef]).
 - tui: Redesigned the footer, action bar and actions ([#19]).
 - tui: Changed the default symbol for `esc` key from `⎋` (U+238B) to `ESC` ([21b16f3]).
+- args: Disallowed abbreviation of CLI long options ([95e77a3]).
+- Made the `argcomplete` dependency optional ([1890ab8]).
 
 ### Removed
 - args: `--max-pixels-cli` command-line option ([#13]).
@@ -44,6 +47,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [b90ceef]: https://github.com/AnonymouX47/termvisage/commit/b90ceefdd35a23eacb0e7199ea018776e79d7a14
 [2354639]: https://github.com/AnonymouX47/termvisage/commit/235463981bad139ae93eeeec1079449d7d40dacf
 [21b16f3]: https://github.com/AnonymouX47/termvisage/commit/21b16f3278b912765fb80d729a1f197b82517b9f
+[95e77a3]: https://github.com/AnonymouX47/termvisage/commit/95e77a37881565c551dc75697544a4f97fc55b27
+[1890ab8]: https://github.com/AnonymouX47/termvisage/commit/1890ab839e36d6fcc55dc1a19c3d1b02b25a7851
 
 
 ## [0.1.0] - 2023-06-03
