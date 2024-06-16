@@ -5,18 +5,18 @@ from __future__ import annotations
 import logging as _logging
 import os
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, Iterator, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict
 
 if TYPE_CHECKING:
     import argparse
 
-    from .widgets import Image
+    from term_image.image import BaseImage
 
 
 def init(
     args: argparse.Namespace,
     style_args: Dict[str, Any],
-    images: Iterable[Tuple[str, Union[Image, Iterator]]],
+    images: list[tuple[str, BaseImage | Ellipsis]],
     contents: dict,
     ImageClass: type,
 ) -> None:
@@ -76,6 +76,9 @@ def init(
     render.REPEAT = args.repeat
     render.THUMBNAIL_CACHE_SIZE = config_options.thumbnail_cache
 
+    images = [
+        entry if entry[1] is ... else (entry[0], Image(entry[1])) for entry in images
+    ]
     images.sort(
         key=lambda x: sort_key_lexi(
             Path(x[0] if x[1] is ... else x[1]._ti_image.source),

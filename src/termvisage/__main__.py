@@ -120,8 +120,8 @@ def main() -> int:
         write_tty(RESTORE_WINDOW_TITLE_b)
         # Explicit cleanup is necessary since the top-level `Image` widgets
         # will still hold references to the `BaseImage` instances
-        for _, image_w in cli.url_images:
-            image_w._ti_image.close()
+        for _, image in cli.url_images:
+            image.close()
 
 
 # Session-specific temporary data directory.
