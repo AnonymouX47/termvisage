@@ -128,8 +128,6 @@ def init_config() -> None:
     context_keys["global"]["Config"][3] = False  # Till the config menu is implemented
     expand_key[3] = False  # "Expand/Collapse Footer" action should be hidden
 
-    reconfigure_tui(_context_keys)
-
 
 def load_config(config_file: str) -> None:
     """Loads a user config file."""

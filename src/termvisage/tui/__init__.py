@@ -29,7 +29,7 @@ def init(
 
     from .. import notify
     from ..__main__ import TEMP_DIR
-    from ..config import config_options
+    from ..config import _context_keys, config_options, reconfigure_tui
     from ..logging import LoggingThread, log
     from . import keys, main, render
     from .keys import adjust_footer, update_footer_expand_collapse_icon
@@ -50,6 +50,8 @@ def init(
                 # Adjust the footer and clear grid cache.
                 keys.append("resized")
             return super().process_input(keys)
+
+    reconfigure_tui(_context_keys)
 
     if args.debug:
         main_widget.contents.insert(
