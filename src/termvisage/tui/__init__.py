@@ -36,7 +36,7 @@ def init(
     from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
     from .widgets import Image, info_bar, main as main_widget
 
-    global active, initialized
+    global active, initialized, quitting
 
     class Loop(urwid.MainLoop):
         def start(self):
@@ -182,7 +182,7 @@ def init(
         anim_render_manager.join()
         log("Exited TUI normally", logger, direct=False)
     except Exception:
-        main.quitting = True
+        quitting = True
         render.image_render_queue.put((None,) * 3)
         image_render_manager.join()
         render.anim_render_queue.put((None,) * 3)
@@ -194,7 +194,7 @@ def init(
         os.close(main.update_pipe)
 
 
-active = initialized = False
+active = initialized = quitting = False
 palette = [
     ("default", "", "", "", "", ""),
     ("default bold", "", "", "", "bold", ""),

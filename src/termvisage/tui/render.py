@@ -12,7 +12,7 @@ from typing import Union
 
 from term_image.image import Size
 
-from .. import logging, notify
+from .. import logging, notify, tui
 from ..utils import clear_queue, clear_queue_and_stop_loading
 from . import main
 
@@ -477,14 +477,14 @@ def manage_grid_renders(n_renderers: int):
     try:
         while True:
             while not (
-                main.quitting
+                tui.quitting
                 or grid_active.wait(0.1)
-                or main.quitting
+                or tui.quitting
                 or not grid_render_out.empty()
             ):
                 pass
 
-            if main.quitting:
+            if tui.quitting:
                 break
 
             if not in_sync.is_set():
@@ -503,7 +503,7 @@ def manage_grid_renders(n_renderers: int):
                 canvas_size = (grid_cell_width - 2, grid_cell_width // 2 - 2)
                 del grid_cell_width
 
-            if main.quitting or not in_sync.is_set():
+            if tui.quitting or not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
@@ -517,7 +517,7 @@ def manage_grid_renders(n_renderers: int):
                     )
                     notify.start_loading()
 
-            if main.quitting or not in_sync.is_set():
+            if tui.quitting or not in_sync.is_set():
                 continue
 
             try:
@@ -527,7 +527,7 @@ def manage_grid_renders(n_renderers: int):
             except Empty:
                 pass
             else:
-                if batch_no == grid_batch_no and in_sync.is_set() and not main.quitting:
+                if batch_no == grid_batch_no and in_sync.is_set() and not tui.quitting:
                     grid_cache[basename(source)] = (
                         ImageCanvas(
                             render.encode().split(b"\n"), canvas_size, rendered_size
@@ -653,15 +653,15 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
     try:
         while True:
             while not (
-                main.quitting
+                tui.quitting
                 or grid_active.wait(0.1)
-                or main.quitting
+                or tui.quitting
                 or not thumbnail_out.empty()
                 or thumbnails_to_be_deleted
             ):
                 pass
 
-            if main.quitting:
+            if tui.quitting:
                 break
 
             if not in_sync.is_set():
@@ -709,7 +709,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                 while grid_thumbnail_queue.get():
                     pass
 
-            if main.quitting or not in_sync.is_set():
+            if tui.quitting or not in_sync.is_set():
                 continue
 
             if thumbnails_to_be_deleted:
@@ -724,7 +724,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         delete_thumbnail(thumbnail)
                 thumbnails_to_be_deleted -= thumbnails_to_delete
 
-            if main.quitting or not in_sync.is_set():
+            if tui.quitting or not in_sync.is_set():
                 continue
 
             if grid_active.is_set():
@@ -741,7 +741,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
                         thumbnail_in.put(source)
                         notify.start_loading()
 
-            if main.quitting or not in_sync.is_set():
+            if tui.quitting or not in_sync.is_set():
                 continue
 
             try:
@@ -749,7 +749,7 @@ def manage_grid_thumbnails(thumbnail_size: int) -> None:
             except Empty:
                 pass
             else:
-                if in_sync.is_set() and not main.quitting:
+                if in_sync.is_set() and not tui.quitting:
                     if thumbnail:
                         with thumbnail_render_lock:
                             thumbnails_being_rendered[thumbnail].add(source)
