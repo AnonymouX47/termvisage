@@ -31,7 +31,8 @@ def init(
     from ..__main__ import TEMP_DIR
     from ..config import _context_keys, config_options, reconfigure_tui
     from ..logging import LoggingThread, log
-    from . import keys, main, render
+    from . import main  # Loaded before `.tui.keys` to prevent circular import
+    from . import keys, render
     from .keys import adjust_footer, update_footer_expand_collapse_icon
     from .main import process_input, scan_dir_grid, scan_dir_menu, sort_key_lexi
     from .widgets import Image, info_bar, main as main_widget

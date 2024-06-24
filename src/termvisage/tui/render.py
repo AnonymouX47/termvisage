@@ -14,7 +14,6 @@ from term_image.image import Size
 
 from .. import logging, notify, tui
 from ..utils import clear_queue, clear_queue_and_stop_loading
-from . import main
 
 
 def delete_thumbnail(thumbnail: str) -> bool:
@@ -32,13 +31,15 @@ def resync_grid_rendering() -> None:
     # worse, races. See the resync blocks in `manage_grid_renders()` and
     # `manage_grid_thumbnails()` especially their beginnings and ends.
 
+    from .main import THUMBNAIL
+
     # Signal `GridRenderManager` and `GridThumbnailManager` to **start** resync.
     #
     # `GridThumbnailManager` waits for `GridRenderManager` to **start** resync
     # **before** it does because it modifies (clears) shared data. Hence,
     # `grid_renderer_in_sync` must be cleared **before** `grid_thumbnailer_in_sync`.
     grid_renderer_in_sync.clear()
-    if main.THUMBNAIL:
+    if THUMBNAIL:
         grid_thumbnailer_in_sync.clear()
 
     # Wait for `GridRenderManager` and `GridThumbnailManager` to **start** resync.
@@ -46,7 +47,7 @@ def resync_grid_rendering() -> None:
     # The order within this set of operations is not necessarily important. However,
     # the order of this set important with respect to the other sets.
     grid_renderer_in_sync.wait()
-    if main.THUMBNAIL:
+    if THUMBNAIL:
         grid_thumbnailer_in_sync.wait()
 
     # Send the batch delimiter, without which each thread cannot **end** resync.
@@ -62,7 +63,7 @@ def resync_grid_rendering() -> None:
     # forward any jobs from the **new** batch to `GridRenderManager` **before** the
     # delimiter.
     grid_render_queue.put(None)
-    if main.THUMBNAIL:
+    if THUMBNAIL:
         grid_thumbnail_queue.put(None)
 
 
