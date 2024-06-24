@@ -17,7 +17,7 @@ import urwid
 from term_image.image import BaseImage
 from term_image.utils import write_tty
 
-from .. import logging, notify, tui
+from .. import logging, notify
 from ..config import context_keys, expand_key
 from ..ctlseqs import BEL_b
 from .keys import (
@@ -707,7 +707,7 @@ at_top_level: bool
 # Set from `.tui.init()`
 ImageClass: BaseImage
 displayer: Generator[None, int, bool]
-loop: tui.Loop
+loop: urwid.MainLoop
 update_pipe: int
 
 # # Corresponding to (or derived directly from) command-line args and/or config options
