@@ -50,26 +50,6 @@ def init_log(args: argparse.Namespace) -> None:
     elif VERBOSE or VERBOSE_LOG:
         level = logging.INFO
 
-    FORMAT = (
-        "({process}) ({asctime}) [{levelname}] "
-        + ("{processName}: {threadName}: " if DEBUG else "")
-        + "{name}: "
-        + ("{funcName}: " if DEBUG else "")
-        + "{message}"
-    )
-    logging.basicConfig(
-        handlers=(handler,),
-        format=FORMAT,
-        style="{",
-        level=level,
-    )
-
-    if DEBUG:
-        _logger.setLevel(logging.DEBUG)
-
-    _logger.info("Starting a new session")
-    _logger.info(f"Logging level set to {logging.getLevelName(level)}")
-
     if (
         not (config_options.multi if args.multi is None else args.multi)
         or args.cli
@@ -84,6 +64,28 @@ def init_log(args: argparse.Namespace) -> None:
             MULTI = False
         else:
             MULTI = True
+
+    FORMAT = (
+        "({process}) ({asctime}) [{levelname}] "
+        + ("{processName}: " if DEBUG and MULTI else "")
+        + ("{threadName}: " if DEBUG else "")
+        + "{name}: "
+        + ("{funcName}: " if DEBUG else "")
+        + "{message}"
+    )
+
+    logging.basicConfig(
+        handlers=(handler,),
+        format=FORMAT,
+        style="{",
+        level=level,
+    )
+
+    if DEBUG:
+        _logger.setLevel(logging.DEBUG)
+
+    _logger.info("Starting a new session")
+    _logger.info(f"Logging level set to {logging.getLevelName(level)}")
 
     if MULTI:
         from . import logging_multi

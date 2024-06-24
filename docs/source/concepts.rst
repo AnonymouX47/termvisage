@@ -160,16 +160,22 @@ A log record has the following format (``<`` *and* ``>`` *mark placeholders, the
 * *pid*: The process ID of the session.
 * *date* and *time*: System date and time at which the record was created, in the format ``%Y-%m-%d %H:%M:%S,<ms>``, where ``<ms>`` is in milliseconds.
 * *level*: The level of the record, this indicates it's importance.
-* *process* and *thread*: The names of the python process and thread that produced the record.
+* *process*: The name of the python process that produced the record.
 
   * Only present when the *logging level* is set to ``DEBUG``
-    (either by :option:`--debug` or :option:`--log-level=DEBUG`).
+    (either via :option:`--debug` or :option:`--log-level=DEBUG`) and multiprocessing
+    is enabled (either via :option:`--multi` or :confval:`multi`).
+
+* *thread*: The name of the python thread that produced the record.
+
+  * Only present when the *logging level* is set to ``DEBUG``
+    (either via :option:`--debug` or :option:`--log-level=DEBUG`).
 
 * *module*: The package submodule from which it originated, or "termvisage" for session-level logs.
 * *function*: The function from which it originated.
 
   * Only present when the *logging level* is set to ``DEBUG``
-    (either by :option:`--debug` or :option:`--log-level=DEBUG`).
+    (either via :option:`--debug` or :option:`--log-level=DEBUG`).
 
 * *message*: The actual report describing the event that occurred.
 
