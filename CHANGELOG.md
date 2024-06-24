@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - tui: Changed the default symbol for `esc` key from `⎋` (U+238B) to `ESC` ([21b16f3]).
 - args: Disallowed abbreviation of CLI long options ([95e77a3]).
 - Made the `argcomplete` dependency optional ([1890ab8]).
+- logging: Process name is now excluded from log records when multiprocessing is disabled ([b2ccfa7]).
 
 ### Removed
 - args: `--max-pixels-cli` command-line option ([#13]).
@@ -49,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [21b16f3]: https://github.com/AnonymouX47/termvisage/commit/21b16f3278b912765fb80d729a1f197b82517b9f
 [95e77a3]: https://github.com/AnonymouX47/termvisage/commit/95e77a37881565c551dc75697544a4f97fc55b27
 [1890ab8]: https://github.com/AnonymouX47/termvisage/commit/1890ab839e36d6fcc55dc1a19c3d1b02b25a7851
+[b2ccfa7]: https://github.com/AnonymouX47/termvisage/commit/b2ccfa76f99f4bb9b7ec4aeab05b516286d60991
 
 
 ## [0.1.0] - 2023-06-03
