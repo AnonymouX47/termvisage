@@ -29,8 +29,8 @@ from typing import (
 )
 from urllib.parse import urlparse
 
-import PIL
 import requests
+from PIL import Image, UnidentifiedImageError
 from term_image import (
     AutoCellRatio,
     enable_win_size_swap,
@@ -182,7 +182,7 @@ def check_dir(
         if is_file:
             if empty:
                 try:
-                    PIL.Image.open(entry.name)
+                    Image.open(entry.name)
                     empty = False
                     if not RECURSIVE:
                         break
@@ -565,7 +565,7 @@ def get_urls(
             log(f"Unable to get {source!r}", logger, _logging.ERROR)
         except URLNotFoundError as e:
             log(str(e), logger, _logging.ERROR)
-        except PIL.UnidentifiedImageError as e:
+        except UnidentifiedImageError as e:
             log(str(e), logger, _logging.ERROR)
         except Exception:
             log_exception(f"Getting {source!r} failed", logger, direct=True)
@@ -584,7 +584,7 @@ def open_files(
         log(f"Opening {source!r}", logger, verbose=True)
         try:
             images.append((source, ImageClass.from_file(source)))
-        except PIL.UnidentifiedImageError as e:
+        except UnidentifiedImageError as e:
             log(str(e), logger, _logging.ERROR)
         except OSError as e:
             log(f"Could not read {source!r}: {e}", logger, _logging.ERROR)
