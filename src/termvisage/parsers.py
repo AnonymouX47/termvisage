@@ -6,7 +6,6 @@ from argparse import Action, ArgumentParser, RawDescriptionHelpFormatter, _Argum
 
 from term_image.image import ITerm2Image, Size
 
-from . import cli  # noqa: F401; prevents circular import of `.config` (below)
 from . import __version__
 
 COMPLETIONS = """First and foremost, ensure you've installed `termvisage` with the \
