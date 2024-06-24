@@ -16,7 +16,17 @@ from queue import Empty, Queue
 from tempfile import mkdtemp
 from threading import current_thread
 from time import sleep
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Tuple,
+    Union,
+)
 from urllib.parse import urlparse
 
 import PIL
@@ -36,12 +46,11 @@ from term_image.exceptions import (
 from term_image.image import BlockImage, ITerm2Image, KittyImage, Size, auto_image_class
 from term_image.utils import get_terminal_name_version, get_terminal_size, write_tty
 
-from . import logging, notify, tui
+from . import logging, notify
 from .config import config_options, init_config
 from .ctlseqs import ERASE_IN_LINE_LEFT_b
 from .exit_codes import FAILURE, INVALID_ARG, NO_VALID_SOURCE, SUCCESS
 from .logging import LoggingThread, init_log, log, log_exception
-from .tui.widgets import Image
 
 try:
     import fcntl  # noqa: F401
@@ -49,6 +58,9 @@ except ImportError:
     OS_HAS_FCNTL = False
 else:
     OS_HAS_FCNTL = True
+
+if TYPE_CHECKING:
+    from term_image.image import BaseImage
 
 
 # Checks for CL arguments that have possible invalid values and don't have corresponding
@@ -539,7 +551,7 @@ def update_contents(
 
 def get_urls(
     url_queue: Queue,
-    images: List[Tuple[str, Image]],
+    images: list[tuple[str, BaseImage]],
     ImageClass: type,
 ) -> None:
     """Processes URL sources from a/some separate thread(s)"""
@@ -547,7 +559,7 @@ def get_urls(
     while source:
         log(f"Getting image from {source!r}", logger, verbose=True)
         try:
-            images.append((basename(source), Image(ImageClass.from_url(source))))
+            images.append((basename(source), ImageClass.from_url(source)))
         # Also handles `ConnectionTimeout`
         except requests.exceptions.ConnectionError:
             log(f"Unable to get {source!r}", logger, _logging.ERROR)
@@ -564,14 +576,14 @@ def get_urls(
 
 def open_files(
     file_queue: Queue,
-    images: List[Tuple[str, Image]],
+    images: list[tuple[str, BaseImage]],
     ImageClass: type,
 ) -> None:
     source = file_queue.get()
     while source:
         log(f"Opening {source!r}", logger, verbose=True)
         try:
-            images.append((source, Image(ImageClass.from_file(source))))
+            images.append((source, ImageClass.from_file(source)))
         except PIL.UnidentifiedImageError as e:
             log(str(e), logger, _logging.ERROR)
         except OSError as e:
@@ -904,13 +916,9 @@ def main() -> None:
         log("No valid source!", logger)
         return NO_VALID_SOURCE
     # Sort entries by order on the command line
-    images.sort(
-        key=lambda x: unique_sources[x[0] if x[1] is ... else x[1]._ti_image.source]
-    )
+    images.sort(key=lambda x: unique_sources[x[0] if x[1] is ... else x[1].source])
 
-    if args.cli or (
-        not args.tui and len(images) == 1 and isinstance(images[0][1], Image)
-    ):
+    if args.cli or not args.tui and len(images) == 1 and images[0][1] is not ...:
         log("Running in CLI mode", logger, direct=False)
 
         if style_args.get("native") and len(images) > 1:
@@ -918,7 +926,7 @@ def main() -> None:
 
         show_name = len(args.sources) > 1
         for entry in images:
-            image = entry[1]._ti_image
+            image = entry[1]
             if 0 < args.max_pixels < mul(*image._original_size):
                 log(
                     f"Has more than the maximum pixel-count, skipping: {entry[0]!r}",
@@ -1015,6 +1023,8 @@ def main() -> None:
                     sys.stdout.close()
                 break
     elif OS_HAS_FCNTL:
+        from . import tui
+
         tui.init(args, style_args, images, contents, ImageClass)
     else:
         log(
@@ -1043,4 +1053,4 @@ RECURSIVE: bool
 SHOW_HIDDEN: bool
 # # Used in other modules
 args: argparse.Namespace | None = None
-url_images: list[tuple[str, Image]] = []
+url_images: list[tuple[str, BaseImage]] = []

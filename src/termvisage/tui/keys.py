@@ -14,7 +14,7 @@ from term_image import get_cell_ratio
 from term_image.image import GraphicsImage
 from term_image.utils import get_cell_size, get_terminal_size
 
-from .. import __version__, logging
+from .. import __version__, logging, tui
 from ..config import config_options, context_keys, expand_key
 from . import main
 from .render import resync_grid_rendering
@@ -312,7 +312,7 @@ keys = {context: {} for context in context_keys}
 # global
 @register_key(("global", "Quit"))
 def quit():
-    main.quitting = True
+    tui.quitting = True
     raise urwid.ExitMainLoop()
 
 

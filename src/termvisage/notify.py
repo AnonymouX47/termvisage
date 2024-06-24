@@ -14,7 +14,6 @@ import urwid
 from . import __main__, logging, tui
 from .config import config_options
 from .ctlseqs import SGR_FG_BLUE, SGR_FG_DEFAULT, SGR_FG_RED, SGR_FG_YELLOW
-from .tui import main, widgets
 
 DEBUG = INFO = 0
 WARNING = 1
@@ -25,16 +24,16 @@ CRITICAL = 3
 def add_notification(msg: Union[str, Tuple[str, str]]) -> None:
     """Adds a message to the TUI notification bar."""
     if _alarms.full():
-        clear_notification(main.loop, None)
-    widgets.notifications.contents.insert(
+        clear_notification(tui.main.loop, None)
+    tui.widgets.notifications.contents.insert(
         0, (urwid.Filler(urwid.Text(msg, wrap="ellipsis")), ("given", 1))
     )
-    _alarms.put(main.loop.set_alarm_in(5, clear_notification))
+    _alarms.put(tui.main.loop.set_alarm_in(5, clear_notification))
 
 
 def clear_notification(loop: urwid.MainLoop, data: Any) -> None:
     """Removes the oldest message in the TUI notification bar."""
-    widgets.notifications.contents.pop()
+    tui.widgets.notifications.contents.pop()
     loop.remove_alarm(_alarms.get())
 
 
@@ -70,9 +69,6 @@ def load() -> None:
     - elipsis-style for the CLI
     - braille-style for the TUI
     """
-    from .tui.main import update_screen
-    from .tui.widgets import loading
-
     global _n_loading
 
     stream = stdout if stdout.isatty() else stderr
@@ -107,6 +103,10 @@ def load() -> None:
     _n_loading = 0
     _loading.clear()  # Signal "not loading"
     _loading.wait()  # Wait for a loading operation
+
+    if _n_loading > -1:  # Not skipping TUI phase?
+        from .tui.main import update_screen
+        from .tui.widgets import loading
 
     while _n_loading > -1:  # TUI phase hasn't ended?
         while _n_loading > 0:  # Anything loading?
@@ -188,7 +188,7 @@ def start_loading() -> None:
     """Signals the start of a progressive operation."""
     global _n_loading
 
-    if not (QUIET or __main__.interrupted or main.quitting):
+    if not (QUIET or __main__.interrupted or tui.quitting):
         _n_loading += 1
         _loading.set()
 
