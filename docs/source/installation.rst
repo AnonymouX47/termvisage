@@ -8,9 +8,9 @@ Requirements
 * `Python <https://www.python.org/>`_ >= 3.8
 * A terminal emulator with **any** of the following:
   
-  * support for the `Kitty graphics protocol <https://sw.kovidgoyal.net/kitty/graphics-protocol/>`_.
-  * support for the `iTerm2 inline image protocol <https://iterm2.com/documentation-images.html>`_.
-  * full Unicode support and truecolor support
+  * support for the `Kitty graphics protocol <https://sw.kovidgoyal.net/kitty/graphics-protocol/>`_
+  * support for the `iTerm2 inline image protocol <https://iterm2.com/documentation-images.html>`_
+  * Unicode and direct-color (truecolor) support
 
   **Plans to support a wider variety of terminal emulators are in motion**
   (see the `library <https://github.com/AnonymouX47/term-image>`_\'s

@@ -62,9 +62,9 @@
 - [Python](https://www.python.org/) >= 3.8
 - A terminal emulator with **any** of the following:
   
-  - support for the [Kitty graphics protocol](https://sw.kovidgoyal.net/kitty/graphics-protocol/).
-  - support for the [iTerm2 inline image protocol](https://iterm2.com/documentation-images.html).
-  - full Unicode support and ANSI 24-bit color support
+  - support for the [Kitty graphics protocol](https://sw.kovidgoyal.net/kitty/graphics-protocol/)
+  - support for the [iTerm2 inline image protocol](https://iterm2.com/documentation-images.html)
+  - Unicode and direct-color (truecolor) support
 
   **Plans to support a wider variety of terminal emulators are in motion** (see the [library][term-image]'s planned features).
 
@@ -91,6 +91,7 @@ See the [installation docs](https://termvisage.readthedocs.io/en/stable/installa
 - Almost everything the [term-image] library supports
 - Display individual images
 - Browse multiple images and directories (recursively)
+- Efficient and configurable thumbnailing
 - Adjustable image grids
 - Context-based controls
 - Customizable controls and configuration options
