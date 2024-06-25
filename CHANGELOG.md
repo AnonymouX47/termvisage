@@ -113,5 +113,6 @@ See [term-image] up to [term-image v0.5.0].
 [term-image]: https://github.com/AnonymouX47/term-image
 
 
-[Unreleased]: https://github.com/AnonymouX47/termvisage/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/AnonymouX47/termvisage/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/AnonymouX47/termvisage/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/AnonymouX47/termvisage/releases/tag/v0.1.0
