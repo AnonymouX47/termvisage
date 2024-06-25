@@ -14,7 +14,7 @@ Copyright (c) 2023
 
 __author__ = "Toluwaleke Ogundipe"
 
-version_info = (0, 2, 0, "dev")
+version_info = (0, 2, 0)
 
 # Follows https://semver.org/spec/v2.0.0.html
 __version__ = ".".join(map(str, version_info[:3]))
