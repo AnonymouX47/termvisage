@@ -102,7 +102,7 @@ See the [installation docs](https://termvisage.readthedocs.io/en/stable/installa
 
 ## Demo
 
-![Demo Image](https://user-images.githubusercontent.com/61663146/233754936-87265eef-f6be-4046-98c5-44b778470b29.png)
+![Demo Image](https://github.com/AnonymouX47/termvisage/assets/61663146/beff58d9-fcff-4326-af1f-703e86041402)
 
 ### Multiple Render Styles
 | block | iterm2 | kitty |
@@ -110,7 +110,7 @@ See the [installation docs](https://termvisage.readthedocs.io/en/stable/installa
 | ![block style](https://user-images.githubusercontent.com/61663146/233488229-d4d0258c-2567-4b2a-ba38-8546b886fba3.png) | ![iterm2 style](https://user-images.githubusercontent.com/61663146/233488248-8c5750d2-9281-4a96-b0f4-32d61c29b02c.png) | ![kitty style](https://user-images.githubusercontent.com/61663146/233488260-6e7ce3fe-7561-44f7-aafe-d7a708e14758.png) |
 
 ### High-Resolution Images
-| ![high_res_1](https://user-images.githubusercontent.com/61663146/235449392-b464ff19-82ac-4c55-9244-e718bc999e98.png) | ![high_res_2](https://user-images.githubusercontent.com/61663146/235449402-c339acf8-c6e6-4e38-9d35-497c2752e75f.png) |
+| ![high_res_1](https://github.com/AnonymouX47/termvisage/assets/61663146/acb754f1-30d7-4477-85f3-9688d2aae5da) | ![high_res_2](https://github.com/AnonymouX47/termvisage/assets/61663146/938ccc20-39d4-4f15-8f3e-1960543fd895) |
 |:---:|:---:|
 
 ### Video Demo
