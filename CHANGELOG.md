@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Removed
+- Support for Python 3.8. ([a49f442])
+
+[a49f442]: https://github.com/AnonymouX47/term-image/commit/a49f442edef26f97252f610eb4a7b0e5acc6b2b3
 
 
 ## [0.2.0] - 2024-06-25
