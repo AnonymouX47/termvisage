@@ -3,5 +3,5 @@ black==25.1.0
 flake8==7.2.0
 isort[colors]==6.0.1
 Pillow==10.4.0
-term-image==0.6.2
+term-image==0.7.2
 urwid==2.6.16
