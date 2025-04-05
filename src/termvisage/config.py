@@ -224,7 +224,7 @@ def load_xdg_config() -> None:
 
 
 def reconfigure_tui(
-    old_context_keys: Optional[Dict[str, Dict[str, list]]] = None
+    old_context_keys: Optional[Dict[str, Dict[str, list]]] = None,
 ) -> None:
     """Updates aspects of the TUI to use the current config option values and
     keybindings.

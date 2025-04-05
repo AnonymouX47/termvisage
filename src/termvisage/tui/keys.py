@@ -296,7 +296,7 @@ def update_footer_expand_collapse_icon():
 
     expand.set_text(
         [
-            "\u25B2" if action_bar._ti_collapsed else "\u25BC",
+            "\u25b2" if action_bar._ti_collapsed else "\u25bc",
             " ",
             ("key", f" {expand_key[1]} "),
         ]
