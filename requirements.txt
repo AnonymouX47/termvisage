@@ -1,7 +1,6 @@
 argcomplete==3.2.3
 black==24.3.0
-flake8==7.0.0;python_version>="3.8.1"
-flake8==5.0.4;python_version<"3.8.1"
+flake8==7.0.0
 isort[colors]==5.13.2
 Pillow==10.3.0
 term-image==0.6.2

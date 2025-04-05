@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 dynamic = ["version"]
 name = "termvisage"
 description = "Display and browse images in the terminal"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "Pillow>=10.1,<11",
     "term-image>=0.6,<0.7",
@@ -46,7 +46,6 @@ classifiers = [
     "Operating System :: Android",
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
