@@ -42,6 +42,7 @@ Image Grids
 
 .. video:: https://user-images.githubusercontent.com/61663146/233408602-3a502b95-6902-4ea9-bda0-e94c53d4a68e.mp4
    :preload: metadata
+   :width: 100%
 
 * Smooth and fast navigation
 * Mouse support for selection
@@ -60,6 +61,7 @@ High resolution images
 
 .. video:: https://user-images.githubusercontent.com/61663146/233483835-674ee0ce-dc31-4793-8a16-0a947e49b3f0.mp4
    :preload: metadata
+   :width: 100%
 
 * Rendering doesn't affect interface responsiveness
 * Low memory consumption (compared to conventional viewers)
@@ -69,6 +71,7 @@ Animated images
 
 .. video:: https://user-images.githubusercontent.com/61663146/233483900-02abc2e1-894e-4d8b-b991-2ca66ffc5a85.mp4
    :preload: metadata
+   :width: 100%
 
 * All major formats supported: GIF (with alpha channel support), Animated PNG, Animated WEBP
 * Looping control
@@ -79,6 +82,7 @@ Recursive browsing
 
 .. video:: https://user-images.githubusercontent.com/61663146/233485536-4fb5dd63-93be-43e8-9cb9-e5cecccfa43c.mp4
    :preload: metadata
+   :width: 100%
 
 * Smooth and responsive navigation
 * Scans directories concurrently
@@ -89,6 +93,7 @@ Sizing (CLI only)
 
 .. video:: https://user-images.githubusercontent.com/61663146/235648974-5796bf59-c6fd-4dce-b3f3-f612b40f7050.mp4
    :preload: metadata
+   :width: 100%
 
 * Size images based on terminal size or original image size.
 * Specify image width or height (in columns or lines respectively).
@@ -98,6 +103,7 @@ Alignment/Padding (CLI only)
 
 .. video:: https://user-images.githubusercontent.com/61663146/235649185-863a41ff-dc9e-4492-be8c-c5ec1b167a84.mp4
    :preload: metadata
+   :width: 100%
 
 * Adjust the padding width and height of images.
 * Adjust the horizontal and vertical alignment of images within the given padding.
